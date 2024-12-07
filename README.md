@@ -1,13 +1,20 @@
-## 環境構築に
+## 使用コマンド
 
 1. `npx create-next-app`
 2. `npm install three @react-three/fiber`
-3. `npm run dev`
-4. 
+3. `npm i @react-three/drei`
+4. `npm run dev`
 
-
-このプロジェクトでは、app/page.tsxファイルを修正することでページの編集を開始できます。ファイルを編集すると、ページは自動的に更新されます。
-
-Next.js Documentation - Next.jsの機能やAPIについて学べます。
-Learn Next.js - インタラクティブなNext.jsチュートリアルです。
-また、Next.js GitHubリポジトリもチェックできます。フィードバックや貢献を歓迎します！
+## 参考URL
+- react-three-fiber, drei などの紹介
+  - あくまで紹介記事、導入のイメージ把握に使用
+  - https://zenn.dev/solb/articles/d25e664154cc0c
+  - https://hack.nikkei.com/blog/advent20231207/
+- Tailwind ドキュメント
+  - https://tailwindcss.com/docs
+- ReactThreeFiber ドキュメント
+  - 対して参考にならない・・・？
+  - https://r3f.docs.pmnd.rs/getting-started/introduction
+- Drei ドキュメント
+  - ドキュメントとしての用途もだが、サンプルコードが多く掲載されており助かる
+  - https://drei.docs.pmnd.rs/getting-started/introduction
