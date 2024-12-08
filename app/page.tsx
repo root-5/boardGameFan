@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Stats, OrbitControls, Environment, useGLTF } from '@react-three/drei'
 import { useEffect, useState } from 'react';
-import * as THREE from 'three';
+import { Euler } from 'three';
 
 // ==============================
 // 設定
@@ -25,27 +25,23 @@ function DiceModel() {
 
 // グループ（複数のモデルの集合）
 function Group() {
-  const [rotation, setRotation] = useState([0, 0, 0]);
+  const [rotation, setRotation] = useState(new Euler(0, 0, 0));
+  const [isRolling, setIsRolling] = useState(false);
 
   useFrame(() => {
     // モデルの回転
-    setRotation([
-      rotation[0] + Math.PI * 1 / 100,
-      rotation[1] + Math.PI * 1 / 100,
-      rotation[2] + Math.PI * 1 / 100
-    ])
+    if (!isRolling) return;
+    setRotation((prevRotation) => new Euler(
+      prevRotation.x + Math.PI * 30 / 100,
+      prevRotation.y + Math.PI * 30 / 100,
+      prevRotation.z + Math.PI * 30 / 100
+    ));
   })
 
   return <group
-    // position={[0, -5, 0]} // モデルの位置
     rotation={rotation} // モデルの回転
     onClick={() => { // クリック時の処理
-        console.log('click');
-        setRotation([
-          rotation[0] + Math.PI * 1 / 100,
-          rotation[1] + Math.PI * 0 / 100,
-          rotation[2] + Math.PI * 0 / 100
-        ])
+        setIsRolling(!isRolling);
       }}
     >
     {/* モデル */}
@@ -78,7 +74,10 @@ export default function App() {
         />
 
         {/* ライト */}
-        {/* <directionalLight position={[5, 5, 5]} castShadow /> */}
+        <directionalLight
+          position={[5, 5, 5]}
+          castShadow
+        />
         
         {/* パフォーマンスモニター */}
         {/* <Stats /> */}
