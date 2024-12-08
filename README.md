@@ -18,3 +18,6 @@
 - Drei ドキュメント
   - ドキュメントとしての用途もだが、サンプルコードが多く掲載されており助かる
   - https://drei.docs.pmnd.rs/getting-started/introduction
+- Three.js ドキュメント
+  - 結局詳細な設定内容はここで確認することになる
+  - https://threejs.org/docs/index.html
