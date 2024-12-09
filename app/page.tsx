@@ -1,13 +1,13 @@
 'use client'
 
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Stats, OrbitControls, Environment, useGLTF } from '@react-three/drei'
-import { useEffect, useState } from 'react';
+import { OrbitControls, Environment, useGLTF } from '@react-three/drei'
+import { useState } from 'react';
 import { Euler } from 'three';
 
 // ==============================
 // 設定
-const isLocal = true;
+const isLocal = process.env.NODE_ENV === 'development';
 const modelPath = 'Dice.glb';
 const backgroundImagePath = isLocal ? 'bg_.jpg' : 'bg.jpg';
 
