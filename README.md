@@ -1,4 +1,7 @@
-## 使用コマンド
+## 目的
+ボドゲ等を遊ぶ時のダイス、トークン、勝利点等を表示するためのアプリを作成する。
+
+## 使用コマンドメモ
 
 1. `npx create-next-app`
 2. `npm install three @react-three/fiber`
