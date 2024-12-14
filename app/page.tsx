@@ -27,15 +27,27 @@ function DiceModel() {
 function Group() {
   const [rotation, setRotation] = useState(new Euler(0, 0, 0));
   const [isRolling, setIsRolling] = useState(false);
+  const [isRollingLast, setIsRollingLast] = useState(false);
 
   useFrame(() => {
-    // モデルの回転
-    if (!isRolling) return;
-    setRotation((prevRotation) => new Euler(
-      prevRotation.x + Math.PI * 30 / 100,
-      prevRotation.y + Math.PI * 30 / 100,
-      prevRotation.z + Math.PI * 30 / 100
-    ));
+    if (isRolling === isRollingLast) {
+      // モデルの回転
+      if (isRolling) {
+        setRotation((prevRotation) => new Euler(
+          prevRotation.x + Math.PI * 15 / 100,
+          prevRotation.y + Math.PI * 15 / 100,
+          prevRotation.z + Math.PI * 15 / 100
+        ));
+      }
+    } else {
+      // ダイスロールの切り替え時にランダムな回転角にする
+      setRotation(new Euler(
+        (Math.floor(Math.random() * 6) + 1) * Math.PI / 2, 
+        (Math.floor(Math.random() * 6) + 1) * Math.PI / 2, 
+        (Math.floor(Math.random() * 6) + 1) * Math.PI / 2
+      ));
+      setIsRollingLast(isRolling);
+    }
   })
 
   return <group
@@ -57,7 +69,7 @@ export default function App() {
         className='h-full'
         camera={{ 
           fov: 80, // 視野角
-          position: [20, 10, 50] // カメラの位置
+          position: [0, 0, 50] // カメラの位置
         }}
       >
 
@@ -66,16 +78,18 @@ export default function App() {
 
         {/* カメラ操作 https://threejs.org/docs/#examples/en/controls/OrbitControls */}
         <OrbitControls
-          minDistance={20} // ズームの最小距離
-          maxDistance={100} // ズームの最大距離
-          minPolarAngle={Math.PI * 43.5 / 100} // カメラの上下回転角度の最小値
-          maxPolarAngle={Math.PI * 59 / 100} // カメラの上下回転角度の最大値
+          minDistance={50} // ズームの最小距離
+          maxDistance={70} // ズームの最大距離
+          minPolarAngle={Math.PI * 43 / 100} // カメラの上下回転角度の最小値
+          maxPolarAngle={Math.PI * 58.5 / 100} // カメラの上下回転角度の最大値
+          minAzimuthAngle={Math.PI * -7 / 100} // カメラの左右回転角度の最小値
+          maxAzimuthAngle={Math.PI * 7 / 100} // カメラの左右回転角度の最大値
           // autoRotate // 自動回転
         />
 
         {/* ライト */}
         <directionalLight
-          position={[5, 5, 5]}
+          position={[0, 10, 50]}
           castShadow
         />
         
