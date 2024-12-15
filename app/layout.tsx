@@ -30,13 +30,13 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} relative antialiased h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} relative antialiased h-screen select-none`}
       >
         <Image
           src={backgroundImagePath}
           alt="background"
           layout="fill"
-          className="absolute h-full w-full z-0 object-contain"
+          className="absolute h-full w-full z-[-10] object-contain"
         />
         {children}
       </body>
