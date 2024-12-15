@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-const counterMax = 9999;
-const counterMin = -9999;
+const counterMax = 99999;
+const counterMin = -99999;
 
 function ajustCounterValue(value: number): number {
     console.log(value);
@@ -19,36 +19,79 @@ export default function Counter() {
   const [count, setCount] = useState(0);
 
   return (
-    <div
-      className='text-5xl font-bold text-center text-white'
-    >
-      <p
-        className='inline-block p-6 cursor-pointer transition hover:opacity-70 hover:translate-x-[-0.5rem] hover:scale-y-75'
-        onClick={() => {
-            setCount(ajustCounterValue(count - 1));
-        }}
-      >{"<"}</p>
-      <input
-        className='inline-block bg-transparent w-40 text-center'
-        type='number'
-        onChange={(e) => {
-            if (e.target.value === '') {
-                setCount(0);
-                return;
-            } else if (isNaN(Number(e.target.value))) {
-                return;
-            }
-            setCount(ajustCounterValue(Number(e.target.value)));
-        }}
-        value={count}
+    <>
+      <div
+        className='p-4 w-56 h-56 text-center bg-gray-800'
       >
-      </input>
-      <p
-        className='inline-block p-6 cursor-pointer transition hover:opacity-70 hover:translate-x-2 hover:scale-y-75'
-        onClick={() => {
-            setCount(ajustCounterValue(count + 1));
-        }}
-      >{">"}</p>
-    </div>
+        <input
+          className='inline-block w-44 bg-transparent text-5xl font-bold text-center outline-none translate-x-2'
+          type="number"
+          onChange={(e) => setCount(ajustCounterValue(parseInt(e.target.value)))}
+          value={count}
+        />
+        <div>
+          <div className='flex justify-center align-middle gap-2 text-base'>
+            <div className=''>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count - 1))}}
+              >
+                {'<'}
+              </div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count - 10))}}
+              >
+                -10
+              </div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count - 100))}}
+              >
+                -100
+              </div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count - 1000))}}
+              >
+                -1000
+              </div>
+            </div>
+            <div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count + 1))}}
+              >
+                {'>'}
+              </div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count + 10))}}
+              >
+                +10
+              </div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count + 100))}}
+              >
+                +100
+              </div>
+              <div 
+                className='px-2 cursor-pointer opacity-100 hover:opacity-70'
+                onClick={() => {setCount(ajustCounterValue(count + 1000))}}
+              >
+                +1000
+              </div>
+            </div>
+          </div>
+          <div
+            className='inline-block mt-2 px-2 w-fit cursor-pointer opacity-100 hover:opacity-70'
+            onClick={() => setCount(0)}
+          >
+            RESET
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
