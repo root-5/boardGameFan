@@ -1,14 +1,16 @@
 'use client'
 
 import Dice from '../components/dice';
-import Counter from '../components/counter';
+import Score from '../components/score';
+import Token from '../components/token';
 
 export default function App() {
 
   return (
     <>
-      {/* <Dice /> */}
-      <Counter />
+      <Dice />
+      <Score />
+      <Token />
     </>
   )
 }
