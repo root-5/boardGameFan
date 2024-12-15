@@ -61,9 +61,9 @@ function Group() {
 
 export default function Dice() {
   return (
-    <div className='h-44 w-44'>
+    <div className='h-56 w-56 bg-gray-500'>
       <Canvas
-        className='h-44 w-44'
+        className='h-full w-full'
         camera={{ 
           fov: 80, // 視野角
           position: [0, 0, 50] // カメラの位置
