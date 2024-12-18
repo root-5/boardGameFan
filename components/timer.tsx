@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 const timerMax = 359999; // 99:59:59 (最大値)
 const timerMin = 0; // 00:00:00 (最小値)
@@ -19,7 +19,7 @@ export default function Timer() {
   const [time, setTime] = useState(defaultTime);
   const [isRunning, setIsRunning] = useState(false);
   const [isTimeUp, setIsTimeUp] = useState(false);
-  const [saveDefaultText, setSaveDefaultText] = useState('SAVE DEFAULT');
+  const [saveDefaultText, setSaveDefaultText] = useState("SAVE DEFAULT");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -49,26 +49,44 @@ export default function Timer() {
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}:${String(seconds).padStart(2, "0")}`;
   };
 
   return (
     <>
       <div
-        className={'relative p-4 w-56 h-56 text-center bg-gray-700' + (isTimeUp ? ' shake-animation' : '')}
+        className={
+          "relative p-4 w-56 h-56 text-center bg-gray-700" +
+          (isTimeUp ? " shake-animation" : "")
+        }
       >
-        <div className={'inline-block w-44 bg-transparent text-4xl font-bold text-center outline-none' + (isTimeUp ? ' animate-pulse' : '')}>
+        <div
+          className={
+            "inline-block w-44 bg-transparent text-4xl font-bold text-center outline-none" +
+            (isTimeUp ? " animate-pulse" : "")
+          }
+        >
           {formatTime(time)}
         </div>
-        <div className='flex justify-center align-middle text-base'>
+        <div className="flex justify-center align-middle text-base">
           <div
-            className={'px-5 py-2 text-lg opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-            onClick={() => {if (!isTimeUp) {setIsRunning(!isRunning)}}}
+            className={
+              "px-5 py-2 text-lg opacity-100" +
+              (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+            }
+            onClick={() => {
+              if (!isTimeUp) {
+                setIsRunning(!isRunning);
+              }
+            }}
           >
-            {isRunning ? 'STOP' : 'START'}
+            {isRunning ? "STOP" : "START"}
           </div>
           <div
-            className='px-5 py-2 text-lg cursor-pointer opacity-100 hover:opacity-70'
+            className="px-5 py-2 text-lg cursor-pointer opacity-100 hover:opacity-70"
             onClick={() => {
               setTime(defaultTime);
               setIsTimeUp(false);
@@ -77,93 +95,177 @@ export default function Timer() {
             RESET
           </div>
         </div>
-        <div className=' flex flex-col justify-center align-middle text-base'>
-          <div className='flex place-content-between text-base'>
+        <div className=" flex flex-col justify-center align-middle text-base">
+          <div className="flex place-content-between text-base">
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time - 10))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time - 10));
+                }
+              }}
             >
               -10s
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time - 1))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time - 1));
+                }
+              }}
             >
               -1s
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time + 1))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time + 1));
+                }
+              }}
             >
               +1s
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time + 10))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time + 10));
+                }
+              }}
             >
               +10s
             </div>
           </div>
-          <div className='flex place-content-between text-base'>
+          <div className="flex place-content-between text-base">
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time - 600))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time - 600));
+                }
+              }}
             >
               -10m
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time - 60))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time - 60));
+                }
+              }}
             >
               -1m
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time + 60))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time + 60));
+                }
+              }}
             >
               +1m
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time + 600))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time + 600));
+                }
+              }}
             >
               +10m
             </div>
           </div>
-          <div className='flex place-content-between text-base'>
+          <div className="flex place-content-between text-base">
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time - 36000))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time - 36000));
+                }
+              }}
             >
               -10h
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time - 3600))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time - 3600));
+                }
+              }}
             >
               -1h
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time + 3600))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time + 3600));
+                }
+              }}
             >
               +1h
             </div>
             <div
-              className={'px-1 py-0.5 opacity-100' + (isTimeUp ? '': ' cursor-pointer hover:opacity-70')}
-              onClick={() => {if (!isTimeUp) {setTime(adjustTimerValue(time + 36000))}}}
+              className={
+                "px-1 py-0.5 opacity-100" +
+                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              }
+              onClick={() => {
+                if (!isTimeUp) {
+                  setTime(adjustTimerValue(time + 36000));
+                }
+              }}
             >
               +10h
             </div>
           </div>
         </div>
         <div
-          className='mt-2 text-xs cursor-pointer opacity-100 hover:opacity-70'
+          className="mt-2 text-xs cursor-pointer opacity-100 hover:opacity-70"
           onClick={() => {
             setDefaultTime(time);
-            setSaveDefaultText('SAVED');
+            setSaveDefaultText("SAVED");
             setTimeout(() => {
-              setSaveDefaultText('SAVE DEFAULT');
+              setSaveDefaultText("SAVE DEFAULT");
             }, 2000);
           }}
         >
