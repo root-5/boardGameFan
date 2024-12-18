@@ -26,6 +26,7 @@ export default function Score() {
           onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
           value={count}
         />
+        <p className="text-[10px] text-slate-400">INPUT / ARROW KEY / SCROLL</p>
         <div>
           <div className="flex justify-center align-middle gap-2 text-base">
             <div className="">
@@ -36,14 +37,6 @@ export default function Score() {
                 }}
               >
                 {"<"}
-              </div>
-              <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
-                onClick={() => {
-                  setCount(ajustScoreValue(count - 10));
-                }}
-              >
-                -10
               </div>
               <div
                 className="px-2 cursor-pointer opacity-100 hover:opacity-70"
@@ -78,14 +71,6 @@ export default function Score() {
                 }}
               >
                 {">"}
-              </div>
-              <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
-                onClick={() => {
-                  setCount(ajustScoreValue(count + 10));
-                }}
-              >
-                +10
               </div>
               <div
                 className="px-2 cursor-pointer opacity-100 hover:opacity-70"

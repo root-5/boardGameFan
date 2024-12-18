@@ -22,10 +22,10 @@ export default function Token() {
 
   return (
     <>
-      <div className="relative flex flex-col justify-center items-center p-4 w-56 h-56 text-center text-2xl bg-gray-900">
+      <div className="relative flex flex-col justify-center items-center gap-2 p-4 w-56 h-56 text-center text-2xl bg-gray-900">
         <div className="flex justify-center items-center">
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
             onClick={() => setToken1Count(ajustTokenValue(token1Count - 1))}
           >
             {"<"}
@@ -39,7 +39,7 @@ export default function Token() {
             🩷
           </div>
           <input
-            className="inline-block ml-2 w-9 bg-transparent outline-none text-center forcus:"
+            className="inline-block ml-4 w-9 bg-transparent outline-none text-center forcus:"
             type="number"
             onChange={(e) =>
               setToken1Count(ajustTokenValue(parseInt(e.target.value)))
@@ -47,7 +47,7 @@ export default function Token() {
             value={token1Count}
           />
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
             onClick={() => setToken1Count(ajustTokenValue(token1Count + 1))}
           >
             {">"}
@@ -55,7 +55,7 @@ export default function Token() {
         </div>
         <div className="flex justify-center items-center">
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
             onClick={() => setToken2Count(ajustTokenValue(token2Count - 1))}
           >
             {"<"}
@@ -69,7 +69,7 @@ export default function Token() {
             🪙
           </div>
           <input
-            className="inline-block ml-2 w-9 bg-transparent outline-none text-center"
+            className="inline-block ml-4 w-9 bg-transparent outline-none text-center"
             type="number"
             onChange={(e) =>
               setToken2Count(ajustTokenValue(parseInt(e.target.value)))
@@ -77,7 +77,7 @@ export default function Token() {
             value={token2Count}
           />
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
             onClick={() => setToken2Count(ajustTokenValue(token2Count + 1))}
           >
             {">"}
@@ -85,7 +85,7 @@ export default function Token() {
         </div>
         <div className="flex justify-center items-center">
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
             onClick={() => setToken3Count(ajustTokenValue(token3Count - 1))}
           >
             {"<"}
@@ -99,7 +99,7 @@ export default function Token() {
             ☘️
           </div>
           <input
-            className="inline-block ml-2 w-9 bg-transparent outline-none text-center"
+            className="inline-block ml-4 w-9 bg-transparent outline-none text-center"
             type="number"
             onChange={(e) =>
               setToken3Count(ajustTokenValue(parseInt(e.target.value)))
@@ -107,7 +107,7 @@ export default function Token() {
             value={token3Count}
           />
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
             onClick={() => setToken3Count(ajustTokenValue(token3Count + 1))}
           >
             {">"}
@@ -115,7 +115,7 @@ export default function Token() {
         </div>
         <div className="flex justify-center items-center">
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
             onClick={() => setToken4Count(ajustTokenValue(token4Count - 1))}
           >
             {"<"}
@@ -129,7 +129,7 @@ export default function Token() {
             🧊️
           </div>
           <input
-            className="inline-block ml-2 w-9 bg-transparent outline-none text-center"
+            className="inline-block ml-4 w-9 bg-transparent outline-none text-center"
             type="number"
             onChange={(e) =>
               setToken4Count(ajustTokenValue(parseInt(e.target.value)))
@@ -137,7 +137,7 @@ export default function Token() {
             value={token4Count}
           />
           <div
-            className=" px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
+            className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
             onClick={() => setToken4Count(ajustTokenValue(token4Count + 1))}
           >
             {">"}
