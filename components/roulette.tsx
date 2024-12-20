@@ -11,16 +11,12 @@ import {
   Mesh,
 } from "three";
 
-const angularVelocityDefault = (Math.PI * 2 * 50) / 100;
+const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
 
 // ルーレットモデル
-function RouletteModel(props: { colors: Array<number>; rotation: Euler }) {
-  const { colors, rotation } = props;
+function RouletteModel(props: { colors: Array<number> }) {
+  const { colors } = props;
   const [rouletteGroup, setRouletteGroup] = useState(new Group());
-
-  const rouletteNum = Math.round(
-    ((rotation.y % (Math.PI * 2)) / (Math.PI * 2)) * (colors.length - 1)
-  );
 
   useEffect(() => {
     const newRouletteGroup = new Group();
@@ -56,19 +52,25 @@ function RouletteModel(props: { colors: Array<number>; rotation: Euler }) {
 function GroupComponent(props: { colors: Array<number> }) {
   const { colors } = props;
   const [rotation, setRotation] = useState(new Euler(0, 0, 0));
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [rouletteNum, setRouletteNum] = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false); // 回転状態の判定
+  const [isSpinningLast, setIsSpinningLast] = useState(true); // isSpinning だけでも表現はできるが、isSpinningLast を加えることで停止中の useFrame 内の計算をなしにできる
+  const [rouletteNum, setRouletteNum] = useState(0); // ルーレットの出目
   const [angularVelocity, setAngularVelocity] = useState(
-    angularVelocityDefault
-  ); // 角速度
+    // 角速度
+    initialAngularVelocity
+  );
 
   useFrame(() => {
-    if (angularVelocity != 0) {
-      if (isSpinning) {
+    if (isSpinning && !isSpinningLast) {
+      // ======================================
+      // 回転中の処理
+      // ======================================
+      if (angularVelocity != 0) {
+        // 次フレームの角速度の計算
         setAngularVelocity((prevAngularVelocity) => {
           if (prevAngularVelocity > 0) {
             return (
-              prevAngularVelocity -
+              prevAngularVelocity - // 現在の速度
               prevAngularVelocity * 0.015 -
               (Math.PI * 2 * 0.001) / 100
             );
@@ -76,6 +78,7 @@ function GroupComponent(props: { colors: Array<number> }) {
             return 0;
           }
         });
+        // 計算した角速度をもとに次フレームの回転角を設定
         setRotation(
           (prevRotation) =>
             new Euler(
@@ -84,10 +87,22 @@ function GroupComponent(props: { colors: Array<number> }) {
               prevRotation.z
             )
         );
+      } else {
+        // 角速度が 0 に収束した際は静止への移行状態をステートへ反映
+        setIsSpinning(false);
+        setIsSpinningLast(true);
       }
-    } else {
-      setAngularVelocity(angularVelocityDefault);
-      setIsSpinning(false);
+    } else if (!isSpinning && isSpinningLast) {
+      // ======================================
+      // 静止への移行処理
+      // ======================================
+      setAngularVelocity(initialAngularVelocity);
+      setRouletteNum(
+        Math.round(
+          ((rotation.y % (Math.PI * 2)) / (Math.PI * 2)) * (colors.length - 1)
+        )
+      );
+      setIsSpinningLast(false);
     }
   });
 
@@ -95,13 +110,15 @@ function GroupComponent(props: { colors: Array<number> }) {
     <group
       rotation={rotation}
       onClick={() => {
-        if (!isSpinning) {
-          setIsSpinning(!isSpinning);
+        // 静止状態のみトリガー
+        if (!isSpinning && !isSpinningLast) {
+          setIsSpinning(true);
+          setIsSpinningLast(false);
           setRotation(new Euler(0, Math.random() * Math.PI * 2, 0));
         }
       }}
     >
-      <RouletteModel colors={colors} rotation={rotation} />
+      <RouletteModel colors={colors} />
     </group>
   );
 }
