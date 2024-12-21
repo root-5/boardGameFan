@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text3D } from "@react-three/drei";
+import { Environment, OrbitControls, Text3D } from "@react-three/drei";
 import { useState, useEffect } from "react";
 import { Euler } from "three";
 
@@ -15,12 +15,12 @@ const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
 
 // 初期ユーザー
 const initialUsers = [
-  { name: "Name_1", color: "#ff0000" },
-  { name: "Name_2", color: "#00ff00" },
-  { name: "Name_3", color: "#0000ff" },
-  { name: "Name_4", color: "#ffff00" },
-  { name: "Name_5", color: "#ff00ff" },
-  { name: "Name_6", color: "#00ffff" },
+  { name: "^_^", color: "#ff0000" },
+  { name: "^o^", color: "#00ff00" },
+  { name: "T_T", color: "#0000ff" },
+  { name: "ToT", color: "#ffff00" },
+  { name: "$_$", color: "#ff00ff" },
+  { name: "$o$", color: "#00ffff" },
 ];
 
 // ルーレット盤
@@ -48,7 +48,7 @@ function RouletteModel(props: { users: Array<user> }) {
             />
             <meshStandardMaterial
               color={user.color}
-              roughness={0.4} // ざらつき
+              roughness={0.1} // ざらつき
               metalness={0.2} // 金属感
             />
           </mesh>
@@ -59,12 +59,15 @@ function RouletteModel(props: { users: Array<user> }) {
 }
 
 // ルーレット全体
-function GroupComponent(props: { users: Array<user> }) {
-  const { users } = props;
+function GroupComponent(props: {
+  users: Array<user>;
+  rouletteNum: number;
+  setRouletteNum: (num: number) => void;
+}) {
+  const { users, rouletteNum, setRouletteNum } = props;
   const [rotation, setRotation] = useState(new Euler(0, 0, 0));
   const [isSpinning, setIsSpinning] = useState(false); // 回転状態の判定
   const [isSpinningLast, setIsSpinningLast] = useState(true); // isSpinning だけでも表現はできるが、isSpinningLast を加えることで停止中の useFrame 内の計算をなしにできる
-  const [rouletteNum, setRouletteNum] = useState(0); // ルーレットの出目
   const [angularVelocity, setAngularVelocity] = useState(
     // 角速度
     initialAngularVelocity
@@ -120,25 +123,6 @@ function GroupComponent(props: { users: Array<user> }) {
 
   return (
     <>
-      {/* 名前表示 */}
-      <group rotation={new Euler(-0.4, 0, 0)}>
-        <Text3D
-          position={[-5, 7, 0]}
-          font="/Roboto_Bold.json"
-          size={2}
-          height={0.3}
-        >
-          {users.length > 0 ? users[rouletteNum].name : ""}
-          <meshStandardMaterial
-            attach="material"
-            color={0x555555}
-            // color={users[rouletteNum].color}
-            roughness={0.4} // ざらつき
-            metalness={0.2} // 金属感
-          />
-        </Text3D>
-      </group>
-
       {/* ルーレット全体 */}
       <group
         rotation={rotation}
@@ -153,11 +137,11 @@ function GroupComponent(props: { users: Array<user> }) {
       >
         {/* 色判定用センターパーツ */}
         <mesh position={[0, 1.25, 0]}>
-          <cylinderGeometry args={[4.5, 5.5, 0.5, 32]} />
+          <cylinderGeometry args={[5, 5, 0.5, 32]} />
           <meshStandardMaterial
             color={isSpinning ? 0xffffff : users[rouletteNum].color}
             roughness={0.4} // ざらつき
-            metalness={0.2} // 金属感
+            metalness={0.1} // 金属感
           />
         </mesh>
 
@@ -181,16 +165,26 @@ function GroupComponent(props: { users: Array<user> }) {
 
 export default function Roulette() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [users, setUsers] = useState<user[]>(initialUsers);
+  const [users, setUsers] = useState(initialUsers);
+  const [rouletteNum, setRouletteNum] = useState(0);
 
   return (
-    <div className="relative h-56 w-56 bg-gray-300">
+    <>
+      {/* 名前表示 */}
+      <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-fit text-center text-2xl text-gray-800 font-bold bg-white bg-opacity-80">
+        {users[rouletteNum].name}
+      </div>
       {/* ルーレット3D描画 */}
       <Canvas
         className="h-full w-full"
         camera={{ fov: 80, position: [10, 3, 0] }}
+        style={{ background: "#fff" }}
       >
-        <GroupComponent users={users} />
+        <GroupComponent
+          users={users}
+          rouletteNum={rouletteNum}
+          setRouletteNum={setRouletteNum}
+        />
         <OrbitControls
           minDistance={16}
           maxDistance={25}
@@ -206,7 +200,7 @@ export default function Roulette() {
 
       {/* 設定ボタン */}
       <div
-        className="absolute top-0 right-0 px-2 bg-gray-400 text-xl text-white duration-300 cursor-pointer hover:opacity-50"
+        className="absolute z-20 top-0 right-0 px-2 bg-gray-400 text-xl text-white duration-300 cursor-pointer hover:opacity-50"
         onClick={() => setIsModalOpen(true)}
       >
         =
@@ -214,7 +208,7 @@ export default function Roulette() {
 
       {/* モーダル */}
       <div
-        className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 text-black overflow-hidden"
+        className="absolute z-30 top-0 left-0 w-full h-full bg-black bg-opacity-50 text-black overflow-hidden"
         style={{ display: isModalOpen ? "block" : "none" }}
       >
         <div className="absolute top-1 left-1 right-1 bottom-1 p-2 bg-white rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-lg [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
@@ -271,7 +265,7 @@ export default function Roulette() {
               ))}
               {/* 追加ボタン */}
               <div
-                className="w-full text-2xl text-center duration-300 cursor-pointer hover:bg-gray-200"
+                className="w-full text-2xl text-center duration-300 rounded cursor-pointer hover:bg-gray-200"
                 onClick={() => {
                   setUsers([...users, { name: "*_*", color: "#000000" }]);
                 }}
@@ -282,6 +276,6 @@ export default function Roulette() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
