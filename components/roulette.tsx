@@ -99,7 +99,9 @@ function GroupComponent(props: { colors: Array<number> }) {
       setAngularVelocity(initialAngularVelocity);
       setRouletteNum(
         Math.round(
-          ((rotation.y % (Math.PI * 2)) / (Math.PI * 2)) * (colors.length - 1)
+          // (((回転角 + π<判定場所を手前側にずらすため>) % 2π) / 2π) * (色数 - 1) 
+          (((rotation.y + Math.PI) % (Math.PI * 2)) / (Math.PI * 2)) *
+            (colors.length - 1)
         )
       );
       setIsSpinningLast(false);
@@ -118,6 +120,27 @@ function GroupComponent(props: { colors: Array<number> }) {
         }
       }}
     >
+      {/* 色判定用センターパーツ */}
+      <mesh position={[0, 1.25, 0]}>
+        <cylinderGeometry args={[4.5, 5.5, 0.5, 32]} />
+        <meshStandardMaterial
+          color={isSpinning ? 0xffffff : colors[rouletteNum]}
+          roughness={0.1} // ざらつき
+          metalness={0.2} // 金属感
+        />
+      </mesh>
+
+      {/* 持ち手パーツ */}
+      <mesh position={[0, 3.25, 0]}>
+        <cylinderGeometry args={[2.5, 4.5, 3.5, 8]} />
+        <meshStandardMaterial
+          color={0xffffff}
+          roughness={0.2} // ざらつき
+          metalness={0.1} // 金属感
+        />
+      </mesh>
+
+      {/* ルーレット本体 */}
       <RouletteModel colors={colors} />
     </group>
   );
@@ -138,18 +161,19 @@ export default function Roulette() {
     <div className="h-56 w-56 bg-gray-300">
       <Canvas
         className="h-full w-full"
-        camera={{ fov: 80, position: [0, 10, 0] }}
+        camera={{ fov: 80, position: [10, 3, 0] }}
       >
         <GroupComponent colors={rouletteColors} />
         <OrbitControls
           minDistance={16}
           maxDistance={25}
           minPolarAngle={0}
-          maxPolarAngle={(0.6 * Math.PI) / 2}
+          maxPolarAngle={(0.4 * Math.PI) / 2}
           minAzimuthAngle={0}
           maxAzimuthAngle={0}
         />
-        <directionalLight intensity={4} position={[20, 50, 15]} castShadow />
+        <ambientLight intensity={1} />
+        <directionalLight intensity={3} position={[20, 30, 15]} castShadow />
       </Canvas>
     </div>
   );
