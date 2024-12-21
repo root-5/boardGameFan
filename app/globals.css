@@ -28,12 +28,12 @@ body {
   }
 }
 
+/* アラームの振動アニメーション */
 @keyframes shake {
   3%, 9%, 15%, 21%, 27% { transform: rotate(-8deg); }
   6%, 12%, 18%, 24%, 30% { transform: rotate(8deg); }
   31%, 100% { transform: translateX(0); }
 }
-
 .shake-animation {
   animation: shake 1s ease-in-out infinite;
 }
