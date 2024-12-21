@@ -26,7 +26,7 @@ export default function Score() {
           onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
           value={count}
         />
-        <p className="text-[10px] text-slate-400">INPUT / ARROW KEY / SCROLL</p>
+        <p className="my-1 text-[8px]">INPUT / ARROW KEY / SCROLL</p>
         <div>
           <div className="flex justify-center align-middle gap-2 text-base">
             <div className="">

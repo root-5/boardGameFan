@@ -218,9 +218,9 @@ export default function Roulette(props: {
       >
         <div
           className={
-            "absolute top-1 left-1 right-1 bottom-1 p-2 rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-lg [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-400 " +
-            bgColor
+            "absolute top-2 left-2 right-2 bottom-2 p-2 rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-track]:rounded-xl [&::-webkit-scrollbar-thumb]:rounded-xl [&::-webkit-scrollbar-track]:bg-inherit [&::-webkit-scrollbar-thumb]:bg-inherit"
           }
+          style={{ backgroundColor: bgColor }}
         >
           <div
             className="absolute top-1 right-1 text-3xl duration-300 cursor-pointer hover:opacity-50"
@@ -258,7 +258,8 @@ export default function Roulette(props: {
 
                   {/* 名前指定 */}
                   <input
-                    className={"block ml-1 w-28 p-1 outline-none " + bgColor}
+                    className={"block ml-1 w-28 p-1 outline-none"}
+                    style={{ backgroundColor: bgColor }}
                     type="text"
                     value={user.name}
                     onChange={(e) => {
