@@ -19,9 +19,9 @@ export default function Score() {
 
   return (
     <>
-      <div className="relative p-4 w-56 h-56 text-center bg-gray-700">
+      <div className="p-4">
         <input
-          className="inline-block w-44 bg-transparent text-5xl font-bold text-center outline-none"
+          className="inline-block w-44 bg-transparent text-5xl text-center font-bold outline-none"
           type="number"
           onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
           value={count}

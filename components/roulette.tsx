@@ -15,12 +15,12 @@ const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
 
 // 初期ユーザー
 const initialUsers = [
-  { name: "^_^", color: "#ff0000" },
-  { name: "^o^", color: "#00ff00" },
-  { name: "T_T", color: "#0000ff" },
-  { name: "ToT", color: "#ffff00" },
-  { name: "$_$", color: "#ff00ff" },
-  { name: "$o$", color: "#00ffff" },
+  { name: "Name_1", color: "#ff0000" },
+  { name: "Name_2", color: "#00ff00" },
+  { name: "Name_3", color: "#0000ff" },
+  { name: "Name_4", color: "#ffff00" },
+  { name: "Name_5", color: "#ff00ff" },
+  { name: "Name_6", color: "#00ffff" },
 ];
 
 // ルーレット盤
@@ -129,9 +129,9 @@ function GroupComponent(props: {
         onClick={() => {
           // 静止状態のみトリガー
           if (!isSpinning && !isSpinningLast) {
+            setRotation(new Euler(0, Math.random() * Math.PI * 2, 0));
             setIsSpinning(true);
             setIsSpinningLast(false);
-            setRotation(new Euler(0, Math.random() * Math.PI * 2, 0));
           }
         }}
       >
@@ -163,7 +163,12 @@ function GroupComponent(props: {
   );
 }
 
-export default function Roulette() {
+export default function Roulette(props: {
+  bgColor: string;
+  fontColor: string;
+}) {
+  const { bgColor, fontColor } = props;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState(initialUsers);
   const [rouletteNum, setRouletteNum] = useState(0);
@@ -171,14 +176,14 @@ export default function Roulette() {
   return (
     <>
       {/* 名前表示 */}
-      <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-fit text-center text-2xl text-gray-800 font-bold bg-white bg-opacity-80">
+      <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-fit text-center text-2xl font-bold bg-opacity-80">
         {users[rouletteNum].name}
       </div>
       {/* ルーレット3D描画 */}
       <Canvas
         className="h-full w-full"
         camera={{ fov: 80, position: [10, 3, 0] }}
-        style={{ background: "#fff" }}
+        style={{ background: "transparent" }}
       >
         <GroupComponent
           users={users}
@@ -200,7 +205,7 @@ export default function Roulette() {
 
       {/* 設定ボタン */}
       <div
-        className="absolute z-20 top-0 right-0 px-2 bg-gray-400 text-xl text-white duration-300 cursor-pointer hover:opacity-50"
+        className="absolute z-20 top-0 right-0 px-2 text-xl duration-300 cursor-pointer hover:opacity-50"
         onClick={() => setIsModalOpen(true)}
       >
         =
@@ -208,17 +213,20 @@ export default function Roulette() {
 
       {/* モーダル */}
       <div
-        className="absolute z-30 top-0 left-0 w-full h-full bg-black bg-opacity-50 text-black overflow-hidden"
+        className="absolute z-30 top-0 left-0 w-full h-full bg-black bg-opacity-50 overflow-hidden"
         style={{ display: isModalOpen ? "block" : "none" }}
       >
-        <div className="absolute top-1 left-1 right-1 bottom-1 p-2 bg-white rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-lg [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
-          <div className="flex justify-between">
-            <div
-              className="absolute top-1 right-1 text-3xl duration-300 cursor-pointer hover:opacity-50"
-              onClick={() => setIsModalOpen(false)}
-            >
-              ×
-            </div>
+        <div
+          className={
+            "absolute top-1 left-1 right-1 bottom-1 p-2 rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-lg [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-400 " +
+            bgColor
+          }
+        >
+          <div
+            className="absolute top-1 right-1 text-3xl duration-300 cursor-pointer hover:opacity-50"
+            onClick={() => setIsModalOpen(false)}
+          >
+            ×
           </div>
           <div>
             <ul>
@@ -250,7 +258,7 @@ export default function Roulette() {
 
                   {/* 名前指定 */}
                   <input
-                    className="block ml-1 w-28 p-1"
+                    className={"block ml-1 w-28 p-1 outline-none " + bgColor}
                     type="text"
                     value={user.name}
                     onChange={(e) => {
@@ -265,7 +273,7 @@ export default function Roulette() {
               ))}
               {/* 追加ボタン */}
               <div
-                className="w-full text-2xl text-center duration-300 rounded cursor-pointer hover:bg-gray-200"
+                className="w-full text-2xl text-center duration-300 rounded cursor-pointer hover:opacity-50"
                 onClick={() => {
                   setUsers([...users, { name: "*_*", color: "#000000" }]);
                 }}

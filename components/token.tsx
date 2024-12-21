@@ -22,7 +22,7 @@ export default function Token() {
 
   return (
     <>
-      <div className="relative flex flex-col justify-center items-center gap-2 p-4 w-56 h-56 text-center text-2xl bg-gray-900">
+      <div className="h-full flex flex-col justify-center items-center gap-2 p-4 text-2xl">
         <div className="flex justify-center items-center">
           <div
             className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"

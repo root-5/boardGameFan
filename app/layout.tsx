@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const isLocal = process.env.NODE_ENV === "development";
-const backgroundImagePath = isLocal ? "/bg_2.jpg" : "/bg.jpg";
+const backgroundImagePath = isLocal ? "/bg.jpg" : "/bg.jpg";
 
 export default function RootLayout({
   children,

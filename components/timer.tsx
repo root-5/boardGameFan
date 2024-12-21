@@ -57,12 +57,7 @@ export default function Timer() {
 
   return (
     <>
-      <div
-        className={
-          "relative p-4 w-56 h-56 text-center bg-gray-700" +
-          (isTimeUp ? " shake-animation" : "")
-        }
-      >
+      <div className={"p-4 text-center" + (isTimeUp ? " shake-animation" : "")}>
         <div
           className={
             "inline-block w-44 bg-transparent text-4xl font-bold text-center outline-none" +

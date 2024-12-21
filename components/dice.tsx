@@ -73,7 +73,7 @@ function Group() {
 
 export default function Dice() {
   return (
-    <div className="h-56 w-56 bg-gray-500">
+    <>
       <Canvas
         className="h-full w-full"
         camera={{
@@ -101,6 +101,6 @@ export default function Dice() {
         {/* パフォーマンスモニター */}
         {/* <Stats /> */}
       </Canvas>
-    </div>
+    </>
   );
 }
