@@ -31,19 +31,28 @@ export default function App() {
   const [bgColor_2, setBgColor_2] = useState("#444455");
   const [fontColor, setFontColor] = useState("#ffffff");
 
-  // ウィンドウ幅からカードの scale 倍率を計算
+  // ウィンドウ幅からカードの zoom 倍率を計算
   useEffect(() => {
     const resizeHandler = () => {
-      const cardWidth = 224;
-      const cardCount = Math.floor(window.innerWidth / cardWidth);
-      const scale = window.innerWidth / (cardCount * cardWidth);
-      const cards = document.querySelectorAll(".card ");
-      console.log(cards);
-      cards.forEach((card) => {
-        if (card instanceof HTMLElement) {
-          card.style.scale = scale.toString();
+      setTimeout(() => {
+        // ウィンドウ幅からカードの zoom 倍率を計算
+        const windowWidth = window.innerWidth;
+        const cardWidth = 224;
+        const newzoom = windowWidth / (windowWidth - (windowWidth % cardWidth));
+        const cardContainer = document.querySelector("#card-container");
+        if (cardContainer instanceof HTMLElement) {
+          cardContainer.style.zoom = newzoom.toString();
         }
-      });
+
+        // Three.js の Canvas のサイズを追加調整
+        const canvasElements = document.querySelectorAll("canvas");
+        for (const canvasElement of canvasElements) {
+          if (canvasElement instanceof HTMLCanvasElement) {
+            canvasElement.style.width = 224 + "px";
+            canvasElement.style.height = 224 + "px";
+          }
+        }
+      }, 500);
     };
     window.addEventListener("resize", resizeHandler);
     resizeHandler();
@@ -52,14 +61,11 @@ export default function App() {
 
   return (
     <>
-      <div
-        className={"grid"}
-        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(224px, 1fr))" }}
-      >
+      <div className={"flex flex-wrap"} style={{ zoom: 1 }} id="card-container">
         {/* スタイル設定用カード */}
         <div
-          className={"card " + "relative w-56 h-56 text-center"}
-          style={{ backgroundColor: bgColor_1, color: fontColor, scale: 1 }}
+          className={"relative w-56 h-56 text-center"}
+          style={{ backgroundColor: bgColor_1, color: fontColor }}
         >
           <div className="py-10 px-5 flex flex-col gap-4 justify-center items-center">
             <div className="grid grid-cols-2 gap-4 place-content-between">
@@ -99,11 +105,10 @@ export default function App() {
             return (
               <div
                 key={index}
-                className={"card " + "relative w-56 h-56 text-center"}
+                className={"relative w-56 h-56 text-center"}
                 style={{
                   backgroundColor: itemBgColor,
                   color: itemFontColor,
-                  scale: 1,
                 }}
               >
                 <Component bgColor={itemBgColor} fontColor={itemFontColor} />
