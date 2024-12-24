@@ -1,28 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Dice from "../components/dice";
+// import Dice from "../components/dice";
 import Score from "../components/score";
-import Token from "../components/token";
-import Timer from "../components/timer";
-import Roulette from "../components/roulette";
+// import Token from "../components/token";
+// import Timer from "../components/timer";
+// import Roulette from "../components/roulette";
 
 // コンポーネントマッピング
 const componentMap: { [key: string]: React.ComponentType<any> } = {
-  dice: Dice,
+  // dice: Dice,
   score: Score,
-  token: Token,
-  timer: Timer,
-  roulette: Roulette,
+  // token: Token,
+  // timer: Timer,
+  // roulette: Roulette,
 };
 
 // 初期コンポーネントリスト
 const initialComponents = [
-  { component: "dice" },
+  // { component: "dice" },
   { component: "score" },
-  { component: "token" },
-  { component: "timer" },
-  { component: "roulette" },
+  { component: "score" },
+  { component: "score" },
+  { component: "score" },
+  // { component: "token" },
+  // { component: "timer" },
+  // { component: "roulette" },
 ];
 
 export default function App() {
@@ -55,7 +58,9 @@ export default function App() {
       }, 500);
     };
     window.addEventListener("resize", resizeHandler);
-    resizeHandler();
+    resizeHandler()
+    setTimeout(() => resizeHandler(), 1000);
+    setTimeout(() => resizeHandler(), 2000);
     return () => window.removeEventListener("resize", resizeHandler);
   }, []);
 
@@ -111,7 +116,7 @@ export default function App() {
                   color: itemFontColor,
                 }}
               >
-                <Component bgColor={itemBgColor} fontColor={itemFontColor} />
+                <Component />
               </div>
             );
           })();

@@ -163,12 +163,7 @@ function GroupComponent(props: {
   );
 }
 
-export default function Roulette(props: {
-  bgColor: string;
-  fontColor: string;
-}) {
-  const { bgColor, fontColor } = props;
-
+export default function Roulette() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState(initialUsers);
   const [rouletteNum, setRouletteNum] = useState(0);
@@ -213,14 +208,13 @@ export default function Roulette(props: {
 
       {/* モーダル */}
       <div
-        className="absolute z-30 top-0 left-0 w-full h-full bg-black bg-opacity-50 overflow-hidden"
+        className="absolute z-30 top-0 left-0 w-full h-full bg-gray-400 bg-opacity-70 overflow-hidden"
         style={{ display: isModalOpen ? "block" : "none" }}
       >
         <div
           className={
             "absolute top-2 left-2 right-2 bottom-2 p-2 rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-track]:rounded-xl [&::-webkit-scrollbar-thumb]:rounded-xl [&::-webkit-scrollbar-track]:bg-inherit [&::-webkit-scrollbar-thumb]:bg-inherit"
           }
-          style={{ backgroundColor: bgColor }}
         >
           <div
             className="absolute top-1 right-1 text-3xl duration-300 cursor-pointer hover:opacity-50"
@@ -258,8 +252,7 @@ export default function Roulette(props: {
 
                   {/* 名前指定 */}
                   <input
-                    className={"block ml-1 w-28 p-1 outline-none"}
-                    style={{ backgroundColor: bgColor }}
+                    className={"block ml-1 w-28 p-1 outline-none bg-transparent"}
                     type="text"
                     value={user.name}
                     onChange={(e) => {
@@ -276,7 +269,7 @@ export default function Roulette(props: {
               <div
                 className="w-full text-2xl text-center duration-300 rounded cursor-pointer hover:opacity-50"
                 onClick={() => {
-                  setUsers([...users, { name: "*_*", color: "#000000" }]);
+                  setUsers([...users, { name: "Name", color: "#000000" }]);
                 }}
               >
                 +
