@@ -1,31 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import Dice from "../components/dice";
 import Score from "../components/score";
-// import Token from "../components/token";
-// import Timer from "../components/timer";
-// import Roulette from "../components/roulette";
+import Dice from "../components/dice";
+import Token from "../components/token";
+import Timer from "../components/timer";
+import Roulette from "../components/roulette";
+import Setter from "../components/setter";
 
 // コンポーネントマッピング
 const componentMap: { [key: string]: React.ComponentType<any> } = {
-  // dice: Dice,
   score: Score,
-  // token: Token,
-  // timer: Timer,
-  // roulette: Roulette,
+  dice: Dice,
+  token: Token,
+  timer: Timer,
+  roulette: Roulette,
+  setter: Setter,
 };
 
 // 初期コンポーネントリスト
 const initialComponents = [
-  // { component: "dice" },
+  { component: "setter" },
   { component: "score" },
-  { component: "score" },
-  { component: "score" },
-  { component: "score" },
-  // { component: "token" },
-  // { component: "timer" },
-  // { component: "roulette" },
+  { component: "dice" },
+  { component: "token" },
+  { component: "timer" },
+  { component: "roulette" },
 ];
 
 export default function App() {
@@ -58,7 +58,7 @@ export default function App() {
       }, 500);
     };
     window.addEventListener("resize", resizeHandler);
-    resizeHandler()
+    resizeHandler();
     setTimeout(() => resizeHandler(), 1000);
     setTimeout(() => resizeHandler(), 2000);
     return () => window.removeEventListener("resize", resizeHandler);
@@ -103,9 +103,26 @@ export default function App() {
           </div>
         </div>
         {componentList.map((item, index) => {
+          const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
+          // Setter の場合は Setter コンポーネントを表示
+          if (item.component === "setter") {
+            return (
+              <div
+                className={"relative w-56 h-56 text-center"}
+                style={{ backgroundColor: itemBgColor, color: fontColor }}
+              >
+                <Setter
+                  key={index}
+                  componentMap={componentMap}
+                  componentList={componentList}
+                  setComponentList={setComponentList}
+                />
+              </div>
+            );
+          }
+          // 指定のコンポーネントを取得
           const Component = componentMap[item.component];
           return (function () {
-            const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
             const itemFontColor = fontColor;
             return (
               <div
