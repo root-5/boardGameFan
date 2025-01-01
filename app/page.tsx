@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Score from "../components/score";
 import Dice from "../components/dice";
 import Token from "../components/token";
@@ -40,6 +40,35 @@ export default function App() {
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
   );
+  const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
+
+  useEffect(() => {
+    const updateGridSize = () => {
+      const cardSize = 224; // カードの幅
+      const cols = Math.floor(window.innerWidth / cardSize);
+      const rows = Math.floor(window.innerHeight / cardSize);
+      setGridSize({ rows, cols });
+    };
+
+    updateGridSize();
+    window.addEventListener("resize", updateGridSize);
+    return () => window.removeEventListener("resize", updateGridSize);
+  }, []);
+
+  useEffect(() => {
+    const newComponentList = [];
+    for (let y = 0; y < gridSize.rows; y++) {
+      for (let x = 0; x < gridSize.cols; x++) {
+        const existingComponent = initialComponents.find(
+          (comp) => comp.x === x && comp.y === y
+        );
+        newComponentList.push(
+          existingComponent || { component: "setter", x, y }
+        );
+      }
+    }
+    setComponentList(newComponentList);
+  }, [gridSize]);
 
   const handleDragStart = (
     index: number,
@@ -56,14 +85,31 @@ export default function App() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     if (dragIndex === null || dragOffset === null) return;
-    const gridSize = 112; // グリッドのサイズ（カードの幅の半分）
+    const cardSize = 224; // カードの幅
     const newList = [...componentList];
-    newList[dragIndex] = {
-      ...newList[dragIndex],
-      x: Math.floor((e.clientX - dragOffset.x) / gridSize),
-      y: Math.floor((e.clientY - dragOffset.y) / gridSize),
-    };
-    setComponentList(newList);
+    const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
+    const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
+
+    if (newX >= 0 && newX < gridSize.cols && newY >= 0 && newY < gridSize.rows) {
+      const targetIndex = newList.findIndex(
+        (item) => item.x === newX && item.y === newY
+      );
+
+      if (targetIndex !== -1) {
+        // カードを交換する
+        const temp = newList[targetIndex];
+        newList[targetIndex] = { ...newList[dragIndex], x: newX, y: newY };
+        newList[dragIndex] = { ...temp, x: newList[dragIndex].x, y: newList[dragIndex].y };
+      } else {
+        newList[dragIndex] = {
+          ...newList[dragIndex],
+          x: newX,
+          y: newY,
+        };
+      }
+
+      setComponentList(newList);
+    }
     setDragIndex(null);
     setDragOffset(null);
   };
