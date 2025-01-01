@@ -37,39 +37,9 @@ export default function App() {
   const [bgColor_2, setBgColor_2] = useState("#444455");
   const [fontColor, setFontColor] = useState("#ffffff");
 
-  // ウィンドウ幅からカードの zoom 倍率を計算
-  useEffect(() => {
-    const resizeHandler = () => {
-      setTimeout(() => {
-        // ウィンドウ幅からカードの zoom 倍率を計算
-        const windowWidth = window.innerWidth;
-        const cardWidth = 224;
-        const newzoom = windowWidth / (windowWidth - (windowWidth % cardWidth));
-        const cardContainer = document.querySelector("#card-container");
-        if (cardContainer instanceof HTMLElement) {
-          cardContainer.style.zoom = newzoom.toString();
-        }
-
-        // Three.js の Canvas のサイズを追加調整
-        const canvasElements = document.querySelectorAll("canvas");
-        for (const canvasElement of canvasElements) {
-          if (canvasElement instanceof HTMLCanvasElement) {
-            canvasElement.style.width = 224 + "px";
-            canvasElement.style.height = 224 + "px";
-          }
-        }
-      }, 500);
-    };
-    window.addEventListener("resize", resizeHandler);
-    resizeHandler();
-    setTimeout(() => resizeHandler(), 1000);
-    setTimeout(() => resizeHandler(), 2000);
-    return () => window.removeEventListener("resize", resizeHandler);
-  }, []);
-
   return (
     <>
-      <div className={"flex flex-wrap"} style={{ zoom: 1 }} id="card-container">
+      <div className={"flex flex-wrap"} id="card-container">
         {componentList.map((item, index) => {
           const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
           if (item.component === "setter") {
