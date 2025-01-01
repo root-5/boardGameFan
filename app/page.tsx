@@ -36,6 +36,24 @@ export default function App() {
   const [bgColor_1, setBgColor_1] = useState("#222233");
   const [bgColor_2, setBgColor_2] = useState("#444455");
   const [fontColor, setFontColor] = useState("#ffffff");
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  const handleDragStart = (index: number) => {
+    setDragIndex(index);
+  };
+
+  const handleDragOver = (index: number) => {
+    if (dragIndex === null) return;
+    const newList = [...componentList];
+    const [draggedItem] = newList.splice(dragIndex, 1);
+    newList.splice(index, 0, draggedItem);
+    setDragIndex(index);
+    setComponentList(newList);
+  };
+
+  const handleDrop = () => {
+    setDragIndex(null);
+  };
 
   return (
     <>
@@ -49,6 +67,9 @@ export default function App() {
                 key={index}
                 className={"relative w-56 h-56 text-center"}
                 style={{ backgroundColor: itemBgColor, color: fontColor }}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={() => handleDragOver(index)}
               >
                 <Setter
                   componentMap={componentMap}
@@ -64,6 +85,10 @@ export default function App() {
                 key={index}
                 className={"relative w-56 h-56 text-center"}
                 style={{ backgroundColor: itemBgColor, color: fontColor }}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={() => handleDragOver(index)}
+                onDrop={handleDrop}
               >
                 <StyleSetting
                   bgColor_1={bgColor_1}
@@ -82,6 +107,10 @@ export default function App() {
             <div
               key={index}
               className={"relative w-56 h-56 text-center"}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={() => handleDragOver(index)}
+              onDrop={handleDrop}
               style={{
                 backgroundColor: itemBgColor,
                 color: fontColor,
