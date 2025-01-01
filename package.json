@@ -11,8 +11,10 @@
   "dependencies": {
     "@react-three/drei": "^9.120.2",
     "@react-three/fiber": "^8.17.10",
+    "@types/react-beautiful-dnd": "^13.1.8",
     "next": "^14",
     "react": "^18",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18",
     "three": "^0.171.0"
   },

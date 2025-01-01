@@ -7,6 +7,7 @@ import Token from "../components/token";
 import Timer from "../components/timer";
 import Roulette from "../components/roulette";
 import Setter from "../components/setter";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 // コンポーネントマッピング
 const componentMap: { [key: string]: React.ComponentType<any> } = {
@@ -64,81 +65,123 @@ export default function App() {
     return () => window.removeEventListener("resize", resizeHandler);
   }, []);
 
+  const onDragEnd = (result: any) => {
+    if (!result.destination) return;
+    const items = Array.from(componentList);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setComponentList(items);
+  };
+
   return (
     <>
-      <div className={"flex flex-wrap"} style={{ zoom: 1 }} id="card-container">
-        {/* スタイル設定用カード */}
-        <div
-          className={"relative w-56 h-56 text-center"}
-          style={{ backgroundColor: bgColor_1, color: fontColor }}
-        >
-          <div className="py-10 px-5 flex flex-col gap-4 justify-center items-center">
-            <div className="grid grid-cols-2 gap-4 place-content-between">
-              <div className="block w-28 text-left">{"Color 1"}: </div>
-              <input
-                className="block w-16"
-                type="color"
-                value={bgColor_1}
-                onChange={(e) => setBgColor_1(e.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 place-content-between">
-              <div className="block w-28 text-left">{"Color 2"}: </div>
-              <input
-                className="block w-16"
-                type="color"
-                value={bgColor_2}
-                onChange={(e) => setBgColor_2(e.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 place-content-between">
-              <div className="block w-28 text-left">{"Font Color"}: </div>
-              <input
-                className="block w-16"
-                type="color"
-                value={fontColor}
-                onChange={(e) => setFontColor(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-        {componentList.map((item, index) => {
-          const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
-          // Setter の場合は Setter コンポーネントを表示
-          if (item.component === "setter") {
-            return (
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided) => (
+            <div
+              className={"flex flex-wrap"}
+              style={{ zoom: 1 }}
+              id="card-container"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {/* スタイル設定用カード */}
               <div
                 className={"relative w-56 h-56 text-center"}
-                style={{ backgroundColor: itemBgColor, color: fontColor }}
+                style={{ backgroundColor: bgColor_1, color: fontColor }}
               >
-                <Setter
-                  key={index}
-                  componentMap={componentMap}
-                  componentList={componentList}
-                  setComponentList={setComponentList}
-                />
+                <div className="py-10 px-5 flex flex-col gap-4 justify-center items-center">
+                  <div className="grid grid-cols-2 gap-4 place-content-between">
+                    <div className="block w-28 text-left">{"Color 1"}: </div>
+                    <input
+                      className="block w-16"
+                      type="color"
+                      value={bgColor_1}
+                      onChange={(e) => setBgColor_1(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 place-content-between">
+                    <div className="block w-28 text-left">{"Color 2"}: </div>
+                    <input
+                      className="block w-16"
+                      type="color"
+                      value={bgColor_2}
+                      onChange={(e) => setBgColor_2(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 place-content-between">
+                    <div className="block w-28 text-left">{"Font Color"}: </div>
+                    <input
+                      className="block w-16"
+                      type="color"
+                      value={fontColor}
+                      onChange={(e) => setFontColor(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
-            );
-          }
-          // 指定のコンポーネントを取得
-          const Component = componentMap[item.component];
-          return (function () {
-            const itemFontColor = fontColor;
-            return (
-              <div
-                key={index}
-                className={"relative w-56 h-56 text-center"}
-                style={{
-                  backgroundColor: itemBgColor,
-                  color: itemFontColor,
-                }}
-              >
-                <Component />
-              </div>
-            );
-          })();
-        })}
-      </div>
+              {componentList.map((item, index) => {
+                const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
+                // Setter の場合は Setter コンポーネントを表示
+                if (item.component === "setter") {
+                  return (
+                    <Draggable
+                      key={index}
+                      draggableId={`draggable-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          className={"relative w-56 h-56 text-center"}
+                          style={{ backgroundColor: itemBgColor, color: fontColor }}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <Setter
+                            key={index}
+                            componentMap={componentMap}
+                            componentList={componentList}
+                            setComponentList={setComponentList}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                }
+                // 指定のコンポーネントを取得
+                const Component = componentMap[item.component];
+                return (function () {
+                  const itemFontColor = fontColor;
+                  return (
+                    <Draggable
+                      key={index}
+                      draggableId={`draggable-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          className={"relative w-56 h-56 text-center"}
+                          style={{
+                            backgroundColor: itemBgColor,
+                            color: itemFontColor,
+                          }}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <Component />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })();
+              })}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </>
   );
 }
