@@ -59,37 +59,25 @@ export default function App() {
     <>
       <div className={"flex flex-wrap"} id="card-container">
         {componentList.map((item, index) => {
-          const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
-          if (item.component === "setter") {
-            // Setter または StyleSetting の場合はそれぞれのコンポーネントを表示
-            return (
-              <div
-                key={index}
-                className={"relative w-56 h-56 text-center"}
-                style={{ backgroundColor: itemBgColor, color: fontColor }}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={() => handleDragOver(index)}
-              >
+          const itemBgColor = (index + 1) % 2 !== 0 ? bgColor_1 : bgColor_2;
+          const Component = componentMap[item.component];
+          return (
+            <div
+              key={index}
+              className={"relative w-56 h-56 text-center"}
+              style={{ backgroundColor: itemBgColor, color: fontColor }}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={() => handleDragOver(index)}
+              onDrop={handleDrop}
+            >
+              {item.component === "setter" ? (
                 <Setter
                   componentMap={componentMap}
                   componentList={componentList}
                   setComponentList={setComponentList}
                 />
-              </div>
-            );
-          } else if (item.component === "styleSetting") {
-            // Setter または StyleSetting の場合はそれぞれのコンポーネントを表示
-            return (
-              <div
-                key={index}
-                className={"relative w-56 h-56 text-center"}
-                style={{ backgroundColor: itemBgColor, color: fontColor }}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={() => handleDragOver(index)}
-                onDrop={handleDrop}
-              >
+              ) : item.component === "styleSetting" ? (
                 <StyleSetting
                   bgColor_1={bgColor_1}
                   setBgColor_1={setBgColor_1}
@@ -98,25 +86,9 @@ export default function App() {
                   fontColor={fontColor}
                   setFontColor={setFontColor}
                 />
-              </div>
-            );
-          }
-          // 指定のコンポーネントを取得
-          const Component = componentMap[item.component];
-          return (
-            <div
-              key={index}
-              className={"relative w-56 h-56 text-center"}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={() => handleDragOver(index)}
-              onDrop={handleDrop}
-              style={{
-                backgroundColor: itemBgColor,
-                color: fontColor,
-              }}
-            >
-              <Component />
+              ) : (
+                <Component />
+              )}
             </div>
           );
         })}
