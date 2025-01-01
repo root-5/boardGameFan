@@ -145,7 +145,7 @@ export default function Token() {
           </div>
         </div>
         <div
-          className="absolute bottom-1 left-1 text-xl cursor-pointer"
+          className="absolute bottom-1 left-2 text-xl cursor-pointer"
           onClick={() => {
             setToken1Count(0);
             setToken2Count(0);

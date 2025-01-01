@@ -100,7 +100,7 @@ export default function Score() {
           </div>
         </div>
         <div
-          className="absolute bottom-1 left-1 text-xl cursor-pointer"
+          className="absolute bottom-1 left-2 text-xl cursor-pointer"
           onClick={() => {
             setCount(0);
           }}
