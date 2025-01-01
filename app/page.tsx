@@ -7,6 +7,7 @@ import Token from "../components/token";
 import Timer from "../components/timer";
 import Roulette from "../components/roulette";
 import Setter from "../components/setter";
+import StyleSetting from "../components/styleSetting";
 
 // コンポーネントマッピング
 const componentMap: { [key: string]: React.ComponentType<any> } = {
@@ -16,10 +17,12 @@ const componentMap: { [key: string]: React.ComponentType<any> } = {
   timer: Timer,
   roulette: Roulette,
   setter: Setter,
+  styleSetting: StyleSetting,
 };
 
 // 初期コンポーネントリスト
 const initialComponents = [
+  { component: "styleSetting" },
   { component: "setter" },
   { component: "score" },
   { component: "dice" },
@@ -27,59 +30,6 @@ const initialComponents = [
   { component: "timer" },
   { component: "roulette" },
 ];
-
-const StyleSettingCard = ({
-  bgColor_1,
-  setBgColor_1,
-  bgColor_2,
-  setBgColor_2,
-  fontColor,
-  setFontColor,
-}: {
-  bgColor_1: string;
-  setBgColor_1: (color: string) => void;
-  bgColor_2: string;
-  setBgColor_2: (color: string) => void;
-  fontColor: string;
-  setFontColor: (color: string) => void;
-}) => {
-  return (
-    <div
-      className={"relative w-56 h-56 text-center"}
-      style={{ backgroundColor: bgColor_1, color: fontColor }}
-    >
-      <div className="py-10 px-5 flex flex-col gap-4 justify-center items-center">
-        <div className="grid grid-cols-2 gap-4 place-content-between">
-          <div className="block w-28 text-left">{"Color 1"}: </div>
-          <input
-            className="block w-16"
-            type="color"
-            value={bgColor_1}
-            onChange={(e) => setBgColor_1(e.target.value)}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 place-content-between">
-          <div className="block w-28 text-left">{"Color 2"}: </div>
-          <input
-            className="block w-16"
-            type="color"
-            value={bgColor_2}
-            onChange={(e) => setBgColor_2(e.target.value)}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 place-content-between">
-          <div className="block w-28 text-left">{"Font Color"}: </div>
-          <input
-            className="block w-16"
-            type="color"
-            value={fontColor}
-            onChange={(e) => setFontColor(e.target.value)}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default function App() {
   const [componentList, setComponentList] = useState(initialComponents);
@@ -120,19 +70,10 @@ export default function App() {
   return (
     <>
       <div className={"flex flex-wrap"} style={{ zoom: 1 }} id="card-container">
-        {/* スタイル設定用カード */}
-        <StyleSettingCard
-          bgColor_1={bgColor_1}
-          setBgColor_1={setBgColor_1}
-          bgColor_2={bgColor_2}
-          setBgColor_2={setBgColor_2}
-          fontColor={fontColor}
-          setFontColor={setFontColor}
-        />
         {componentList.map((item, index) => {
           const itemBgColor = index % 2 !== 0 ? bgColor_1 : bgColor_2;
-          // Setter の場合は Setter コンポーネントを表示
           if (item.component === "setter") {
+            // Setter または StyleSetting の場合はそれぞれのコンポーネントを表示
             return (
               <div
                 key={index}
@@ -143,6 +84,24 @@ export default function App() {
                   componentMap={componentMap}
                   componentList={componentList}
                   setComponentList={setComponentList}
+                />
+              </div>
+            );
+          } else if (item.component === "styleSetting") {
+            // Setter または StyleSetting の場合はそれぞれのコンポーネントを表示
+            return (
+              <div
+                key={index}
+                className={"relative w-56 h-56 text-center"}
+                style={{ backgroundColor: itemBgColor, color: fontColor }}
+              >
+                <StyleSetting
+                  bgColor_1={bgColor_1}
+                  setBgColor_1={setBgColor_1}
+                  bgColor_2={bgColor_2}
+                  setBgColor_2={setBgColor_2}
+                  fontColor={fontColor}
+                  setFontColor={setFontColor}
                 />
               </div>
             );
