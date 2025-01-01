@@ -9,26 +9,6 @@ export default function Setter(props: {
 }) {
   const { componentMap, componentList, setComponentList } = props;
 
-  const moveComponentUp = (index: number) => {
-    if (index > 0) {
-      const newList = [...componentList];
-      const temp = newList[index - 1];
-      newList[index - 1] = newList[index];
-      newList[index] = temp;
-      setComponentList(newList);
-    }
-  };
-
-  const moveComponentDown = (index: number) => {
-    if (index < componentList.length - 1) {
-      const newList = [...componentList];
-      const temp = newList[index + 1];
-      newList[index + 1] = newList[index];
-      newList[index] = temp;
-      setComponentList(newList);
-    }
-  };
-
   return (
     <>
       <div className="p-4">
@@ -44,18 +24,6 @@ export default function Setter(props: {
                   }}
                 >
                   {key}
-                </button>
-                <button
-                  className="p-1 hover:opacity-50"
-                  onClick={() => moveComponentUp(index)}
-                >
-                  ↑
-                </button>
-                <button
-                  className="p-1 hover:opacity-50"
-                  onClick={() => moveComponentDown(index)}
-                >
-                  ↓
                 </button>
               </div>
             );
