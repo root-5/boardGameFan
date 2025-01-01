@@ -66,11 +66,18 @@ export default function App() {
               key={index}
               className={"relative w-56 h-56 text-center"}
               style={{ backgroundColor: itemBgColor, color: fontColor }}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={() => handleDragOver(index)}
-              onDrop={handleDrop}
             >
+              <div
+                className="absolute z-10 top-0 left-0 p-1 cursor-move"
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={() => handleDragOver(index)}
+                onDrop={handleDrop}
+              >
+                <span className="material-symbols-outlined text-gray-500">
+                  drag_indicator
+                </span>
+              </div>
               {item.component === "setter" ? (
                 <Setter
                   componentMap={componentMap}

@@ -29,6 +29,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0&icon_names=drag_indicator"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} relative antialiased h-screen select-none`}
       >
