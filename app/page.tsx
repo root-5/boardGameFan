@@ -20,10 +20,9 @@ const componentMap: { [key: string]: React.ComponentType<any> } = {
   styleSetting: StyleSetting,
 };
 
-// 初期コンポーネントリスト
-const initialComponents = [
+// 初期カード
+const initialCards = [
   { component: "styleSetting", x: 0, y: 0 },
-  { component: "setter", x: 1, y: 0 },
   { component: "score", x: 2, y: 0 },
   { component: "dice", x: 0, y: 1 },
   { component: "token", x: 1, y: 1 },
@@ -32,7 +31,7 @@ const initialComponents = [
 ];
 
 export default function App() {
-  const [componentList, setComponentList] = useState(initialComponents);
+  const [componentList, setComponentList] = useState(initialCards);
   const [bgColor_1, setBgColor_1] = useState("#222233");
   const [bgColor_2, setBgColor_2] = useState("#444455");
   const [fontColor, setFontColor] = useState("#ffffff");
@@ -42,6 +41,7 @@ export default function App() {
   );
   const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
 
+  // グリッドを画面幅で設置するための useEffect
   useEffect(() => {
     const updateGridSize = () => {
       const cardSize = 224; // カードの幅
@@ -55,11 +55,12 @@ export default function App() {
     return () => window.removeEventListener("resize", updateGridSize);
   }, []);
 
+  // 初期カードを設置し、空いた個所に setter を設置するための useEffect
   useEffect(() => {
     const newComponentList = [];
     for (let y = 0; y < gridSize.rows; y++) {
       for (let x = 0; x < gridSize.cols; x++) {
-        const existingComponent = initialComponents.find(
+        const existingComponent = initialCards.find(
           (comp) => comp.x === x && comp.y === y
         );
         newComponentList.push(
@@ -70,6 +71,7 @@ export default function App() {
     setComponentList(newComponentList);
   }, [gridSize]);
 
+  // ドラッグ＆ドロップ処理
   const handleDragStart = (
     index: number,
     e: React.DragEvent<HTMLDivElement>
@@ -78,11 +80,9 @@ export default function App() {
     const rect = e.currentTarget.getBoundingClientRect();
     setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
-
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     if (dragIndex === null || dragOffset === null) return;
     const cardSize = 224; // カードの幅
@@ -90,7 +90,12 @@ export default function App() {
     const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
     const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
 
-    if (newX >= 0 && newX < gridSize.cols && newY >= 0 && newY < gridSize.rows) {
+    if (
+      newX >= 0 &&
+      newX < gridSize.cols &&
+      newY >= 0 &&
+      newY < gridSize.rows
+    ) {
       const targetIndex = newList.findIndex(
         (item) => item.x === newX && item.y === newY
       );
@@ -99,7 +104,11 @@ export default function App() {
         // カードを交換する
         const temp = newList[targetIndex];
         newList[targetIndex] = { ...newList[dragIndex], x: newX, y: newY };
-        newList[dragIndex] = { ...temp, x: newList[dragIndex].x, y: newList[dragIndex].y };
+        newList[dragIndex] = {
+          ...temp,
+          x: newList[dragIndex].x,
+          y: newList[dragIndex].y,
+        };
       } else {
         newList[dragIndex] = {
           ...newList[dragIndex],
@@ -125,6 +134,7 @@ export default function App() {
         {componentList.map((item, index) => {
           const itemBgColor = (index + 1) % 2 !== 0 ? bgColor_1 : bgColor_2;
           const Component = componentMap[item.component];
+
           return (
             <div
               key={index}
@@ -144,12 +154,12 @@ export default function App() {
                 </span>
               </div>
               {item.component === "setter" ? (
-                // <Setter
-                //   componentMap={componentMap}
-                //   componentList={componentList}
-                //   setComponentList={setComponentList}
-                // />
-                <p>Setter</p>
+                <Setter
+                  item={item}
+                  componentMap={componentMap}
+                  componentList={componentList}
+                  setComponentList={setComponentList}
+                />
               ) : item.component === "styleSetting" ? (
                 <StyleSetting
                   bgColor_1={bgColor_1}
