@@ -136,43 +136,49 @@ export default function App() {
           const Component = componentMap[item.component];
 
           return (
-            <div
-              key={index}
-              className={"absolute w-56 h-56 text-center"}
-              style={{
-                backgroundColor: itemBgColor,
-                color: fontColor,
-                left: item.x * 224, // 224 は カードの幅
-                top: item.y * 224, // 224 は カードの幅
-              }}
-              draggable
-              onDragStart={(e) => handleDragStart(index, e)}
-            >
-              <div className="absolute z-10 top-0 left-0 p-1 cursor-move">
-                <span className="material-symbols-outlined text-gray-500">
-                  drag_indicator
-                </span>
-              </div>
+            <>
               {item.component === "setter" ? (
                 <Setter
+                  key={index}
                   item={item}
                   componentMap={componentMap}
                   componentList={componentList}
                   setComponentList={setComponentList}
-                />
-              ) : item.component === "styleSetting" ? (
-                <StyleSetting
-                  bgColor_1={bgColor_1}
-                  setBgColor_1={setBgColor_1}
-                  bgColor_2={bgColor_2}
-                  setBgColor_2={setBgColor_2}
-                  fontColor={fontColor}
-                  setFontColor={setFontColor}
+                  itemBgColor={itemBgColor}
                 />
               ) : (
-                <Component />
+                <div
+                  key={index}
+                  className={"absolute w-56 h-56 text-center"}
+                  style={{
+                    backgroundColor: itemBgColor,
+                    color: fontColor,
+                    left: item.x * 224, // 224 は カードの幅
+                    top: item.y * 224, // 224 は カードの幅
+                  }}
+                  draggable
+                  onDragStart={(e) => handleDragStart(index, e)}
+                >
+                  <div className="absolute z-10 top-0 left-0 p-1 cursor-move">
+                    <span className="material-symbols-outlined text-gray-500">
+                      drag_indicator
+                    </span>
+                  </div>
+                  {item.component === "styleSetting" ? (
+                    <StyleSetting
+                      bgColor_1={bgColor_1}
+                      setBgColor_1={setBgColor_1}
+                      bgColor_2={bgColor_2}
+                      setBgColor_2={setBgColor_2}
+                      fontColor={fontColor}
+                      setFontColor={setFontColor}
+                    />
+                  ) : (
+                    <Component />
+                  )}
+                </div>
               )}
-            </div>
+            </>
           );
         })}
       </div>
