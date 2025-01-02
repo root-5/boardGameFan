@@ -254,6 +254,8 @@ export default function App() {
                       setFontColor_2={setFontColor_2}
                       fontStyle={fontStyle}
                       setFontStyle={setFontStyle}
+                      downloadStateAsJson={downloadStateAsJson}
+                      loadStateFromJson={loadStateFromJson}
                     />
                   ) : (
                     <Component zoomRatio={zoomRatio} />
@@ -263,27 +265,6 @@ export default function App() {
             </div>
           );
         })}
-        <div className="absolute bottom-2 right-2 flex gap-2">
-          <button
-            className="px-4 py-2 bg-gray-700 text-white rounded"
-            onClick={downloadStateAsJson}
-          >
-            Download State
-          </button>
-          <input
-            type="file"
-            accept=".json"
-            className="hidden"
-            id="upload-json"
-            onChange={loadStateFromJson}
-          />
-          <label
-            htmlFor="upload-json"
-            className="px-4 py-2 bg-gray-700 text-white rounded cursor-pointer"
-          >
-            Load State
-          </label>
-        </div>
       </div>
     </>
   );

@@ -9,6 +9,8 @@ export default function StyleSetting({
   setFontColor_2,
   fontStyle,
   setFontStyle,
+  downloadStateAsJson,
+  loadStateFromJson,
 }: {
   bgColor_1: string;
   setBgColor_1: (color: string) => void;
@@ -20,40 +22,42 @@ export default function StyleSetting({
   setFontColor_2: (color: string) => void;
   fontStyle: string;
   setFontStyle: (style: string) => void;
+  downloadStateAsJson: () => void;
+  loadStateFromJson: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <div className={"relative w-56 h-56 text-center"}>
-      <div className="p-8 grid grid-cols-2 gap-1 justify-center items-center">
-        <div className="pt-1 block w-28 text-left">{"Base 1"}: </div>
+      <div className="py-4 px-8 grid grid-cols-2 gap-1 justify-center items-center">
+        <div className="pt-0.5 block w-28 text-left">{"Base 1"}: </div>
         <input
-          className="block w-16"
+          className="h-6 block w-16"
           type="color"
           value={bgColor_1}
           onChange={(e) => setBgColor_1(e.target.value)}
         />
-        <div className="pt-1 block w-28 text-left">{"Font 1"}: </div>
+        <div className="h-6 pt-0.5 block w-28 text-left">{"Font 1"}: </div>
         <input
-          className="block w-16"
+          className="h-6 block w-16"
           type="color"
           value={fontColor_1}
           onChange={(e) => setFontColor_1(e.target.value)}
         />
-        <div className="pt-1 block w-28 text-left">{"Base 2"}: </div>
+        <div className="h-6 pt-0.5 block w-28 text-left">{"Base 2"}: </div>
         <input
-          className="block w-16"
+          className="h-6 block w-16"
           type="color"
           value={bgColor_2}
           onChange={(e) => setBgColor_2(e.target.value)}
         />
-        <div className="pt-1 block w-28 text-left">{"Font 2"}: </div>
+        <div className="h-6 pt-0.5 block w-28 text-left">{"Font 2"}: </div>
         <input
-          className="block w-16"
+          className="h-6 block w-16"
           type="color"
           value={fontColor_2}
           onChange={(e) => setFontColor_2(e.target.value)}
         />
         <select
-          className="mt-4 block w-40 bg-transparent"
+          className="h-6 mt-2 block w-40 bg-transparent"
           value={fontStyle}
           onChange={(e) => setFontStyle(e.target.value)}
         >
@@ -83,12 +87,12 @@ export default function StyleSetting({
           </option>
         </select>
       </div>
-      <div className="absolute bottom-2 right-2 flex gap-2">
+      <div className="absolute w-full bottom-4 flex gap-2 justify-center items-center">
         <button
-          className="px-4 py-2 bg-gray-700 text-white rounded"
+          className="px-2 py-1 bg-gray-700 text-sm rounded"
           onClick={downloadStateAsJson}
         >
-          Download State
+          Save Setting
         </button>
         <input
           type="file"
@@ -99,9 +103,9 @@ export default function StyleSetting({
         />
         <label
           htmlFor="upload-json"
-          className="px-4 py-2 bg-gray-700 text-white rounded cursor-pointer"
+          className="px-2 py-1 bg-gray-700 text-sm rounded cursor-pointer"
         >
-          Load State
+          Load Setting
         </label>
       </div>
     </div>
