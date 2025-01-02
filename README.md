@@ -10,6 +10,11 @@
 3. `npm i @react-three/drei`
 4. `npm run dev`
 
+## 本番ビルド
+1. 今回は Cloudflare Pages にデプロイするため静的ファイルを生成する
+   1. next.config.js に `output: 'export'` を追加
+2. `npm run build`
+
 ## インフラ
 Cloudflare Pages にデプロイ
 https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
