@@ -23,7 +23,7 @@ export default function Token() {
   return (
     <>
       <div className="h-full flex flex-col justify-center items-center gap-2 p-4 text-2xl">
-        <p className="my-[-10px] text-[9px]">INPUT / ARROW KEY / SCROLL</p>
+        <p className="my-[-10px] text-[9px] opacity-30">INPUT / ARROW KEY / SCROLL</p>
         <div className="flex justify-center items-center">
           <div
             className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"

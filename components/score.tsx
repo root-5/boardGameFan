@@ -19,19 +19,19 @@ export default function Score() {
 
   return (
     <>
-      <div className="p-4">
+      <div className="p-6">
+        <p className="text-[8px] opacity-30">INPUT / ARROW KEY / SCROLL</p>
         <input
           className="inline-block w-44 bg-transparent text-5xl text-center font-bold outline-none"
           type="number"
           onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
           value={count}
         />
-        <p className="my-1 text-[8px]">INPUT / ARROW KEY / SCROLL</p>
         <div>
           <div className="flex justify-center align-middle gap-2 text-base">
-            <div className="">
+            <div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 text-2xl cursor-pointer opacity-100 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count - 1));
                 }}
@@ -65,7 +65,7 @@ export default function Score() {
             </div>
             <div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 text-2xl cursor-pointer opacity-100 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count + 1));
                 }}
