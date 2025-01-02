@@ -29,7 +29,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`relative antialiased h-screen select-none`}
+        className={`relative antialiased h-screen select-none overflow-hidden`}
       >
         {/* <Image
           src={backgroundImagePath}
