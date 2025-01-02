@@ -161,11 +161,13 @@ export default function App() {
                     left: item.x * 224, // 224 は カードの幅
                     top: item.y * 224, // 224 は カードの幅
                   }}
-                  draggable
-                  onDragStart={(e) => handleDragStart(index, e)}
                 >
                   {/* ドラッグアイコン */}
-                  <div className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100">
+                  <div
+                    className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100"
+                    draggable
+                    onDragStart={(e) => handleDragStart(index, e)}
+                  >
                     <span className="material-symbols-outlined">
                       drag_indicator
                     </span>

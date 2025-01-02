@@ -19,7 +19,7 @@ export default function Timer() {
   const [time, setTime] = useState(defaultTime);
   const [isRunning, setIsRunning] = useState(false);
   const [isTimeUp, setIsTimeUp] = useState(false);
-  const [saveDefaultText, setSaveDefaultText] = useState("SAVE DEFAULT");
+  const [saveDefaultText, setSaveDefaultText] = useState("SAVE AS DEFAULT");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -260,7 +260,7 @@ export default function Timer() {
             setDefaultTime(time);
             setSaveDefaultText("SAVED");
             setTimeout(() => {
-              setSaveDefaultText("SAVE DEFAULT");
+              setSaveDefaultText("SAVE AS DEFAULT");
             }, 2000);
           }}
         >
