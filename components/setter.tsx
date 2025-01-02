@@ -52,7 +52,6 @@ export default function Setter(props: {
           top: item.y * 224, // 224 は カードの幅
           color: fontColor,
         }}
-        draggable
       >
         <div
           className="w-full h-full flex items-center justify-center"

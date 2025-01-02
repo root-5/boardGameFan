@@ -10,14 +10,14 @@
 3. `npm i @react-three/drei`
 4. `npm run dev`
 
-## 本番ビルド
+## 本番ビルド関係
 1. 今回は Cloudflare Pages にデプロイするため静的ファイルを生成する
    1. next.config.js に `output: 'export'` を追加
 2. `npm run build`
 
 ## インフラ
 Cloudflare Pages にデプロイ
-https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
+https://boardgamefan.pages.dev/
 
 1. Cloudflare Pages にログイン
 2. リポジトリを選択（すべてのリポジトリも選択できたがしなかった）
@@ -50,6 +50,9 @@ https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
 - Three.js ドキュメント
   - 結局詳細な設定内容はここで確認することになる
   - https://threejs.org/docs/index.html
-- Cloudflare Pages docs
+- Cloudflare Pages 紹介記事
+  - これだけでデプロイまでできてしまった
+  - https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
+- Cloudflare Pages Docs
   - デプロイが簡単にできすぎて全然読んでないが、かなり見やすそう
   - https://developers.cloudflare.com/pages/
