@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, OrbitControls, Text3D } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useState, useEffect } from "react";
 import { Euler } from "three";
 
@@ -252,7 +252,9 @@ export default function Roulette() {
 
                   {/* 名前指定 */}
                   <input
-                    className={"block ml-1 w-28 p-1 outline-none bg-transparent"}
+                    className={
+                      "block ml-1 w-28 p-1 outline-none bg-transparent"
+                    }
                     type="text"
                     value={user.name}
                     onChange={(e) => {

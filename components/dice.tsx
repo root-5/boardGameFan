@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, useGLTF } from "@react-three/drei";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Euler } from "three";
 
 // ==============================
@@ -13,9 +13,12 @@ const modelPath = "Dice.glb";
 function DiceModel() {
   const { scene } = useGLTF(modelPath);
 
+  // モデルのクローン（ダイスカードを複数作成するため）
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
+
   return (
     <primitive
-      object={scene}
+      object={clonedScene}
       // 今回はサイコロの中心が原点になるように調整、元は中心が底面になっている
       position={[0, -5, 0]} // モデルの位置
       scale={[100, 100, 100]} // モデルの大きさ
