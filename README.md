@@ -10,6 +10,14 @@
 3. `npm i @react-three/drei`
 4. `npm run dev`
 
+## インフラ
+Cloudflare Pages にデプロイ
+https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
+
+1. Cloudflare Pages にログイン
+2. リポジトリを選択（すべてのリポジトリも選択できたがしなかった）
+3. 
+
 ## 改善点
 - サウンドエフェクト追加
 - カードと得点などの設定値、入力値をローカル保存する機能

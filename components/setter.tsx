@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function Setter(props: {
   item: { component: string; x: number; y: number };
-  componentMap: { [key: string]: React.ComponentType<any> };
+  componentMap: { [key: string]: React.ComponentType<{ zoomRatio: number }> };
   componentList: { component: string; x: number; y: number }[];
   setComponentList: (
     arg: { component: string; x: number; y: number }[]

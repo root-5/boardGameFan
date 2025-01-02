@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Euler } from "three";
 
 type user = {

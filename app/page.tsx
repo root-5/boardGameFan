@@ -10,14 +10,18 @@ import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 
 // コンポーネントマッピング
-const componentMap: { [key: string]: React.ComponentType<any> } = {
+const componentMap: {
+  [key: string]: React.ComponentType<{ zoomRatio: number }>;
+} = {
   score: Score,
   dice: Dice,
   token: Token,
   timer: Timer,
   roulette: Roulette,
-  setter: Setter,
-  styleSetting: StyleSetting,
+
+  // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
+  // setter: Setter,
+  // styleSetting: StyleSetting,
 };
 
 // 初期カード
