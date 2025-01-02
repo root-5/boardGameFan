@@ -36,6 +36,7 @@ export default function App() {
   const [bgColor_2, setBgColor_2] = useState("#444455");
   const [fontColor_1, setFontColor_1] = useState("#eeeeee");
   const [fontColor_2, setFontColor_2] = useState("#ffffff");
+  const [fontStyle, setFontStyle] = useState("Comic Sans MS");
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
@@ -90,7 +91,6 @@ export default function App() {
     const newList = [...componentList];
     const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
     const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
-
     if (
       newX >= 0 &&
       newX < gridSize.cols &&
@@ -117,7 +117,6 @@ export default function App() {
           y: newY,
         };
       }
-
       setComponentList(newList);
     }
     setDragIndex(null);
@@ -131,6 +130,7 @@ export default function App() {
         id="card-container"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        style={{ fontFamily: `${fontStyle}` }}
       >
         {componentList.map((item, index) => {
           const isEven = (item.x + item.y) % 2 === 0;
@@ -198,6 +198,8 @@ export default function App() {
                       setFontColor_1={setFontColor_1}
                       fontColor_2={fontColor_2}
                       setFontColor_2={setFontColor_2}
+                      fontStyle={fontStyle}
+                      setFontStyle={setFontStyle}
                     />
                   ) : (
                     <Component />

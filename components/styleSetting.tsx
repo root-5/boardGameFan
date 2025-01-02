@@ -7,6 +7,8 @@ export default function StyleSetting({
   setFontColor_1,
   fontColor_2,
   setFontColor_2,
+  fontStyle,
+  setFontStyle,
 }: {
   bgColor_1: string;
   setBgColor_1: (color: string) => void;
@@ -16,11 +18,11 @@ export default function StyleSetting({
   setFontColor_1: (color: string) => void;
   fontColor_2: string;
   setFontColor_2: (color: string) => void;
+  fontStyle: string;
+  setFontStyle: (style: string) => void;
 }) {
   return (
-    <div
-      className={"relative w-56 h-56 text-center"}
-    >
+    <div className={"relative w-56 h-56 text-center"}>
       <div className="p-8 grid grid-cols-2 gap-1 justify-center items-center">
         <div className="pt-1 block w-28 text-left">{"Base 1"}: </div>
         <input
@@ -50,6 +52,36 @@ export default function StyleSetting({
           value={fontColor_2}
           onChange={(e) => setFontColor_2(e.target.value)}
         />
+        <select
+          className="mt-4 block w-40 bg-transparent"
+          value={fontStyle}
+          onChange={(e) => setFontStyle(e.target.value)}
+        >
+          <option className="bg-transparent text-black" value="Comic Sans MS">
+            Comic Sans MS
+          </option>
+          <option className="bg-transparent text-black" value="Arial">
+            Arial
+          </option>
+          <option className="bg-transparent text-black" value="Courier">
+            Courier
+          </option>
+          <option className="bg-transparent text-black" value="Georgia">
+            Georgia
+          </option>
+          <option className="bg-transparent text-black" value="Impact">
+            Impact
+          </option>
+          <option className="bg-transparent text-black" value="Times New Roman">
+            Times New Roman
+          </option>
+          <option className="bg-transparent text-black" value="Trebuchet MS">
+            Trebuchet MS
+          </option>
+          <option className="bg-transparent text-black" value="Verdana">
+            Verdana
+          </option>
+        </select>
       </div>
     </div>
   );
