@@ -65,7 +65,7 @@ function GroupComponent(props: {
   setRouletteNum: (num: number) => void;
 }) {
   const { users, rouletteNum, setRouletteNum } = props;
-  const [rotation, setRotation] = useState(new Euler(0, 0, 0));
+  const [rotation, setRotation] = useState(new Euler(0, 1 * Math.PI, 0));
   const [isSpinning, setIsSpinning] = useState(false); // 回転状態の判定
   const [isSpinningLast, setIsSpinningLast] = useState(true); // isSpinning だけでも表現はできるが、isSpinningLast を加えることで停止中の useFrame 内の計算をなしにできる
   const [angularVelocity, setAngularVelocity] = useState(
