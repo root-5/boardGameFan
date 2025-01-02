@@ -61,7 +61,7 @@ export default function Setter(props: {
         >
           {setterDisplay === "button" && (
             <button
-              className="w-full h-full text-6xl"
+              className="w-full h-full text-6xl border-2 border-dashed"
               onClick={() => setSetterDisplay("list")}
             >
               +
