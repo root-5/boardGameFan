@@ -89,7 +89,7 @@ export default function StyleSetting({
       </div>
       <div className="absolute w-full bottom-4 flex gap-2 justify-center items-center">
         <button
-          className="px-2 py-1 bg-gray-700 text-sm rounded"
+          className="px-2 py-1 bg-gray-700 text-sm whitespace-nowrap rounded"
           onClick={downloadStateAsJson}
         >
           Save Setting
@@ -103,7 +103,7 @@ export default function StyleSetting({
         />
         <label
           htmlFor="upload-json"
-          className="px-2 py-1 bg-gray-700 text-sm rounded cursor-pointer"
+          className="px-1 py-1 bg-gray-700 text-sm whitespace-nowrap rounded cursor-pointer"
         >
           Load Setting
         </label>
