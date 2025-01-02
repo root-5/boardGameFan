@@ -23,6 +23,14 @@ export default function TurnCounter() {
           {">"}
         </button>
       </div>
+      <div
+          className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
+          onClick={() => {
+            setTurnCount(0);
+          }}
+        >
+          ↺
+        </div>
     </div>
   );
 }
