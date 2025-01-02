@@ -132,7 +132,7 @@ export default function App() {
         onDrop={handleDrop}
       >
         {componentList.map((item, index) => {
-          const itemBgColor = (index + 1) % 2 !== 0 ? bgColor_1 : bgColor_2;
+          const itemBgColor = (item.x + item.y) % 2 === 0 ? bgColor_1 : bgColor_2;
           const Component = componentMap[item.component];
 
           return (
