@@ -145,6 +145,7 @@ export default function App() {
                   componentList={componentList}
                   setComponentList={setComponentList}
                   itemBgColor={itemBgColor}
+                  fontColor={fontColor}
                 />
               ) : (
                 <div
