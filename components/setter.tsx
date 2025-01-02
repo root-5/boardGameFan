@@ -44,9 +44,7 @@ export default function Setter(props: {
   );
 
   return (
-    <div
-      className="relative"
-    >
+    <div className="relative">
       <div
         className={"absolute w-56 h-56 text-center"}
         style={{
@@ -84,6 +82,7 @@ export default function Setter(props: {
                   key={index}
                   className="flex items-center justify-center text-sm hover:opacity-50"
                   onClick={() => handleClick(key)}
+                  style={{ borderColor: fontColor, borderWidth: 1, borderStyle: "dashed" }}
                 >
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </button>

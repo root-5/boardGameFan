@@ -20,7 +20,6 @@ export default function StyleSetting({
   return (
     <div
       className={"relative w-56 h-56 text-center"}
-      style={{ backgroundColor: bgColor_1, color: fontColor_1 }}
     >
       <div className="p-8 grid grid-cols-2 gap-1 justify-center items-center">
         <div className="pt-1 block w-28 text-left">{"Base 1"}: </div>
