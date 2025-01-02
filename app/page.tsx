@@ -193,11 +193,10 @@ export default function App() {
           const Component = componentMap[item.component];
 
           return (
-            <>
+            <div key={`${item.x}-${item.y}`}>
               {item.component === "setter" ? (
                 // Setter カードのみ特殊呼び出し
                 <Setter
-                  key={index}
                   item={item}
                   componentMap={componentMap}
                   componentList={componentList}
@@ -207,7 +206,6 @@ export default function App() {
                 />
               ) : (
                 <div
-                  key={index}
                   className={"absolute w-56 h-56 text-center"}
                   style={{
                     backgroundColor: itemBgColor,
@@ -262,7 +260,7 @@ export default function App() {
                   )}
                 </div>
               )}
-            </>
+            </div>
           );
         })}
         <div className="absolute bottom-2 right-2 flex gap-2">
