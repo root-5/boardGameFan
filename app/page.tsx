@@ -136,6 +136,44 @@ export default function App() {
     setDragOffset(null);
   };
 
+  // ステートを JSON 形式でダウンロードする関数
+  const downloadStateAsJson = () => {
+    const state = {
+      componentList,
+      bgColor_1,
+      bgColor_2,
+      fontColor_1,
+      fontColor_2,
+      fontStyle,
+    };
+    const stateJson = JSON.stringify(state);
+    const blob = new Blob([stateJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "state.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // JSON ファイルからステートを読み込む関数
+  const loadStateFromJson = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const state = JSON.parse(e.target?.result as string);
+        setComponentList(state.componentList);
+        setBgColor_1(state.bgColor_1);
+        setBgColor_2(state.bgColor_2);
+        setFontColor_1(state.fontColor_1);
+        setFontColor_2(state.fontColor_2);
+        setFontStyle(state.fontStyle);
+      };
+      reader.readAsText(file);
+    }
+  };
+
   return (
     <>
       <div
@@ -227,6 +265,27 @@ export default function App() {
             </>
           );
         })}
+        <div className="absolute bottom-2 right-2 flex gap-2">
+          <button
+            className="px-4 py-2 bg-gray-700 text-white rounded"
+            onClick={downloadStateAsJson}
+          >
+            Download State
+          </button>
+          <input
+            type="file"
+            accept=".json"
+            className="hidden"
+            id="upload-json"
+            onChange={loadStateFromJson}
+          />
+          <label
+            htmlFor="upload-json"
+            className="px-4 py-2 bg-gray-700 text-white rounded cursor-pointer"
+          >
+            Load State
+          </label>
+        </div>
       </div>
     </>
   );
