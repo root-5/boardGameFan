@@ -21,7 +21,7 @@ https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
 
 1. Cloudflare Pages にログイン
 2. リポジトリを選択（すべてのリポジトリも選択できたがしなかった）
-3. 
+3. ビルドコマンドを `npm run build` に設定
 
 ## 改善点
 - サウンドエフェクト追加
