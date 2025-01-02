@@ -163,7 +163,9 @@ function GroupComponent(props: {
   );
 }
 
-export default function Roulette() {
+export default function Roulette(props: { zoomRatio: number }) {
+  const { zoomRatio } = props;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState(initialUsers);
   const [rouletteNum, setRouletteNum] = useState(0);
@@ -178,7 +180,7 @@ export default function Roulette() {
       <Canvas
         className="h-full w-full"
         camera={{ fov: 80, position: [10, 3, 0] }}
-        style={{ background: "transparent" }}
+        style={{ background: "transparent", zoom: 1 / zoomRatio }}
       >
         <GroupComponent
           users={users}

@@ -74,7 +74,8 @@ function Group() {
   );
 }
 
-export default function Dice() {
+export default function Dice(props: { zoomRatio: number }) {
+  const { zoomRatio } = props;
   return (
     <>
       <Canvas
@@ -82,6 +83,9 @@ export default function Dice() {
         camera={{
           fov: 80, // 視野角
           position: [0, 0, 50], // カメラの位置
+        }}
+        style={{
+          zoom: 1 / zoomRatio, // キャンバスの拡大
         }}
       >
         {/* グループ */}

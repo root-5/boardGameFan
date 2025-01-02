@@ -31,25 +31,38 @@ const initialCards = [
 ];
 
 export default function App() {
+  // カードリスト
   const [componentList, setComponentList] = useState(initialCards);
+
+  // グリッドに配置するカード数
+  const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
+
+  // スタイル設定
   const [bgColor_1, setBgColor_1] = useState("#222233");
   const [bgColor_2, setBgColor_2] = useState("#444455");
   const [fontColor_1, setFontColor_1] = useState("#eeeeee");
   const [fontColor_2, setFontColor_2] = useState("#ffffff");
   const [fontStyle, setFontStyle] = useState("Comic Sans MS");
+  const [zoomRatio, seZoomRatio] = useState(1); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
+
+  // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
   );
-  const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
 
   // グリッドを画面幅で設置するための useEffect
   useEffect(() => {
     const updateGridSize = () => {
-      const cardSize = 224; // カードの幅
+      const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
       const cols = Math.floor(window.innerWidth / cardSize);
       const rows = Math.floor(window.innerHeight / cardSize);
+      const newScale = Math.min(
+        window.innerWidth / (cols * cardSize),
+        window.innerHeight / (rows * cardSize)
+      );
       setGridSize({ rows, cols });
+      seZoomRatio(newScale);
     };
 
     updateGridSize();
@@ -130,7 +143,10 @@ export default function App() {
         id="card-container"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        style={{ fontFamily: `${fontStyle}` }}
+        style={{
+          fontFamily: `${fontStyle}`,
+          zoom: zoomRatio,
+        }}
       >
         {componentList.map((item, index) => {
           const isEven = (item.x + item.y) % 2 === 0;
@@ -204,7 +220,7 @@ export default function App() {
                       setFontStyle={setFontStyle}
                     />
                   ) : (
-                    <Component />
+                    <Component zoomRatio={zoomRatio} />
                   )}
                 </div>
               )}
