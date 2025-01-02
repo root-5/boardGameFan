@@ -51,3 +51,6 @@ https://zenn.dev/rivine/articles/2023-06-23-deploy-hugo-to-cloudflare-pages
 - Three.js ドキュメント
   - 結局詳細な設定内容はここで確認することになる
   - https://threejs.org/docs/index.html
+- Cloudflare Pages docs
+  - デプロイが簡単にできすぎて全然読んでないが、かなり見やすそう
+  - https://developers.cloudflare.com/pages/
