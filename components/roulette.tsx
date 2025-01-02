@@ -200,7 +200,7 @@ export default function Roulette() {
 
       {/* 設定ボタン */}
       <div
-        className="absolute z-20 bottom-0 left-0 px-2 text-xl duration-300 cursor-pointer hover:opacity-50"
+        className="absolute z-20 bottom-0 left-0 px-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
         onClick={() => setIsModalOpen(true)}
       >
         =
@@ -217,7 +217,7 @@ export default function Roulette() {
           }
         >
           <div
-            className="absolute top-1 right-1 text-3xl duration-300 cursor-pointer hover:opacity-50"
+            className="absolute top-1 right-1 text-3xl duration-200 cursor-pointer hover:opacity-50"
             onClick={() => setIsModalOpen(false)}
           >
             ×
@@ -228,7 +228,7 @@ export default function Roulette() {
                 <li key={i} className="flex">
                   {/* 削除ボタン */}
                   <div
-                    className="pr-2 text-2xl duration-300 cursor-pointer hover:opacity-50"
+                    className="pr-2 text-2xl duration-200 cursor-pointer hover:opacity-50"
                     onClick={() => {
                       setUsers(users.filter((u, j) => i !== j));
                     }}
@@ -269,7 +269,7 @@ export default function Roulette() {
               ))}
               {/* 追加ボタン */}
               <div
-                className="w-full text-2xl text-center duration-300 rounded cursor-pointer hover:opacity-50"
+                className="w-full text-2xl text-center duration-200 rounded cursor-pointer hover:opacity-50"
                 onClick={() => {
                   setUsers([...users, { name: "Name", color: "#000000" }]);
                 }}

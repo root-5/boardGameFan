@@ -34,7 +34,8 @@ export default function App() {
   const [componentList, setComponentList] = useState(initialCards);
   const [bgColor_1, setBgColor_1] = useState("#222233");
   const [bgColor_2, setBgColor_2] = useState("#444455");
-  const [fontColor, setFontColor] = useState("#ffffff");
+  const [fontColor_1, setFontColor_1] = useState("#eeeeee");
+  const [fontColor_2, setFontColor_2] = useState("#ffffff");
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
@@ -132,7 +133,9 @@ export default function App() {
         onDrop={handleDrop}
       >
         {componentList.map((item, index) => {
-          const itemBgColor = (item.x + item.y) % 2 === 0 ? bgColor_1 : bgColor_2;
+          const isEven = (item.x + item.y) % 2 === 0;
+          const itemBgColor = isEven ? bgColor_1 : bgColor_2;
+          const itemFontColor = isEven ? fontColor_1 : fontColor_2;
           const Component = componentMap[item.component];
 
           return (
@@ -146,16 +149,15 @@ export default function App() {
                   componentList={componentList}
                   setComponentList={setComponentList}
                   itemBgColor={itemBgColor}
-                  fontColor={fontColor}
+                  fontColor={itemFontColor}
                 />
               ) : (
-                // Setter 以外のカード
                 <div
                   key={index}
                   className={"absolute w-56 h-56 text-center"}
                   style={{
                     backgroundColor: itemBgColor,
-                    color: fontColor,
+                    color: itemFontColor,
                     left: item.x * 224, // 224 は カードの幅
                     top: item.y * 224, // 224 は カードの幅
                   }}
@@ -163,15 +165,15 @@ export default function App() {
                   onDragStart={(e) => handleDragStart(index, e)}
                 >
                   {/* ドラッグアイコン */}
-                  <div className="absolute z-10 top-0 left-0 p-1 cursor-move">
-                    <span className="material-symbols-outlined text-gray-500">
+                  <div className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100">
+                    <span className="material-symbols-outlined">
                       drag_indicator
                     </span>
                   </div>
 
                   {/* 閉じるボタン */}
                   <div
-                    className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none"
+                    className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
                     onClick={() => {
                       const newList = [...componentList];
                       newList[index] = {
@@ -192,8 +194,10 @@ export default function App() {
                       setBgColor_1={setBgColor_1}
                       bgColor_2={bgColor_2}
                       setBgColor_2={setBgColor_2}
-                      fontColor={fontColor}
-                      setFontColor={setFontColor}
+                      fontColor_1={fontColor_1}
+                      setFontColor_1={setFontColor_1}
+                      fontColor_2={fontColor_2}
+                      setFontColor_2={setFontColor_2}
                     />
                   ) : (
                     <Component />
