@@ -27,37 +27,39 @@ export default function StyleSetting({
 }) {
   return (
     <div className={"relative w-56 h-56 text-center"}>
-      <div className="py-4 px-8 grid grid-cols-2 gap-1 justify-center items-center">
-        <div className="pt-0.5 block w-28 text-left">{"Base 1"}: </div>
-        <input
-          className="h-6 block w-16"
-          type="color"
-          value={bgColor_1}
-          onChange={(e) => setBgColor_1(e.target.value)}
-        />
-        <div className="h-6 pt-0.5 block w-28 text-left">{"Font 1"}: </div>
-        <input
-          className="h-6 block w-16"
-          type="color"
-          value={fontColor_1}
-          onChange={(e) => setFontColor_1(e.target.value)}
-        />
-        <div className="h-6 pt-0.5 block w-28 text-left">{"Base 2"}: </div>
-        <input
-          className="h-6 block w-16"
-          type="color"
-          value={bgColor_2}
-          onChange={(e) => setBgColor_2(e.target.value)}
-        />
-        <div className="h-6 pt-0.5 block w-28 text-left">{"Font 2"}: </div>
-        <input
-          className="h-6 block w-16"
-          type="color"
-          value={fontColor_2}
-          onChange={(e) => setFontColor_2(e.target.value)}
-        />
+      <div className="py-6 flex flex-col justify-center items-center gap-3">
+        <div className="px-8 grid grid-cols-2 gap-1 justify-center items-center">
+          <div className="pt-0.5 block w-28 text-left">{"Base 1"}: </div>
+          <input
+            className="h-6 block w-16"
+            type="color"
+            value={bgColor_1}
+            onChange={(e) => setBgColor_1(e.target.value)}
+          />
+          <div className="h-6 pt-0.5 block w-28 text-left">{"Font 1"}: </div>
+          <input
+            className="h-6 block w-16"
+            type="color"
+            value={fontColor_1}
+            onChange={(e) => setFontColor_1(e.target.value)}
+          />
+          <div className="h-6 pt-0.5 block w-28 text-left">{"Base 2"}: </div>
+          <input
+            className="h-6 block w-16"
+            type="color"
+            value={bgColor_2}
+            onChange={(e) => setBgColor_2(e.target.value)}
+          />
+          <div className="h-6 pt-0.5 block w-28 text-left">{"Font 2"}: </div>
+          <input
+            className="h-6 block w-16"
+            type="color"
+            value={fontColor_2}
+            onChange={(e) => setFontColor_2(e.target.value)}
+          />
+        </div>
         <select
-          className="h-6 mt-2 block w-40 bg-transparent"
+          className="block w-40 bg-transparent"
           value={fontStyle}
           onChange={(e) => setFontStyle(e.target.value)}
         >
@@ -86,27 +88,27 @@ export default function StyleSetting({
             Verdana
           </option>
         </select>
-      </div>
-      <div className="absolute w-full bottom-4 flex gap-2 justify-center items-center">
-        <button
-          className="px-2 py-1 bg-gray-700 text-sm whitespace-nowrap rounded"
-          onClick={downloadStateAsJson}
-        >
-          Save Setting
-        </button>
-        <input
-          type="file"
-          accept=".json"
-          className="hidden"
-          id="upload-json"
-          onChange={loadStateFromJson}
-        />
-        <label
-          htmlFor="upload-json"
-          className="px-1 py-1 bg-gray-700 text-sm whitespace-nowrap rounded cursor-pointer"
-        >
-          Load Setting
-        </label>
+        <div className="w-full flex gap-1 justify-center items-center">
+          <button
+            className="px-2 py-1 text-[12px] whitespace-nowrap rounded duration-200 hover:opacity-70"
+            onClick={downloadStateAsJson}
+          >
+            Save Setting
+          </button>
+          <input
+            type="file"
+            accept=".json"
+            className="hidden"
+            id="upload-json"
+            onChange={loadStateFromJson}
+          />
+          <label
+            htmlFor="upload-json"
+            className="px-2 py-1 text-[12px] whitespace-nowrap rounded cursor-pointer duration-200 hover:opacity-70"
+          >
+            Load Setting
+          </label>
+        </div>
       </div>
     </div>
   );

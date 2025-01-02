@@ -13,14 +13,25 @@ type user = {
 // 初期角速度
 const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
 
+// パステルカラー生成
+const generatePastelColors = (numColors: number) => {
+  const colors = [];
+  for (let i = 0; i < numColors; i++) {
+    const hue = (i * 360) / numColors;
+    const pastelColor = `hsl(${hue}, 80%, 55%)`; // 彩度100%、輝度80%でパステルカラーを生成
+    colors.push(pastelColor);
+  }
+  return colors;
+};
+
 // 初期ユーザー
 const initialUsers = [
-  { name: "Name_1", color: "#ff0000" },
-  { name: "Name_2", color: "#00ff00" },
-  { name: "Name_3", color: "#0000ff" },
-  { name: "Name_4", color: "#ffff00" },
-  { name: "Name_5", color: "#ff00ff" },
-  { name: "Name_6", color: "#00ffff" },
+  { name: "Name_1", color: generatePastelColors(6)[0] },
+  { name: "Name_2", color: generatePastelColors(6)[1] },
+  { name: "Name_3", color: generatePastelColors(6)[2] },
+  { name: "Name_4", color: generatePastelColors(6)[3] },
+  { name: "Name_5", color: generatePastelColors(6)[4] },
+  { name: "Name_6", color: generatePastelColors(6)[5] },
 ];
 
 // ルーレット盤

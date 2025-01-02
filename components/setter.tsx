@@ -68,10 +68,7 @@ export default function Setter(props: {
           )}
         </div>
         {setterDisplay === "list" && (
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ backgroundColor: itemBgColor }}
-          >
+          <div className="absolute inset-0 flex items-center justify-center">
             <div
               className="w-full h-full grid grid-cols-4 grid-rows-4"
               onMouseLeave={() => setSetterDisplay("none")}
@@ -79,9 +76,10 @@ export default function Setter(props: {
               {componentKeys.map((key, index) => (
                 <button
                   key={index}
-                  className="flex items-center justify-center text-sm hover:opacity-50"
+                  className="flex items-center justify-center text-sm duration-200 hover:opacity-70"
                   onClick={() => handleClick(key)}
                   style={{
+                    backgroundColor: itemBgColor,
                     borderColor: fontColor,
                     borderWidth: 1,
                     borderStyle: "dashed",

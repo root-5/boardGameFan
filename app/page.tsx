@@ -7,6 +7,7 @@ import Token from "../components/token";
 import Timer from "../components/timer";
 import Roulette from "../components/roulette";
 import Turn from "../components/turn";
+import Info from "../components/info";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 
@@ -20,6 +21,7 @@ const componentMap: {
   timer: Timer,
   roulette: Roulette,
   turn: Turn,
+  info: Info,
 
   // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
   // setter: Setter,
@@ -35,6 +37,7 @@ const initialCards = [
   { component: "timer", x: 2, y: 1 },
   { component: "roulette", x: 1, y: 0 },
   { component: "turn", x: 0, y: 2 },
+  { component: "info", x: 1, y: 2 },
 ];
 
 export default function App() {
