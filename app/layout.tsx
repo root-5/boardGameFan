@@ -33,6 +33,8 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+
+        {/* ドラッグアイコン */}
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0&icon_names=drag_indicator"
@@ -41,12 +43,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} relative antialiased h-screen select-none`}
       >
-        <Image
+        {/* <Image
           src={backgroundImagePath}
           alt="background"
           layout="fill"
           className="absolute h-full w-full z-[-10] object-contain"
-        />
+        /> */}
         {children}
       </body>
     </html>

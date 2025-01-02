@@ -200,7 +200,7 @@ export default function Roulette() {
 
       {/* 設定ボタン */}
       <div
-        className="absolute z-20 top-0 right-0 px-2 text-xl duration-300 cursor-pointer hover:opacity-50"
+        className="absolute z-20 bottom-0 left-0 px-2 text-xl duration-300 cursor-pointer hover:opacity-50"
         onClick={() => setIsModalOpen(true)}
       >
         =

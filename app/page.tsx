@@ -27,7 +27,7 @@ const initialCards = [
   { component: "dice", x: 0, y: 1 },
   { component: "token", x: 1, y: 1 },
   { component: "timer", x: 2, y: 1 },
-  { component: "roulette", x: 0, y: 2 },
+  { component: "roulette", x: 1, y: 0 },
 ];
 
 export default function App() {
@@ -138,6 +138,7 @@ export default function App() {
           return (
             <>
               {item.component === "setter" ? (
+                // Setter カードのみ特殊呼び出し
                 <Setter
                   key={index}
                   item={item}
@@ -148,6 +149,7 @@ export default function App() {
                   fontColor={fontColor}
                 />
               ) : (
+                // Setter 以外のカード
                 <div
                   key={index}
                   className={"absolute w-56 h-56 text-center"}
@@ -160,11 +162,30 @@ export default function App() {
                   draggable
                   onDragStart={(e) => handleDragStart(index, e)}
                 >
+                  {/* ドラッグアイコン */}
                   <div className="absolute z-10 top-0 left-0 p-1 cursor-move">
                     <span className="material-symbols-outlined text-gray-500">
                       drag_indicator
                     </span>
                   </div>
+
+                  {/* 閉じるボタン */}
+                  <div
+                    className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none"
+                    onClick={() => {
+                      const newList = [...componentList];
+                      newList[index] = {
+                        component: "setter",
+                        x: newList[index].x,
+                        y: newList[index].y,
+                      };
+                      setComponentList(newList);
+                    }}
+                  >
+                    ×
+                  </div>
+
+                  {/* カードの中身 */}
                   {item.component === "styleSetting" ? (
                     <StyleSetting
                       bgColor_1={bgColor_1}
