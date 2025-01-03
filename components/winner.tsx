@@ -62,6 +62,22 @@ export default function WinnerCounter() {
           </div>
         </div>
       ))}
+      <div
+        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 duration-200 hover:opacity-100"
+        onClick={() => {
+          setPlayerWins([0, 0, 0, 0, 0, 0]);
+          setPlayerDisplayTexts([
+            "🏆 × 0",
+            "🏆 × 0",
+            "🏆 × 0",
+            "🏆 × 0",
+            "🏆 × 0",
+            "🏆 × 0",
+          ]);
+        }}
+      >
+        ↺
+      </div>
     </div>
   );
 }
