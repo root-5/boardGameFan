@@ -26,12 +26,12 @@ const generatePastelColors = (numColors: number) => {
 
 // 初期ユーザー
 const initialUsers = [
-  { name: "Name_1", color: generatePastelColors(6)[0] },
-  { name: "Name_2", color: generatePastelColors(6)[1] },
-  { name: "Name_3", color: generatePastelColors(6)[2] },
-  { name: "Name_4", color: generatePastelColors(6)[3] },
-  { name: "Name_5", color: generatePastelColors(6)[4] },
-  { name: "Name_6", color: generatePastelColors(6)[5] },
+  { name: "Player_1", color: generatePastelColors(6)[0] },
+  { name: "Player_2", color: generatePastelColors(6)[1] },
+  { name: "Player_3", color: generatePastelColors(6)[2] },
+  { name: "Player_4", color: generatePastelColors(6)[3] },
+  { name: "Player_5", color: generatePastelColors(6)[4] },
+  { name: "Player_6", color: generatePastelColors(6)[5] },
 ];
 
 // ルーレット盤

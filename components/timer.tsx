@@ -70,7 +70,7 @@ export default function Timer() {
           <div
             className={
               "px-5 py-2 text-lg opacity-100" +
-              (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+              (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
             }
             onClick={() => {
               if (!isTimeUp) {
@@ -81,7 +81,7 @@ export default function Timer() {
             {isRunning ? "STOP" : "START"}
           </div>
           <div
-            className="px-5 py-2 text-lg cursor-pointer opacity-100 hover:opacity-70"
+            className="px-5 py-2 text-lg cursor-pointer opacity-100 duration-200 hover:opacity-70"
             onClick={() => {
               setTime(defaultTime);
               setIsTimeUp(false);
@@ -95,7 +95,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -108,7 +108,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -121,7 +121,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -134,7 +134,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -149,7 +149,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -162,7 +162,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -175,7 +175,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -188,7 +188,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -203,7 +203,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -216,7 +216,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -229,7 +229,7 @@ export default function Timer() {
             <div
               className={
                 "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -241,8 +241,8 @@ export default function Timer() {
             </div>
             <div
               className={
-                "px-1 py-0.5 opacity-100" +
-                (isTimeUp ? "" : " cursor-pointer hover:opacity-70")
+                "px-1 py-0.5" +
+                (isTimeUp ? "" : " cursor-pointer duration-200 hover:opacity-70")
               }
               onClick={() => {
                 if (!isTimeUp) {
@@ -255,7 +255,7 @@ export default function Timer() {
           </div>
         </div>
         <div
-          className="mt-2 text-xs cursor-pointer opacity-100 hover:opacity-70"
+          className="mt-2 text-xs cursor-pointer opacity-100 duration-200 hover:opacity-70"
           onClick={() => {
             setDefaultTime(time);
             setSaveDefaultText("SAVED");

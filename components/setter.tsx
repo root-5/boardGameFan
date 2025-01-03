@@ -60,8 +60,11 @@ export default function Setter(props: {
         >
           {setterDisplay === "button" && (
             <button
-              className="w-full h-full text-6xl border-2 border-dashed"
+              className="w-full h-full text-6xl border-2 border-dashed duration-200"
               onClick={() => setSetterDisplay("list")}
+              style={{
+                borderColor: fontColor,
+              }}
             >
               +
             </button>
@@ -73,21 +76,23 @@ export default function Setter(props: {
               className="w-full h-full grid grid-cols-4 grid-rows-4"
               onMouseLeave={() => setSetterDisplay("none")}
             >
-              {componentKeys.map((key, index) => (
-                <button
-                  key={index}
-                  className="flex items-center justify-center text-sm duration-200 hover:opacity-70"
-                  onClick={() => handleClick(key)}
-                  style={{
-                    backgroundColor: itemBgColor,
-                    borderColor: fontColor,
-                    borderWidth: 1,
-                    borderStyle: "dashed",
-                  }}
-                >
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </button>
-              ))}
+              {componentKeys.map((key, index) =>
+                key === "info" ? null : (
+                  <button
+                    key={index}
+                    className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
+                    onClick={() => handleClick(key)}
+                    style={{
+                      backgroundColor: itemBgColor,
+                      borderColor: fontColor,
+                      borderWidth: 1,
+                      borderStyle: "dashed",
+                    }}
+                  >
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </button>
+                )
+              )}
             </div>
           </div>
         )}

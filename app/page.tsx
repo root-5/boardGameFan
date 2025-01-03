@@ -7,6 +7,7 @@ import Token from "../components/token";
 import Timer from "../components/timer";
 import Roulette from "../components/roulette";
 import Turn from "../components/turn";
+import Winner from "../components/winner";
 import Info from "../components/info";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
@@ -21,6 +22,7 @@ const componentMap: {
   timer: Timer,
   roulette: Roulette,
   turn: Turn,
+  winner: Winner,
   info: Info,
 
   // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
@@ -30,14 +32,15 @@ const componentMap: {
 
 // 初期カード
 const initialCards = [
-  { component: "styleSetting", x: 0, y: 0 },
+  { component: "winner", x: 0, y: 0 },
   { component: "score", x: 2, y: 0 },
   { component: "dice", x: 0, y: 1 },
   { component: "token", x: 1, y: 1 },
   { component: "timer", x: 2, y: 1 },
   { component: "roulette", x: 1, y: 0 },
   { component: "turn", x: 0, y: 2 },
-  { component: "info", x: 1, y: 2 },
+  { component: "styleSetting", x: 1, y: 2 },
+  { component: "info", x: 2, y: 2 },
 ];
 
 export default function App() {
@@ -48,8 +51,8 @@ export default function App() {
   const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
 
   // スタイル設定
-  const [bgColor_1, setBgColor_1] = useState("#222233");
-  const [bgColor_2, setBgColor_2] = useState("#444455");
+  const [bgColor_1, setBgColor_1] = useState("#0f026f");
+  const [bgColor_2, setBgColor_2] = useState("#672d8c");
   const [fontColor_1, setFontColor_1] = useState("#eeeeee");
   const [fontColor_2, setFontColor_2] = useState("#ffffff");
   const [fontStyle, setFontStyle] = useState("Comic Sans MS");

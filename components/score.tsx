@@ -20,7 +20,7 @@ export default function Score() {
   return (
     <>
       <div className="p-6">
-        <p className="text-[8px] opacity-30">INPUT / ARROW KEY / SCROLL</p>
+        <p className="text-[8px] opacity-50">INPUT / ARROW KEY / SCROLL</p>
         <input
           className="inline-block w-44 bg-transparent text-5xl text-center leading-tight font-bold outline-none"
           type="number"
@@ -31,7 +31,7 @@ export default function Score() {
           <div className="flex justify-center align-middle gap-2 text-base">
             <div>
               <div
-                className="mt-[-4px] px-2 text-3xl cursor-pointer opacity-100 hover:opacity-70"
+                className="mt-[-4px] px-2 text-3xl cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count - 1));
                 }}
@@ -39,7 +39,7 @@ export default function Score() {
                 {"<"}
               </div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count - 100));
                 }}
@@ -47,7 +47,7 @@ export default function Score() {
                 -100
               </div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count - 1000));
                 }}
@@ -55,7 +55,7 @@ export default function Score() {
                 -1000
               </div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count - 10000));
                 }}
@@ -65,7 +65,7 @@ export default function Score() {
             </div>
             <div>
               <div
-                className="mt-[-4px] px-2 text-3xl cursor-pointer opacity-100 hover:opacity-70"
+                className="mt-[-4px] px-2 text-3xl cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count + 1));
                 }}
@@ -73,7 +73,7 @@ export default function Score() {
                 {">"}
               </div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count + 100));
                 }}
@@ -81,7 +81,7 @@ export default function Score() {
                 +100
               </div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count + 1000));
                 }}
@@ -89,7 +89,7 @@ export default function Score() {
                 +1000
               </div>
               <div
-                className="px-2 cursor-pointer opacity-100 hover:opacity-70"
+                className="px-2 cursor-pointer duration-200 hover:opacity-70"
                 onClick={() => {
                   setCount(ajustScoreValue(count + 10000));
                 }}
@@ -100,7 +100,7 @@ export default function Score() {
           </div>
         </div>
         <div
-          className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
+          className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 duration-200 hover:opacity-100"
           onClick={() => {
             setCount(0);
           }}
