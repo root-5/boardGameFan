@@ -38,14 +38,12 @@ export default function App() {
     const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
     let newScale = 1;
     let cols = 1;
-    let isSP = false;
 
     const updateGridSize = () => {
       if (window.outerWidth <= 500) {
         // 幅が 500px 以下はカード幅を画面幅に合わせる
         newScale = window.outerWidth / cardSize;
         setZoomRatio(newScale);
-        isSP = true;
       } else {
         // カードの幅を基準に、グリッドの行数と列数を計算
         cols = Math.floor(window.innerWidth / cardSize);
@@ -66,10 +64,10 @@ export default function App() {
       setFontColor_2(state.fontColor_2);
       setFontStyle(state.fontStyle);
     } else {
-      cardList = isSP ? initialCardsSP : initialCards;
+      cardList = initialCards;
     }
     setCardList(cardList);
-    const rows = isSP ? cardList.length : Math.floor(window.innerHeight / 224);
+    const rows = Math.floor(window.innerHeight / 224);
     const newComponentList = [];
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
