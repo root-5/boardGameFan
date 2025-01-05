@@ -5,6 +5,7 @@ import {
   cardMap,
   initialCards,
   initialCardsSP,
+  initialStyle,
 } from "../utils/cardDefinitions";
 import { getCookie, setCookie } from "../utils/cookieUtils";
 import Setter from "../components/setter";
@@ -14,29 +15,19 @@ export default function App() {
   // ======================================================================
   // ステート定義
   // ======================================================================
+  // cookie 反映後フラグ
+  const [isCookieLoaded, setIsCookieLoaded] = useState(false);
+
   // カードリスト
-  const [cardList, setCardList] = useState(() => {
-    const savedCardList = getCookie("cardList");
-    return savedCardList ? JSON.parse(savedCardList) : initialCards;
-  });
+  const [cardList, setCardList] = useState(initialCards);
 
   // スタイル設定
-  const [bgColor_1, setBgColor_1] = useState(
-    () => getCookie("bgColor_1") || "#0f026f"
-  );
-  const [bgColor_2, setBgColor_2] = useState(
-    () => getCookie("bgColor_2") || "#672d8c"
-  );
-  const [fontColor_1, setFontColor_1] = useState(
-    () => getCookie("fontColor_1") || "#eeeeee"
-  );
-  const [fontColor_2, setFontColor_2] = useState(
-    () => getCookie("fontColor_2") || "#ffffff"
-  );
-  const [fontStyle, setFontStyle] = useState(
-    () => getCookie("fontStyle") || "Comic Sans MS"
-  );
-  const [zoomRatio, setZoomRatio] = useState(1); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
+  const [bgColor_1, setBgColor_1] = useState(initialStyle.bgColor_1);
+  const [bgColor_2, setBgColor_2] = useState(initialStyle.bgColor_2);
+  const [fontColor_1, setFontColor_1] = useState(initialStyle.fontColor_1);
+  const [fontColor_2, setFontColor_2] = useState(initialStyle.fontColor_2);
+  const [fontStyle, setFontStyle] = useState(initialStyle.fontStyle);
+  const [zoomRatio, setZoomRatio] = useState(initialStyle.zoomRatio); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -86,7 +77,7 @@ export default function App() {
     const rows = Math.floor(window.innerHeight / 224);
     const newCardList = updateCardList(cardList, cols, rows);
     setZoomRatio(zoomRatio);
-    setCardList(newCardList);
+    // setCardList(newCardList);
   };
 
   // ======================================================================
@@ -138,30 +129,51 @@ export default function App() {
   // ======================================================================
   // useEffect
   // ======================================================================
-  // グリッドを画面幅で設置するための useEffect
+  // クッキーからステートを読み込む useEffect
   useEffect(() => {
+    if (!isCookieLoaded) {
+      setCardList(
+        getCookie("cardList")
+          ? JSON.parse(getCookie("cardList") as string)
+          : initialCards
+      );
+      setBgColor_1(getCookie("bgColor_1") || initialStyle.bgColor_1);
+      setBgColor_2(getCookie("bgColor_2") || initialStyle.bgColor_2);
+      setFontColor_1(getCookie("fontColor_1") || initialStyle.fontColor_1);
+      setFontColor_2(getCookie("fontColor_2") || initialStyle.fontColor_2);
+      setFontStyle(getCookie("fontStyle") || initialStyle.fontStyle);
+
+      setIsCookieLoaded(true);
+    }
+
     updateGrid();
     window.addEventListener("resize", updateGrid);
     return () => window.removeEventListener("resize", updateGrid);
   }, []);
 
-  // ステートをクッキーに保存する useEffect
+  // 各ステート変更をクッキーに保存する useEffect
   useEffect(() => {
+    if (cardList === initialCards) return;
     setCookie("cardList", JSON.stringify(cardList));
   }, [cardList]);
   useEffect(() => {
+    if (bgColor_1 === initialStyle.bgColor_1) return;
     setCookie("bgColor_1", bgColor_1);
   }, [bgColor_1]);
   useEffect(() => {
+    if (bgColor_2 === initialStyle.bgColor_2) return;
     setCookie("bgColor_2", bgColor_2);
   }, [bgColor_2]);
   useEffect(() => {
+    if (fontColor_1 === initialStyle.fontColor_1) return;
     setCookie("fontColor_1", fontColor_1);
   }, [fontColor_1]);
   useEffect(() => {
+    if (fontColor_2 === initialStyle.fontColor_2) return;
     setCookie("fontColor_2", fontColor_2);
   }, [fontColor_2]);
   useEffect(() => {
+    if (fontStyle === initialStyle.fontStyle) return;
     setCookie("fontStyle", fontStyle);
   }, [fontStyle]);
 

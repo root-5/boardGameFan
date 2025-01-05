@@ -50,3 +50,13 @@ export const initialCardsSP = [
   { component: "styleSetting", x: 0, y: 7 },
   { component: "info", x: 0, y: 8 },
 ];
+
+// 初期スタイル
+export const initialStyle = {
+  bgColor_1: "#0f026f",
+  bgColor_2: "#672d8c",
+  fontColor_1: "#eeeeee",
+  fontColor_2: "#ffffff",
+  fontStyle: "Comic Sans MS",
+  zoomRatio: 1,
+};
