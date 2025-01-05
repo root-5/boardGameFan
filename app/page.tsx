@@ -6,6 +6,7 @@ import {
   initialCards,
   initialCardsSP,
 } from "../utils/cardDefinitions";
+import { getCookie, setCookie } from "../utils/cookieUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 
@@ -80,14 +81,12 @@ export default function App() {
       }
     }
     setCardList(newComponentList);
-    saveStateToCookies();
 
     window.addEventListener("resize", updateGridSize);
     return () => window.removeEventListener("resize", updateGridSize);
   }, []);
 
-  // ステートをクッキーに保存する関数
-  const saveStateToCookies = () => {
+  useEffect(() => {
     const state = {
       cardList,
       bgColor_1,
@@ -96,19 +95,12 @@ export default function App() {
       fontColor_2,
       fontStyle,
     };
-    document.cookie = "appState=" + JSON.stringify(state);
-  };
-  useEffect(() => {
-    saveStateToCookies();
+    setCookie("appState", JSON.stringify(state));
   }, [cardList, bgColor_1, bgColor_2, fontColor_1, fontColor_2, fontStyle]);
 
   // クッキーからステートを読み込む関数
   const loadStateFromCookies = () => {
-    const stateJson = document.cookie
-      .split(";")
-      .map((item) => item.trim())
-      .find((item) => item.startsWith("appState="))
-      ?.split("=")[1];
+    const stateJson = getCookie("appState");
     const state = stateJson ? JSON.parse(stateJson) : null;
     return state;
   };
