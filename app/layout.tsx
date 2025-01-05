@@ -24,7 +24,7 @@ export default function RootLayout({
         <img
           src="/bg.jpg"
           alt="background"
-          className="absolute h-full w-full z-[-10] object-contain"
+          className="absolute h-full w-full z-[-10] object-cover"
         />
         {children}
       </body>

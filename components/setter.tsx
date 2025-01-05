@@ -52,7 +52,7 @@ export default function Setter(props: {
         >
           {setterDisplay === "button" && (
             <button
-              className="w-full h-full text-6xl border-2 border-dashed duration-200"
+              className="w-full h-full text-6xl backdrop-brightness-75 border-2 border-dashed duration-200"
               onClick={() => setSetterDisplay("list")}
               style={{
                 borderColor: fontColor,
