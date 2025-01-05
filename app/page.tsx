@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   cardMap,
   initialCards,
-  initialCardsSP,
+  // initialCardsSP,
   initialStyle,
 } from "../utils/cardDefinitions";
 import { getCookie, setCookie } from "../utils/cookieUtils";
@@ -161,7 +161,7 @@ export default function App() {
       setCardStyle(initialStyle);
     }
     setIsCookieLoaded(true);
-  }, []);
+  }, [isCookieLoaded]);
 
   // 各ステート変更をクッキーに保存する useEffect
   useEffect(() => {
@@ -188,98 +188,96 @@ export default function App() {
           zoom: zoomRatio,
         }}
       >
-        {cardList.map(
-          (item: { x: number; y: number; component: any }, index: number) => {
-            // 表示範囲外のカードはレンダリングしない
-            if (item.x >= viewRange.x || item.y >= viewRange.y) return null;
+        {cardList.map((item, index) => {
+          // 表示範囲外のカードはレンダリングしない
+          if (item.x >= viewRange.x || item.y >= viewRange.y) return null;
 
-            // 背景色、フォント色を設定
-            const isEven = (item.x + item.y) % 2 === 0;
-            const itemBgColor = isEven
-              ? cardStyle.bgColor_1
-              : cardStyle.bgColor_2;
-            const itemFontColor = isEven
-              ? cardStyle.fontColor_1
-              : cardStyle.fontColor_2;
-            const Component = cardMap[item.component];
+          // 背景色、フォント色を設定
+          const isEven = (item.x + item.y) % 2 === 0;
+          const itemBgColor = isEven
+            ? cardStyle.bgColor_1
+            : cardStyle.bgColor_2;
+          const itemFontColor = isEven
+            ? cardStyle.fontColor_1
+            : cardStyle.fontColor_2;
+          const Component = cardMap[item.component];
 
-            return (
-              <div key={`${item.x}-${item.y}`}>
-                {item.component === "setter" ? (
-                  // Setter カードのみ特殊呼び出し
-                  <Setter
-                    item={item}
-                    cardMap={cardMap}
-                    cardList={cardList}
-                    setCardList={setCardList}
-                    itemBgColor={itemBgColor}
-                    fontColor={itemFontColor}
-                  />
-                ) : (
+          return (
+            <div key={`${item.x}-${item.y}`}>
+              {item.component === "setter" ? (
+                // Setter カードのみ特殊呼び出し
+                <Setter
+                  item={item}
+                  cardMap={cardMap}
+                  cardList={cardList}
+                  setCardList={setCardList}
+                  itemBgColor={itemBgColor}
+                  fontColor={itemFontColor}
+                />
+              ) : (
+                <div
+                  className={"absolute w-56 h-56 text-center"}
+                  style={{
+                    backgroundColor: itemBgColor,
+                    color: itemFontColor,
+                    left: item.x * 224, // 224 は カードの幅
+                    top: item.y * 224, // 224 は カードの幅
+                  }}
+                >
+                  {/* ドラッグアイコン */}
                   <div
-                    className={"absolute w-56 h-56 text-center"}
-                    style={{
-                      backgroundColor: itemBgColor,
-                      color: itemFontColor,
-                      left: item.x * 224, // 224 は カードの幅
-                      top: item.y * 224, // 224 は カードの幅
+                    className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100"
+                    draggable
+                    onDragStart={(e) => handleDragStart(index, e)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20px"
+                      viewBox="0 -960 960 960"
+                      width="20px"
+                      fill={itemFontColor}
+                    >
+                      <path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z" />
+                    </svg>
+                  </div>
+
+                  {/* 閉じるボタン */}
+                  <div
+                    // StyleSetting では非表示
+                    className={
+                      "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
+                      (item.component === "styleSetting" ? " hidden" : "")
+                    }
+                    onClick={() => {
+                      const newList = [...cardList];
+                      newList[index] = {
+                        component: "setter",
+                        x: newList[index].x,
+                        y: newList[index].y,
+                      };
+                      setCardList(newList);
                     }}
                   >
-                    {/* ドラッグアイコン */}
-                    <div
-                      className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100"
-                      draggable
-                      onDragStart={(e) => handleDragStart(index, e)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20px"
-                        viewBox="0 -960 960 960"
-                        width="20px"
-                        fill={itemFontColor}
-                      >
-                        <path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z" />
-                      </svg>
-                    </div>
-
-                    {/* 閉じるボタン */}
-                    <div
-                      // StyleSetting では非表示
-                      className={
-                        "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
-                        (item.component === "styleSetting" ? " hidden" : "")
-                      }
-                      onClick={() => {
-                        const newList = [...cardList];
-                        newList[index] = {
-                          component: "setter",
-                          x: newList[index].x,
-                          y: newList[index].y,
-                        };
-                        setCardList(newList);
-                      }}
-                    >
-                      ×
-                    </div>
-
-                    {/* カードの中身 */}
-                    {item.component === "styleSetting" ? (
-                      <StyleSetting
-                        cardStyle={cardStyle}
-                        setCardStyle={setCardStyle}
-                        initialCards={initialCards}
-                        setCardList={setCardList}
-                        updateGrid={updateGrid}
-                      />
-                    ) : (
-                      <Component zoomRatio={zoomRatio} />
-                    )}
+                    ×
                   </div>
-                )}
-              </div>
-            );
-          }
-        )}
+
+                  {/* カードの中身 */}
+                  {item.component === "styleSetting" ? (
+                    <StyleSetting
+                      cardStyle={cardStyle}
+                      setCardStyle={setCardStyle}
+                      initialCards={initialCards}
+                      // setCardList={setCardList}
+                      // updateGrid={updateGrid}
+                    />
+                  ) : (
+                    <Component zoomRatio={zoomRatio} />
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </>
   );

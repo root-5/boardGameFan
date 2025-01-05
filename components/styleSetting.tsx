@@ -1,9 +1,9 @@
 export default function StyleSetting({
   cardStyle,
   setCardStyle,
-  initialCards,
-  setCardList,
-  updateGrid,
+  // initialCards,
+  // setCardList,
+  // updateGrid,
 }: {
   cardStyle: {
     bgColor_1: string;
@@ -12,10 +12,16 @@ export default function StyleSetting({
     fontColor_2: string;
     fontStyle: string;
   };
-  setCardStyle: Function;
+  setCardStyle: (cardStyle: {
+    bgColor_1: string;
+    fontColor_1: string;
+    bgColor_2: string;
+    fontColor_2: string;
+    fontStyle: string;
+  }) => void;
   initialCards: { component: string; x: number; y: number }[];
-  setCardList: Function;
-  updateGrid: Function;
+  // setCardList: (cardList: { component: string; x: number; y: number }[]) => void;
+  // updateGrid: () => void;
 }) {
   return (
     <div className={"relative w-56 h-56 text-center"}>
