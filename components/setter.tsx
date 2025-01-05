@@ -5,28 +5,20 @@ import { useState } from "react";
 export default function Setter(props: {
   item: { component: string; x: number; y: number };
   componentMap: { [key: string]: React.ComponentType<{ zoomRatio: number }> };
-  componentList: { component: string; x: number; y: number }[];
-  setComponentList: (
-    arg: { component: string; x: number; y: number }[]
-  ) => void;
+  cardList: { component: string; x: number; y: number }[];
+  setCardList: (arg: { component: string; x: number; y: number }[]) => void;
   itemBgColor: string;
   fontColor: string;
 }) {
-  const {
-    item,
-    componentMap,
-    componentList,
-    setComponentList,
-    itemBgColor,
-    fontColor,
-  } = props;
+  const { item, componentMap, cardList, setCardList, itemBgColor, fontColor } =
+    props;
 
   // カードの状態（表示なし、＋ボタン表示、コンポーネントリスト表示）
   const [setterDisplay, setSetterDisplay] = useState("none");
 
   const handleClick = (key: string) => {
-    setComponentList(
-      componentList.map((c) =>
+    setCardList(
+      cardList.map((c) =>
         c.x === item.x && c.y === item.y
           ? { component: key, x: item.x, y: item.y }
           : c
@@ -35,8 +27,8 @@ export default function Setter(props: {
     setSetterDisplay("none");
   };
 
-  if (!componentMap || !componentList) {
-    return null; // componentMap または componentList が未定義の場合は何も表示しない
+  if (!componentMap || !cardList) {
+    return null; // componentMap または cardList が未定義の場合は何も表示しない
   }
 
   const componentKeys = Object.keys(componentMap).filter(

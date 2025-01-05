@@ -43,12 +43,22 @@ const initialCards = [
   { component: "info", x: 2, y: 2 },
 ];
 
+// 初期カード（SPモード、x=0 のみ）
+const initialCardsSP = [
+  { component: "winner", x: 0, y: 0 },
+  { component: "turn", x: 0, y: 1 },
+  { component: "dice", x: 0, y: 2 },
+  { component: "token", x: 0, y: 3 },
+  { component: "roulette", x: 0, y: 4 },
+  { component: "timer", x: 0, y: 5 },
+  { component: "score", x: 0, y: 6 },
+  { component: "styleSetting", x: 0, y: 7 },
+  { component: "info", x: 0, y: 8 },
+];
+
 export default function App() {
   // カードリスト
-  const [componentList, setComponentList] = useState(initialCards);
-
-  // グリッドに配置するカード数
-  const [gridSize, setGridSize] = useState({ rows: 0, cols: 0 });
+  const [cardList, setCardList] = useState(initialCards);
 
   // スタイル設定
   const [bgColor_1, setBgColor_1] = useState("#0f026f");
@@ -66,39 +76,34 @@ export default function App() {
 
   // グリッドを画面幅で設置するための useEffect
   useEffect(() => {
-    const updateGridSize = () => {
-      const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
-      let newScale = 1;
+    const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
+    let newScale = 1;
+    let cols = 1;
+    let isSP = false;
 
+    const updateGridSize = () => {
       if (window.outerWidth <= 500) {
         // 幅が 500px 以下はカード幅を画面幅に合わせる
-        newScale = window.outerWidth / cardSize / 2;
-        setGridSize({ rows: 3, cols: 2 });
+        newScale = window.outerWidth / cardSize;
         seZoomRatio(newScale);
+        isSP = true;
       } else {
         // カードの幅を基準に、グリッドの行数と列数を計算
-        const cols = Math.floor(window.outerWidth / cardSize);
-        const rows = Math.floor(window.outerHeight / cardSize);
-        newScale = Math.min(
-          window.outerWidth / (cols * cardSize),
-          window.outerHeight / (rows * cardSize)
-        );
-        setGridSize({ rows, cols });
+        cols = Math.floor(window.innerWidth / cardSize);
+        newScale = Math.min(window.innerWidth / (cols * cardSize));
+        seZoomRatio(newScale);
       }
-      seZoomRatio(newScale);
     };
-
     updateGridSize();
-    window.addEventListener("resize", updateGridSize);
-    return () => window.removeEventListener("resize", updateGridSize);
-  }, []);
 
-  // 初期カードを設置し、空いた個所に setter を設置するための useEffect
-  useEffect(() => {
+    // 初期カードを設置し、空いた個所に setter を設置する
+    const cardList = isSP ? initialCardsSP : initialCards;
+    setCardList(cardList);
+    const rows = isSP ? cardList.length : Math.floor(window.innerHeight / 224);
     const newComponentList = [];
-    for (let y = 0; y < gridSize.rows; y++) {
-      for (let x = 0; x < gridSize.cols; x++) {
-        const existingComponent = initialCards.find(
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const existingComponent = cardList.find(
           (comp) => comp.x === x && comp.y === y
         );
         newComponentList.push(
@@ -106,8 +111,11 @@ export default function App() {
         );
       }
     }
-    setComponentList(newComponentList);
-  }, [gridSize]);
+    setCardList(newComponentList);
+
+    window.addEventListener("resize", updateGridSize);
+    return () => window.removeEventListener("resize", updateGridSize);
+  }, []);
 
   // ドラッグ＆ドロップ処理
   const handleDragStart = (
@@ -124,15 +132,10 @@ export default function App() {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     if (dragIndex === null || dragOffset === null) return;
     const cardSize = 224; // カードの幅
-    const newList = [...componentList];
+    const newList = [...cardList];
     const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
     const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
-    if (
-      newX >= 0 &&
-      newX < gridSize.cols &&
-      newY >= 0 &&
-      newY < gridSize.rows
-    ) {
+    if (newX >= 0 && newY >= 0) {
       const targetIndex = newList.findIndex(
         (item) => item.x === newX && item.y === newY
       );
@@ -153,7 +156,7 @@ export default function App() {
           y: newY,
         };
       }
-      setComponentList(newList);
+      setCardList(newList);
     }
     setDragIndex(null);
     setDragOffset(null);
@@ -162,7 +165,7 @@ export default function App() {
   // ステートを JSON 形式でダウンロードする関数
   const downloadStateAsJson = () => {
     const state = {
-      componentList,
+      cardList,
       bgColor_1,
       bgColor_2,
       fontColor_1,
@@ -186,7 +189,7 @@ export default function App() {
       const reader = new FileReader();
       reader.onload = (e) => {
         const state = JSON.parse(e.target?.result as string);
-        setComponentList(state.componentList);
+        setCardList(state.cardList);
         setBgColor_1(state.bgColor_1);
         setBgColor_2(state.bgColor_2);
         setFontColor_1(state.fontColor_1);
@@ -209,7 +212,7 @@ export default function App() {
           zoom: zoomRatio,
         }}
       >
-        {componentList.map((item, index) => {
+        {cardList.map((item, index) => {
           const isEven = (item.x + item.y) % 2 === 0;
           const itemBgColor = isEven ? bgColor_1 : bgColor_2;
           const itemFontColor = isEven ? fontColor_1 : fontColor_2;
@@ -222,8 +225,8 @@ export default function App() {
                 <Setter
                   item={item}
                   componentMap={componentMap}
-                  componentList={componentList}
-                  setComponentList={setComponentList}
+                  cardList={cardList}
+                  setCardList={setCardList}
                   itemBgColor={itemBgColor}
                   fontColor={itemFontColor}
                 />
@@ -258,13 +261,13 @@ export default function App() {
                   <div
                     className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
                     onClick={() => {
-                      const newList = [...componentList];
+                      const newList = [...cardList];
                       newList[index] = {
                         component: "setter",
                         x: newList[index].x,
                         y: newList[index].y,
                       };
-                      setComponentList(newList);
+                      setCardList(newList);
                     }}
                   >
                     ×
