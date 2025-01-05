@@ -21,6 +21,7 @@ export default function RootLayout({
       <body
         className={`relative antialiased h-screen select-none overflow-x-hidden`}
       >
+        {/* Image を使用してしまうと読み込みが狂ったため img を使用 */}
         <img
           src="/bg.jpg"
           alt="background"

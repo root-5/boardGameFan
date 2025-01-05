@@ -10,15 +10,14 @@ import {
 import { getLocalStorage, setLocalStorage } from "../utils/cookieUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
-import { space } from "postcss/lib/list";
 
 export default function App() {
   // ======================================================================
   // 定数定義
   // ======================================================================
   // 内部的に保持するカードリストの最大サイズ
-  const maxCardListCols = 12;
-  const maxCardListRows = 12;
+  const maxCardListCols = 20;
+  const maxCardListRows = 20;
 
   // initialCards の空きを setter カードで埋める
   for (let y = 0; y < maxCardListRows; y++) {
@@ -142,14 +141,13 @@ export default function App() {
     const handleResize = () => updateGrid();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [isCookieLoaded]); // 初回のみ実行でいいので、isCookieLoaded を監視対象にする
 
   // クッキーからステートを読み込む useEffect
   useEffect(() => {
     if (isCookieLoaded) return;
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
-
     setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCards);
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
