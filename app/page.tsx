@@ -114,13 +114,13 @@ export default function App() {
   };
   // ロード時と window 幅が変わったときに呼び出される関数
   // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
-  const updateGrid = () => {
+  const updateGrid = async () => {
     // 内部的に保持するカードリストの最大サイズ
     const maxCardListCols = 12;
     const maxCardListRows = 12;
     const { cols, zoomRatio } = calcColsAndZoomRatio();
     const rows = Math.floor(window.innerHeight / 224);
-    const newCardList = updateCardList(
+    const newCardList = await updateCardList(
       cardListRef.current,
       maxCardListCols,
       maxCardListRows
