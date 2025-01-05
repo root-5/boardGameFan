@@ -25,9 +25,11 @@ export default function App() {
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
   );
-  const cardListRef = useRef(cardList);
 
-  // カードリストの変更を追跡する useEffect
+  // ======================================================================
+  // リファレンス定義
+  // ======================================================================
+  const cardListRef = useRef(cardList);
   useEffect(() => {
     cardListRef.current = cardList;
   }, [cardList]);
@@ -48,7 +50,7 @@ export default function App() {
   };
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     if (dragIndex === null || dragOffset === null) return;
-    const cardSize = 224; // カードの幅
+    const cardSize = 224;
     const newList = [...cardList];
     const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
     const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
@@ -57,20 +59,16 @@ export default function App() {
         (item) => item.x === newX && item.y === newY
       );
       if (targetIndex !== -1) {
-        // カードを交換する
-        const temp = newList[targetIndex];
-        newList[targetIndex] = { ...newList[dragIndex], x: newX, y: newY };
-        newList[dragIndex] = {
-          ...temp,
-          x: newList[dragIndex].x,
-          y: newList[dragIndex].y,
-        };
+        [newList[targetIndex], newList[dragIndex]] = [
+          { ...newList[dragIndex], x: newX, y: newY },
+          {
+            ...newList[targetIndex],
+            x: newList[dragIndex].x,
+            y: newList[dragIndex].y,
+          },
+        ];
       } else {
-        newList[dragIndex] = {
-          ...newList[dragIndex],
-          x: newX,
-          y: newY,
-        };
+        newList[dragIndex] = { ...newList[dragIndex], x: newX, y: newY };
       }
       setCardList(newList);
     }
@@ -136,7 +134,7 @@ export default function App() {
 
   // クッキーからステートを読み込む useEffect
   useEffect(() => {
-    if (!isCookieLoaded) {
+    try {
       setCardList(
         getCookie("cardList")
           ? JSON.parse(getCookie("cardList") as string)
@@ -147,6 +145,10 @@ export default function App() {
           ? JSON.parse(getCookie("cardStyle") as string)
           : initialStyle
       );
+    } catch (e) {
+      console.error("Failed to parse cookies", e);
+      setCardList(initialCards);
+      setCardStyle(initialStyle);
     }
     setIsCookieLoaded(true);
   }, []);

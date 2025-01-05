@@ -58,3 +58,10 @@ https://boardgamefan.pages.dev/
 - Cloudflare Pages Docs
   - デプロイが簡単にできすぎて全然読んでないが、かなり見やすそう
   - https://developers.cloudflare.com/pages/
+
+# AI の使い方メモ
+```
+リファクタリングがしたいです。 セキュリティ的に問題がある場所もっと効率的に書ける場所があったら教えてください
+
+コードの提示は修正箇所のみでいいです。
+```
