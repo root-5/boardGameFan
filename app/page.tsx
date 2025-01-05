@@ -7,11 +7,31 @@ import {
   // initialCardsSP,
   initialStyle,
 } from "../utils/cardDefinitions";
-import { getCookie, setCookie } from "../utils/cookieUtils";
+import { getLocalStorage, setLocalStorage } from "../utils/cookieUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
+import { space } from "postcss/lib/list";
 
 export default function App() {
+  // ======================================================================
+  // 定数定義
+  // ======================================================================
+  // 内部的に保持するカードリストの最大サイズ
+  const maxCardListCols = 12;
+  const maxCardListRows = 12;
+
+  // initialCards の空きを setter カードで埋める
+  for (let y = 0; y < maxCardListRows; y++) {
+    for (let x = 0; x < maxCardListCols; x++) {
+      const existingComponent = initialCards.find(
+        (comp) => comp.x === x && comp.y === y
+      );
+      if (!existingComponent) {
+        initialCards.push({ component: "setter", x, y });
+      }
+    }
+  }
+
   // ======================================================================
   // ステート定義
   // ======================================================================
@@ -19,7 +39,10 @@ export default function App() {
   const [cardList, setCardList] = useState(initialCards); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
-  const [viewRange, setViewRange] = useState({ x: 12, y: 12 }); // 表示範囲
+  const [viewRange, setViewRange] = useState({
+    x: maxCardListCols,
+    y: maxCardListRows,
+  }); // 表示範囲
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -94,39 +117,19 @@ export default function App() {
     }
     return { cols, zoomRatio };
   };
-  // 列数、行数をもとに cardList を更新する関数
-  const updateCardList = (
-    cardList: { component: string; x: number; y: number }[],
-    cols: number,
-    rows: number
-  ) => {
-    const newCardList = [];
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        const existingComponent = cardList.find(
-          (comp: { x: number; y: number }) => comp.x === x && comp.y === y
-        );
-        // 空いている部分には setter を設置する
-        newCardList.push(existingComponent || { component: "setter", x, y });
-      }
-    }
-    return newCardList;
-  };
   // ロード時と window 幅が変わったときに呼び出される関数
   // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
-  const updateGrid = async () => {
+  const updateGrid = () => {
     // 内部的に保持するカードリストの最大サイズ
-    const maxCardListCols = 12;
-    const maxCardListRows = 12;
     const { cols, zoomRatio } = calcColsAndZoomRatio();
     const rows = Math.floor(window.innerHeight / 224);
-    const newCardList = await updateCardList(
-      cardListRef.current,
-      maxCardListCols,
-      maxCardListRows
+    const cardListStorage = getLocalStorage("cardList");
+    const cardStyleStorage = getLocalStorage("cardStyle");
+    setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCards);
+    setCardStyle(
+      cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
     );
     setZoomRatio(zoomRatio);
-    setCardList(newCardList);
     setViewRange({ x: cols, y: rows });
   };
 
@@ -144,33 +147,24 @@ export default function App() {
   // クッキーからステートを読み込む useEffect
   useEffect(() => {
     if (isCookieLoaded) return;
-    try {
-      setCardList(
-        getCookie("cardList")
-          ? JSON.parse(getCookie("cardList") as string)
-          : initialCards
-      );
-      setCardStyle(
-        getCookie("cardStyle")
-          ? JSON.parse(getCookie("cardStyle") as string)
-          : initialStyle
-      );
-    } catch (e) {
-      console.error("Failed to parse cookies", e);
-      setCardList(initialCards);
-      setCardStyle(initialStyle);
-    }
+    const cardListStorage = getLocalStorage("cardList");
+    const cardStyleStorage = getLocalStorage("cardStyle");
+
+    setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCards);
+    setCardStyle(
+      cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
+    );
     setIsCookieLoaded(true);
   }, [isCookieLoaded]);
 
-  // 各ステート変更をクッキーに保存する useEffect
+  // 各ステート変更をローカルストレージに保存する useEffect
   useEffect(() => {
     if (cardList === initialCards) return;
-    setCookie("cardList", JSON.stringify(cardList));
+    setLocalStorage("cardList", JSON.stringify(cardList));
   }, [cardList]);
   useEffect(() => {
     if (cardStyle === initialStyle) return;
-    setCookie("cardStyle", JSON.stringify(cardStyle));
+    setLocalStorage("cardStyle", JSON.stringify(cardStyle));
   }, [cardStyle]);
 
   // ======================================================================
