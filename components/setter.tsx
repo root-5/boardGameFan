@@ -4,13 +4,13 @@ import { useState } from "react";
 
 export default function Setter(props: {
   item: { component: string; x: number; y: number };
-  componentMap: { [key: string]: React.ComponentType<{ zoomRatio: number }> };
+  cardMap: { [key: string]: React.ComponentType<{ zoomRatio: number }> };
   cardList: { component: string; x: number; y: number }[];
   setCardList: (arg: { component: string; x: number; y: number }[]) => void;
   itemBgColor: string;
   fontColor: string;
 }) {
-  const { item, componentMap, cardList, setCardList, itemBgColor, fontColor } =
+  const { item, cardMap, cardList, setCardList, itemBgColor, fontColor } =
     props;
 
   // カードの状態（表示なし、＋ボタン表示、コンポーネントリスト表示）
@@ -27,11 +27,11 @@ export default function Setter(props: {
     setSetterDisplay("none");
   };
 
-  if (!componentMap || !cardList) {
-    return null; // componentMap または cardList が未定義の場合は何も表示しない
+  if (!cardMap || !cardList) {
+    return null; // cardMap または cardList が未定義の場合は何も表示しない
   }
 
-  const componentKeys = Object.keys(componentMap).filter(
+  const componentKeys = Object.keys(cardMap).filter(
     (key) => key !== "styleSetting" && key !== "setter"
   );
 

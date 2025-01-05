@@ -1,37 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { componentMap } from "../utils/componentMap";
+import {
+  cardMap,
+  initialCards,
+  initialCardsSP,
+} from "../utils/cardDefinitions";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 
-// 初期カード
-const initialCards = [
-  { component: "winner", x: 0, y: 0 },
-  { component: "turn", x: 1, y: 0 },
-  { component: "dice", x: 2, y: 0 },
-  { component: "token", x: 0, y: 1 },
-  { component: "roulette", x: 1, y: 1 },
-  { component: "timer", x: 2, y: 1 },
-  { component: "score", x: 0, y: 2 },
-  { component: "styleSetting", x: 1, y: 2 },
-  { component: "info", x: 2, y: 2 },
-];
-
-// 初期カード（SPモード、x=0 のみ）
-const initialCardsSP = [
-  { component: "winner", x: 0, y: 0 },
-  { component: "turn", x: 0, y: 1 },
-  { component: "dice", x: 0, y: 2 },
-  { component: "token", x: 0, y: 3 },
-  { component: "roulette", x: 0, y: 4 },
-  { component: "timer", x: 0, y: 5 },
-  { component: "score", x: 0, y: 6 },
-  { component: "styleSetting", x: 0, y: 7 },
-  { component: "info", x: 0, y: 8 },
-];
-
 export default function App() {
+  // ======================================================================
+  // State 定義
+  // ======================================================================
   // カードリスト
   const [cardList, setCardList] = useState(initialCards);
 
@@ -49,6 +30,9 @@ export default function App() {
     null
   );
 
+  // ======================================================================
+  // useEffect
+  // ======================================================================
   // グリッドを画面幅で設置するための useEffect
   useEffect(() => {
     const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
@@ -131,7 +115,9 @@ export default function App() {
     return state;
   };
 
+  // ======================================================================
   // ドラッグ＆ドロップ処理
+  // ======================================================================
   const handleDragStart = (
     index: number,
     e: React.DragEvent<HTMLDivElement>
@@ -175,6 +161,9 @@ export default function App() {
     setDragOffset(null);
   };
 
+  // ======================================================================
+  // レンダリング
+  // ======================================================================
   return (
     <>
       <div
@@ -191,7 +180,7 @@ export default function App() {
           const isEven = (item.x + item.y) % 2 === 0;
           const itemBgColor = isEven ? bgColor_1 : bgColor_2;
           const itemFontColor = isEven ? fontColor_1 : fontColor_2;
-          const Component = componentMap[item.component];
+          const Component = cardMap[item.component];
 
           return (
             <div key={`${item.x}-${item.y}`}>
@@ -199,7 +188,7 @@ export default function App() {
                 // Setter カードのみ特殊呼び出し
                 <Setter
                   item={item}
-                  componentMap={componentMap}
+                  cardMap={cardMap}
                   cardList={cardList}
                   setCardList={setCardList}
                   itemBgColor={itemBgColor}
