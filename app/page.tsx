@@ -24,56 +24,14 @@ export default function App() {
   // スタイル設定
   const [cardStyle, setCardStyle] = useState(initialStyle);
 
+  // ズーム倍率
+  const [zoomRatio, setZoomRatio] = useState(1);
+
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
   );
-
-  // ======================================================================
-  // グリッド関連処理
-  // ======================================================================
-  // window 幅をもとに、カードの列数とズーム倍率を計算する関数
-  const calcColsAndZoomRatio = () => {
-    const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
-    let zoomRatio = 1;
-    let cols = 1;
-    // 幅が 500px 以下は列数を１にしてカード幅を画面幅に合わせる
-    if (window.outerWidth <= 500) {
-      zoomRatio = window.outerWidth / cardSize;
-    } else {
-      cols = Math.floor(window.innerWidth / cardSize);
-      zoomRatio = Math.min(window.innerWidth / (cols * cardSize));
-    }
-    return { cols, zoomRatio };
-  };
-  // 列数、行数をもとに cardList を更新する関数
-  const updateCardList = (
-    cardList: { component: string; x: number; y: number }[],
-    cols: number,
-    rows: number
-  ) => {
-    const newCardList = [];
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        const existingComponent = cardList.find(
-          (comp: { x: number; y: number }) => comp.x === x && comp.y === y
-        );
-        // 空いている部分には setter を設置する
-        newCardList.push(existingComponent || { component: "setter", x, y });
-      }
-    }
-    return newCardList;
-  };
-  // ロード時と window 幅が変わったときに呼び出される関数
-  // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
-  const updateGrid = () => {
-    const { cols, zoomRatio } = calcColsAndZoomRatio();
-    const rows = Math.floor(window.innerHeight / 224);
-    const newCardList = updateCardList(cardList, cols, rows);
-    // setCardStyle({ ...cardStyle, zoomRatio: zoomRatio });
-    // setCardList(newCardList);
-  };
 
   // ======================================================================
   // ドラッグ＆ドロップ処理
@@ -122,6 +80,50 @@ export default function App() {
   };
 
   // ======================================================================
+  // グリッド関連処理
+  // ======================================================================
+  // window 幅をもとに、カードの列数とズーム倍率を計算する関数
+  const calcColsAndZoomRatio = () => {
+    const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
+    let zoomRatio = 1;
+    let cols = 1;
+    // 幅が 500px 以下は列数を１にしてカード幅を画面幅に合わせる
+    if (window.outerWidth <= 500) {
+      zoomRatio = window.outerWidth / cardSize;
+    } else {
+      cols = Math.floor(window.innerWidth / cardSize);
+      zoomRatio = Math.min(window.innerWidth / (cols * cardSize));
+    }
+    return { cols, zoomRatio };
+  };
+  // 列数、行数をもとに cardList を更新する関数
+  const updateCardList = (
+    cardList: { component: string; x: number; y: number }[],
+    cols: number,
+    rows: number
+  ) => {
+    const newCardList = [];
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const existingComponent = cardList.find(
+          (comp: { x: number; y: number }) => comp.x === x && comp.y === y
+        );
+        // 空いている部分には setter を設置する
+        newCardList.push(existingComponent || { component: "setter", x, y });
+      }
+    }
+    return newCardList;
+  };
+  // ロード時と window 幅が変わったときに呼び出される関数
+  // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
+  const updateGrid = () => {
+    const { cols, zoomRatio } = calcColsAndZoomRatio();
+    const rows = Math.floor(window.innerHeight / 224);
+    const newCardList = updateCardList(cardList, cols, rows);
+    setZoomRatio(zoomRatio);
+  };
+
+  // ======================================================================
   // useEffect
   // ======================================================================
   // クッキーからステートを読み込む useEffect
@@ -132,8 +134,6 @@ export default function App() {
           ? JSON.parse(getCookie("cardList") as string)
           : initialCards
       );
-      console.log(getCookie("cardStyle"));
-      console.log(cardStyle);
       setCardStyle(
         getCookie("cardStyle")
           ? JSON.parse(getCookie("cardStyle") as string)
@@ -172,7 +172,7 @@ export default function App() {
         onDrop={handleDrop}
         style={{
           fontFamily: `${cardStyle.fontStyle}`,
-          zoom: cardStyle.zoomRatio,
+          zoom: zoomRatio,
         }}
       >
         {cardList.map(
@@ -248,7 +248,7 @@ export default function App() {
                         setCardStyle={setCardStyle}
                       />
                     ) : (
-                      <Component zoomRatio={cardStyle.zoomRatio} />
+                      <Component zoomRatio={zoomRatio} />
                     )}
                   </div>
                 )}
