@@ -31,79 +31,90 @@ export default function App() {
     null
   );
 
-  // ======================================================================
-  // useEffect
-  // ======================================================================
-  // グリッドを画面幅で設置するための useEffect
-  useEffect(() => {
+  // window 幅をもとに、カードの列数とズーム倍率を計算する関数
+  const calcColsAndZoomRatio = () => {
     const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
-    let newScale = 1;
+    let zoomRatio = 1;
     let cols = 1;
-
-    const updateGridSize = () => {
-      if (window.outerWidth <= 500) {
-        // 幅が 500px 以下はカード幅を画面幅に合わせる
-        newScale = window.outerWidth / cardSize;
-        setZoomRatio(newScale);
-      } else {
-        // カードの幅を基準に、グリッドの行数と列数を計算
-        cols = Math.floor(window.innerWidth / cardSize);
-        newScale = Math.min(window.innerWidth / (cols * cardSize));
-        setZoomRatio(newScale);
-      }
-    };
-    updateGridSize();
-
-    // 初期カードを設置し、空いた個所に setter を設置する
-    let cardList;
-    const state = loadStateFromCookies();
-    if (state) {
-      cardList = state.cardList;
-      setBgColor_1(state.bgColor_1);
-      setBgColor_2(state.bgColor_2);
-      setFontColor_1(state.fontColor_1);
-      setFontColor_2(state.fontColor_2);
-      setFontStyle(state.fontStyle);
+    // 幅が 500px 以下は列数を１にしてカード幅を画面幅に合わせる
+    if (window.outerWidth <= 500) {
+      zoomRatio = window.outerWidth / cardSize;
     } else {
-      cardList = initialCards;
+      cols = Math.floor(window.innerWidth / cardSize);
+      zoomRatio = Math.min(window.innerWidth / (cols * cardSize));
     }
-    setCardList(cardList);
-    const rows = Math.floor(window.innerHeight / 224);
-    const newComponentList = [];
+    return { cols, zoomRatio };
+  };
+
+  // 列数、行数をもとに cardList を更新する関数
+  const updateCardList = (
+    cardList: { component: string; x: number; y: number }[],
+    cols: number,
+    rows: number
+  ) => {
+    const newCardList = [];
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         const existingComponent = cardList.find(
           (comp: { x: number; y: number }) => comp.x === x && comp.y === y
         );
-        newComponentList.push(
-          existingComponent || { component: "setter", x, y }
-        );
+        // 空いている部分には setter を設置する
+        newCardList.push(existingComponent || { component: "setter", x, y });
       }
     }
-    setCardList(newComponentList);
+    return newCardList;
+  };
 
-    window.addEventListener("resize", updateGridSize);
-    return () => window.removeEventListener("resize", updateGridSize);
+  // ロード時と window 幅が変わったときに呼び出される関数
+  // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
+  const updateGrid = () => {
+    const { cols, zoomRatio } = calcColsAndZoomRatio();
+    const rows = Math.floor(window.innerHeight / 224);
+    const newCardList = updateCardList(cardList, cols, rows);
+    setZoomRatio(zoomRatio);
+    setCardList(newCardList);
+  };
+
+  // ======================================================================
+  // useEffect
+  // ======================================================================
+  // グリッドを画面幅で設置するための useEffect
+  useEffect(() => {
+    // 初期カードを設置し、空いた個所に setter を設置する
+    // const state = loadStateFromCookies();
+    // if (state) {
+    //   cardList = state.cardList;
+    //   setBgColor_1(state.bgColor_1);
+    //   setBgColor_2(state.bgColor_2);
+    //   setFontColor_1(state.fontColor_1);
+    //   setFontColor_2(state.fontColor_2);
+    //   setFontStyle(state.fontStyle);
+    // }
+    // setCardList(cardList);
+    updateGrid();
+
+    window.addEventListener("resize", updateGrid);
+    return () => window.removeEventListener("resize", updateGrid);
   }, []);
 
-  useEffect(() => {
-    const state = {
-      cardList,
-      bgColor_1,
-      bgColor_2,
-      fontColor_1,
-      fontColor_2,
-      fontStyle,
-    };
-    setCookie("appState", JSON.stringify(state));
-  }, [cardList, bgColor_1, bgColor_2, fontColor_1, fontColor_2, fontStyle]);
+  // useEffect(() => {
+  //   const state = {
+  //     cardList,
+  //     bgColor_1,
+  //     bgColor_2,
+  //     fontColor_1,
+  //     fontColor_2,
+  //     fontStyle,
+  //   };
+  //   setCookie("appState", JSON.stringify(state));
+  // }, [cardList, bgColor_1, bgColor_2, fontColor_1, fontColor_2, fontStyle]);
 
   // クッキーからステートを読み込む関数
-  const loadStateFromCookies = () => {
-    const stateJson = getCookie("appState");
-    const state = stateJson ? JSON.parse(stateJson) : null;
-    return state;
-  };
+  // const loadStateFromCookies = () => {
+  //   const stateJson = getCookie("appState");
+  //   const state = stateJson ? JSON.parse(stateJson) : null;
+  //   return state;
+  // };
 
   // ======================================================================
   // ドラッグ＆ドロップ処理
