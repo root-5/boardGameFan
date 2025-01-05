@@ -22,7 +22,7 @@ export default function Score() {
       <div className="p-6">
         <p className="text-[8px] opacity-50">INPUT / ARROW KEY / SCROLL</p>
         <input
-          className="inline-block w-44 bg-transparent text-5xl text-center leading-tight font-bold outline-none"
+          className="inline-block w-44 bg-transparent text-5xl text-center font-bold outline-none"
           type="number"
           onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
           value={count}
