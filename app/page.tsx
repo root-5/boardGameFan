@@ -15,14 +15,27 @@ export default function App() {
   // ステート定義
   // ======================================================================
   // カードリスト
-  const [cardList, setCardList] = useState(initialCards);
+  const [cardList, setCardList] = useState(() => {
+    const savedCardList = getCookie("cardList");
+    return savedCardList ? JSON.parse(savedCardList) : initialCards;
+  });
 
   // スタイル設定
-  const [bgColor_1, setBgColor_1] = useState("#0f026f");
-  const [bgColor_2, setBgColor_2] = useState("#672d8c");
-  const [fontColor_1, setFontColor_1] = useState("#eeeeee");
-  const [fontColor_2, setFontColor_2] = useState("#ffffff");
-  const [fontStyle, setFontStyle] = useState("Comic Sans MS");
+  const [bgColor_1, setBgColor_1] = useState(
+    () => getCookie("bgColor_1") || "#0f026f"
+  );
+  const [bgColor_2, setBgColor_2] = useState(
+    () => getCookie("bgColor_2") || "#672d8c"
+  );
+  const [fontColor_1, setFontColor_1] = useState(
+    () => getCookie("fontColor_1") || "#eeeeee"
+  );
+  const [fontColor_2, setFontColor_2] = useState(
+    () => getCookie("fontColor_2") || "#ffffff"
+  );
+  const [fontStyle, setFontStyle] = useState(
+    () => getCookie("fontStyle") || "Comic Sans MS"
+  );
   const [zoomRatio, setZoomRatio] = useState(1); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
 
   // ドラッグ＆ドロップ関連
@@ -132,6 +145,26 @@ export default function App() {
     return () => window.removeEventListener("resize", updateGrid);
   }, []);
 
+  // ステートをクッキーに保存する useEffect
+  useEffect(() => {
+    setCookie("cardList", JSON.stringify(cardList));
+  }, [cardList]);
+  useEffect(() => {
+    setCookie("bgColor_1", bgColor_1);
+  }, [bgColor_1]);
+  useEffect(() => {
+    setCookie("bgColor_2", bgColor_2);
+  }, [bgColor_2]);
+  useEffect(() => {
+    setCookie("fontColor_1", fontColor_1);
+  }, [fontColor_1]);
+  useEffect(() => {
+    setCookie("fontColor_2", fontColor_2);
+  }, [fontColor_2]);
+  useEffect(() => {
+    setCookie("fontStyle", fontStyle);
+  }, [fontStyle]);
+
   // ======================================================================
   // レンダリング
   // ======================================================================
@@ -147,89 +180,91 @@ export default function App() {
           zoom: zoomRatio,
         }}
       >
-        {cardList.map((item, index) => {
-          const isEven = (item.x + item.y) % 2 === 0;
-          const itemBgColor = isEven ? bgColor_1 : bgColor_2;
-          const itemFontColor = isEven ? fontColor_1 : fontColor_2;
-          const Component = cardMap[item.component];
+        {cardList.map(
+          (item: { x: number; y: number; component: any }, index: number) => {
+            const isEven = (item.x + item.y) % 2 === 0;
+            const itemBgColor = isEven ? bgColor_1 : bgColor_2;
+            const itemFontColor = isEven ? fontColor_1 : fontColor_2;
+            const Component = cardMap[item.component];
 
-          return (
-            <div key={`${item.x}-${item.y}`}>
-              {item.component === "setter" ? (
-                // Setter カードのみ特殊呼び出し
-                <Setter
-                  item={item}
-                  cardMap={cardMap}
-                  cardList={cardList}
-                  setCardList={setCardList}
-                  itemBgColor={itemBgColor}
-                  fontColor={itemFontColor}
-                />
-              ) : (
-                <div
-                  className={"absolute w-56 h-56 text-center"}
-                  style={{
-                    backgroundColor: itemBgColor,
-                    color: itemFontColor,
-                    left: item.x * 224, // 224 は カードの幅
-                    top: item.y * 224, // 224 は カードの幅
-                  }}
-                >
-                  {/* ドラッグアイコン */}
+            return (
+              <div key={`${item.x}-${item.y}`}>
+                {item.component === "setter" ? (
+                  // Setter カードのみ特殊呼び出し
+                  <Setter
+                    item={item}
+                    cardMap={cardMap}
+                    cardList={cardList}
+                    setCardList={setCardList}
+                    itemBgColor={itemBgColor}
+                    fontColor={itemFontColor}
+                  />
+                ) : (
                   <div
-                    className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100"
-                    draggable
-                    onDragStart={(e) => handleDragStart(index, e)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="20px"
-                      viewBox="0 -960 960 960"
-                      width="20px"
-                      fill={itemFontColor}
-                    >
-                      <path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z" />
-                    </svg>
-                  </div>
-
-                  {/* 閉じるボタン */}
-                  <div
-                    className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
-                    onClick={() => {
-                      const newList = [...cardList];
-                      newList[index] = {
-                        component: "setter",
-                        x: newList[index].x,
-                        y: newList[index].y,
-                      };
-                      setCardList(newList);
+                    className={"absolute w-56 h-56 text-center"}
+                    style={{
+                      backgroundColor: itemBgColor,
+                      color: itemFontColor,
+                      left: item.x * 224, // 224 は カードの幅
+                      top: item.y * 224, // 224 は カードの幅
                     }}
                   >
-                    ×
-                  </div>
+                    {/* ドラッグアイコン */}
+                    <div
+                      className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100"
+                      draggable
+                      onDragStart={(e) => handleDragStart(index, e)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="20px"
+                        viewBox="0 -960 960 960"
+                        width="20px"
+                        fill={itemFontColor}
+                      >
+                        <path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z" />
+                      </svg>
+                    </div>
 
-                  {/* カードの中身 */}
-                  {item.component === "styleSetting" ? (
-                    <StyleSetting
-                      bgColor_1={bgColor_1}
-                      setBgColor_1={setBgColor_1}
-                      bgColor_2={bgColor_2}
-                      setBgColor_2={setBgColor_2}
-                      fontColor_1={fontColor_1}
-                      setFontColor_1={setFontColor_1}
-                      fontColor_2={fontColor_2}
-                      setFontColor_2={setFontColor_2}
-                      fontStyle={fontStyle}
-                      setFontStyle={setFontStyle}
-                    />
-                  ) : (
-                    <Component zoomRatio={zoomRatio} />
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                    {/* 閉じるボタン */}
+                    <div
+                      className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
+                      onClick={() => {
+                        const newList = [...cardList];
+                        newList[index] = {
+                          component: "setter",
+                          x: newList[index].x,
+                          y: newList[index].y,
+                        };
+                        setCardList(newList);
+                      }}
+                    >
+                      ×
+                    </div>
+
+                    {/* カードの中身 */}
+                    {item.component === "styleSetting" ? (
+                      <StyleSetting
+                        bgColor_1={bgColor_1}
+                        setBgColor_1={setBgColor_1}
+                        bgColor_2={bgColor_2}
+                        setBgColor_2={setBgColor_2}
+                        fontColor_1={fontColor_1}
+                        setFontColor_1={setFontColor_1}
+                        fontColor_2={fontColor_2}
+                        setFontColor_2={setFontColor_2}
+                        fontStyle={fontStyle}
+                        setFontStyle={setFontStyle}
+                      />
+                    ) : (
+                      <Component zoomRatio={zoomRatio} />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          }
+        )}
       </div>
     </>
   );
