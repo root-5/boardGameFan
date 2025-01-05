@@ -19,7 +19,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`relative antialiased h-screen select-none`}
+        className={`relative antialiased h-screen select-none overflow-x-hidden`}
       >
         <img
           src="/bg.jpg"

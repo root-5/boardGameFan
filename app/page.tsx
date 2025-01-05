@@ -1,34 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Score from "../components/score";
-import Dice from "../components/dice";
-import Token from "../components/token";
-import Timer from "../components/timer";
-import Roulette from "../components/roulette";
-import Turn from "../components/turn";
-import Winner from "../components/winner";
-import Info from "../components/info";
+import { componentMap } from "../utils/componentMap";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
-
-// コンポーネントマッピング
-const componentMap: {
-  [key: string]: React.ComponentType<{ zoomRatio: number }>;
-} = {
-  score: Score,
-  dice: Dice,
-  token: Token,
-  timer: Timer,
-  roulette: Roulette,
-  turn: Turn,
-  winner: Winner,
-  info: Info,
-
-  // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
-  // setter: Setter,
-  // styleSetting: StyleSetting,
-};
 
 // 初期カード
 const initialCards = [
@@ -66,7 +41,7 @@ export default function App() {
   const [fontColor_1, setFontColor_1] = useState("#eeeeee");
   const [fontColor_2, setFontColor_2] = useState("#ffffff");
   const [fontStyle, setFontStyle] = useState("Comic Sans MS");
-  const [zoomRatio, seZoomRatio] = useState(1); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
+  const [zoomRatio, setZoomRatio] = useState(1); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -85,26 +60,37 @@ export default function App() {
       if (window.outerWidth <= 500) {
         // 幅が 500px 以下はカード幅を画面幅に合わせる
         newScale = window.outerWidth / cardSize;
-        seZoomRatio(newScale);
+        setZoomRatio(newScale);
         isSP = true;
       } else {
         // カードの幅を基準に、グリッドの行数と列数を計算
         cols = Math.floor(window.innerWidth / cardSize);
         newScale = Math.min(window.innerWidth / (cols * cardSize));
-        seZoomRatio(newScale);
+        setZoomRatio(newScale);
       }
     };
     updateGridSize();
 
     // 初期カードを設置し、空いた個所に setter を設置する
-    const cardList = isSP ? initialCardsSP : initialCards;
+    let cardList;
+    const state = loadStateFromCookies();
+    if (state) {
+      cardList = state.cardList;
+      setBgColor_1(state.bgColor_1);
+      setBgColor_2(state.bgColor_2);
+      setFontColor_1(state.fontColor_1);
+      setFontColor_2(state.fontColor_2);
+      setFontStyle(state.fontStyle);
+    } else {
+      cardList = isSP ? initialCardsSP : initialCards;
+    }
     setCardList(cardList);
     const rows = isSP ? cardList.length : Math.floor(window.innerHeight / 224);
     const newComponentList = [];
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         const existingComponent = cardList.find(
-          (comp) => comp.x === x && comp.y === y
+          (comp: { x: number; y: number }) => comp.x === x && comp.y === y
         );
         newComponentList.push(
           existingComponent || { component: "setter", x, y }
@@ -112,10 +98,38 @@ export default function App() {
       }
     }
     setCardList(newComponentList);
+    saveStateToCookies();
 
     window.addEventListener("resize", updateGridSize);
     return () => window.removeEventListener("resize", updateGridSize);
   }, []);
+
+  // ステートをクッキーに保存する関数
+  const saveStateToCookies = () => {
+    const state = {
+      cardList,
+      bgColor_1,
+      bgColor_2,
+      fontColor_1,
+      fontColor_2,
+      fontStyle,
+    };
+    document.cookie = "appState=" + JSON.stringify(state);
+  };
+  useEffect(() => {
+    saveStateToCookies();
+  }, [cardList, bgColor_1, bgColor_2, fontColor_1, fontColor_2, fontStyle]);
+
+  // クッキーからステートを読み込む関数
+  const loadStateFromCookies = () => {
+    const stateJson = document.cookie
+      .split(";")
+      .map((item) => item.trim())
+      .find((item) => item.startsWith("appState="))
+      ?.split("=")[1];
+    const state = stateJson ? JSON.parse(stateJson) : null;
+    return state;
+  };
 
   // ドラッグ＆ドロップ処理
   const handleDragStart = (
@@ -139,7 +153,6 @@ export default function App() {
       const targetIndex = newList.findIndex(
         (item) => item.x === newX && item.y === newY
       );
-
       if (targetIndex !== -1) {
         // カードを交換する
         const temp = newList[targetIndex];
@@ -161,69 +174,6 @@ export default function App() {
     setDragIndex(null);
     setDragOffset(null);
   };
-
-  // ステートをクッキーに保存する関数
-  const saveStateToCookies = () => {
-    const state = {
-      cardList,
-      bgColor_1,
-      bgColor_2,
-      fontColor_1,
-      fontColor_2,
-      fontStyle,
-      zoomRatio,
-    };
-    document.cookie = "appState=" + JSON.stringify(state);
-  };
-  useEffect(() => {
-    saveStateToCookies();
-    console.log(
-      document.cookie
-        .split(";")
-        .map((item) => item.trim())
-        .find((item) => item.startsWith("appState="))
-        ?.split("=")[1]
-    );
-  }, [
-    cardList,
-    bgColor_1,
-    bgColor_2,
-    fontColor_1,
-    fontColor_2,
-    fontStyle,
-    zoomRatio,
-  ]);
-
-  // クッキーからステートを読み込む関数
-  const loadStateFromCookies = () => {
-    const stateJson = document.cookie
-      .split(";")
-      .map((item) => item.trim())
-      .find((item) => item.startsWith("appState="))
-      ?.split("=")[1];
-
-    console.log(
-      document.cookie
-        .split(";")
-        .map((item) => item.trim())
-        .find((item) => item.startsWith("appState="))
-        ?.split("=")[1]
-    );
-
-    if (stateJson) {
-      const state = JSON.parse(stateJson);
-      setCardList(state.cardList);
-      setBgColor_1(state.bgColor_1);
-      setBgColor_2(state.bgColor_2);
-      setFontColor_1(state.fontColor_1);
-      setFontColor_2(state.fontColor_2);
-      setFontStyle(state.fontStyle);
-      seZoomRatio(state.zoomRatio);
-    }
-  };
-  useEffect(() => {
-    loadStateFromCookies();
-  }, []);
 
   return (
     <>
