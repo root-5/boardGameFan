@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   cardMap,
   initialCards,
@@ -15,23 +15,22 @@ export default function App() {
   // ======================================================================
   // ステート定義
   // ======================================================================
-  // cookie 反映後フラグ
-  const [isCookieLoaded, setIsCookieLoaded] = useState(false);
-
-  // カードリスト
-  const [cardList, setCardList] = useState(initialCards);
-
-  // スタイル設定
-  const [cardStyle, setCardStyle] = useState(initialStyle);
-
-  // ズーム倍率
-  const [zoomRatio, setZoomRatio] = useState(1);
+  const [isCookieLoaded, setIsCookieLoaded] = useState(false); // クッキー読み込み完了フラグ
+  const [cardList, setCardList] = useState(initialCards); // カードリスト
+  const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
+  const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
     null
   );
+  const cardListRef = useRef(cardList);
+
+  // カードリストの変更を追跡する useEffect
+  useEffect(() => {
+    cardListRef.current = cardList;
+  }, [cardList]);
 
   // ======================================================================
   // ドラッグ＆ドロップ処理
@@ -119,13 +118,22 @@ export default function App() {
   const updateGrid = () => {
     const { cols, zoomRatio } = calcColsAndZoomRatio();
     const rows = Math.floor(window.innerHeight / 224);
-    const newCardList = updateCardList(cardList, cols, rows);
+    const newCardList = updateCardList(cardListRef.current, cols, rows);
     setZoomRatio(zoomRatio);
+    setCardList(newCardList);
   };
 
   // ======================================================================
   // useEffect
   // ======================================================================
+  // グリッドの更新 useEffect
+  useEffect(() => {
+    updateGrid();
+    const handleResize = () => updateGrid();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // クッキーからステートを読み込む useEffect
   useEffect(() => {
     if (!isCookieLoaded) {
@@ -141,13 +149,6 @@ export default function App() {
       );
     }
     setIsCookieLoaded(true);
-  }, []);
-
-  // グリッドの更新 useEffect
-  useEffect(() => {
-    updateGrid();
-    window.addEventListener("resize", updateGrid);
-    return () => window.removeEventListener("resize", updateGrid);
   }, []);
 
   // 各ステート変更をクッキーに保存する useEffect

@@ -58,5 +58,4 @@ export const initialStyle = {
   fontColor_1: "#eeeeee",
   fontColor_2: "#ffffff",
   fontStyle: "Comic Sans MS",
-  // zoomRatio: 1,
 };
