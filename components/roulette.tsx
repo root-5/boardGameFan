@@ -13,12 +13,24 @@ type user = {
 // 初期角速度
 const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
 
+// HSLを#rrggbb形式に変換
+const hslToHex = (h: number, s: number, l: number) => {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0'); // 16進数に変換
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+};
+
 // パステルカラー生成
 const generatePastelColors = (numColors: number) => {
   const colors = [];
   for (let i = 0; i < numColors; i++) {
     const hue = (i * 360) / numColors;
-    const pastelColor = `hsl(${hue}, 80%, 55%)`; // 彩度100%、輝度80%でパステルカラーを生成
+    const pastelColor = hslToHex(hue, 80, 55); // 彩度80%、輝度55%でパステルカラーを生成
     colors.push(pastelColor);
   }
   return colors;

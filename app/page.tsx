@@ -33,12 +33,12 @@ const componentMap: {
 // 初期カード
 const initialCards = [
   { component: "winner", x: 0, y: 0 },
-  { component: "score", x: 2, y: 0 },
-  { component: "dice", x: 0, y: 1 },
-  { component: "token", x: 1, y: 1 },
+  { component: "turn", x: 1, y: 0 },
+  { component: "dice", x: 2, y: 0 },
+  { component: "token", x: 0, y: 1 },
+  { component: "roulette", x: 1, y: 1 },
   { component: "timer", x: 2, y: 1 },
-  { component: "roulette", x: 1, y: 0 },
-  { component: "turn", x: 0, y: 2 },
+  { component: "score", x: 0, y: 2 },
   { component: "styleSetting", x: 1, y: 2 },
   { component: "info", x: 2, y: 2 },
 ];
@@ -68,13 +68,23 @@ export default function App() {
   useEffect(() => {
     const updateGridSize = () => {
       const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
-      const cols = Math.floor(window.innerWidth / cardSize);
-      const rows = Math.floor(window.innerHeight / cardSize);
-      const newScale = Math.min(
-        window.innerWidth / (cols * cardSize),
-        window.innerHeight / (rows * cardSize)
-      );
-      setGridSize({ rows, cols });
+      let newScale = 1;
+
+      if (window.outerWidth <= 500) {
+        // 幅が 500px 以下はカード幅を画面幅に合わせる
+        newScale = window.outerWidth / cardSize / 2;
+        setGridSize({ rows: 3, cols: 2 });
+        seZoomRatio(newScale);
+      } else {
+        // カードの幅を基準に、グリッドの行数と列数を計算
+        const cols = Math.floor(window.outerWidth / cardSize);
+        const rows = Math.floor(window.outerHeight / cardSize);
+        newScale = Math.min(
+          window.outerWidth / (cols * cardSize),
+          window.outerHeight / (rows * cardSize)
+        );
+        setGridSize({ rows, cols });
+      }
       seZoomRatio(newScale);
     };
 
