@@ -22,12 +22,7 @@ export default function App() {
   const [cardList, setCardList] = useState(initialCards);
 
   // スタイル設定
-  const [bgColor_1, setBgColor_1] = useState(initialStyle.bgColor_1);
-  const [bgColor_2, setBgColor_2] = useState(initialStyle.bgColor_2);
-  const [fontColor_1, setFontColor_1] = useState(initialStyle.fontColor_1);
-  const [fontColor_2, setFontColor_2] = useState(initialStyle.fontColor_2);
-  const [fontStyle, setFontStyle] = useState(initialStyle.fontStyle);
-  const [zoomRatio, setZoomRatio] = useState(initialStyle.zoomRatio); // CSS の zoomRatio 値、カードを画面幅で設置するために使用
+  const [cardStyle, setCardStyle] = useState(initialStyle);
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -76,7 +71,7 @@ export default function App() {
     const { cols, zoomRatio } = calcColsAndZoomRatio();
     const rows = Math.floor(window.innerHeight / 224);
     const newCardList = updateCardList(cardList, cols, rows);
-    setZoomRatio(zoomRatio);
+    // setCardStyle({ ...cardStyle, zoomRatio: zoomRatio });
     // setCardList(newCardList);
   };
 
@@ -137,15 +132,19 @@ export default function App() {
           ? JSON.parse(getCookie("cardList") as string)
           : initialCards
       );
-      setBgColor_1(getCookie("bgColor_1") || initialStyle.bgColor_1);
-      setBgColor_2(getCookie("bgColor_2") || initialStyle.bgColor_2);
-      setFontColor_1(getCookie("fontColor_1") || initialStyle.fontColor_1);
-      setFontColor_2(getCookie("fontColor_2") || initialStyle.fontColor_2);
-      setFontStyle(getCookie("fontStyle") || initialStyle.fontStyle);
-
-      setIsCookieLoaded(true);
+      console.log(getCookie("cardStyle"));
+      console.log(cardStyle);
+      setCardStyle(
+        getCookie("cardStyle")
+          ? JSON.parse(getCookie("cardStyle") as string)
+          : initialStyle
+      );
     }
+    setIsCookieLoaded(true);
+  }, []);
 
+  // グリッドの更新 useEffect
+  useEffect(() => {
     updateGrid();
     window.addEventListener("resize", updateGrid);
     return () => window.removeEventListener("resize", updateGrid);
@@ -157,25 +156,9 @@ export default function App() {
     setCookie("cardList", JSON.stringify(cardList));
   }, [cardList]);
   useEffect(() => {
-    if (bgColor_1 === initialStyle.bgColor_1) return;
-    setCookie("bgColor_1", bgColor_1);
-  }, [bgColor_1]);
-  useEffect(() => {
-    if (bgColor_2 === initialStyle.bgColor_2) return;
-    setCookie("bgColor_2", bgColor_2);
-  }, [bgColor_2]);
-  useEffect(() => {
-    if (fontColor_1 === initialStyle.fontColor_1) return;
-    setCookie("fontColor_1", fontColor_1);
-  }, [fontColor_1]);
-  useEffect(() => {
-    if (fontColor_2 === initialStyle.fontColor_2) return;
-    setCookie("fontColor_2", fontColor_2);
-  }, [fontColor_2]);
-  useEffect(() => {
-    if (fontStyle === initialStyle.fontStyle) return;
-    setCookie("fontStyle", fontStyle);
-  }, [fontStyle]);
+    if (cardStyle === initialStyle) return;
+    setCookie("cardStyle", JSON.stringify(cardStyle));
+  }, [cardStyle]);
 
   // ======================================================================
   // レンダリング
@@ -188,15 +171,19 @@ export default function App() {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         style={{
-          fontFamily: `${fontStyle}`,
-          zoom: zoomRatio,
+          fontFamily: `${cardStyle.fontStyle}`,
+          zoom: cardStyle.zoomRatio,
         }}
       >
         {cardList.map(
           (item: { x: number; y: number; component: any }, index: number) => {
             const isEven = (item.x + item.y) % 2 === 0;
-            const itemBgColor = isEven ? bgColor_1 : bgColor_2;
-            const itemFontColor = isEven ? fontColor_1 : fontColor_2;
+            const itemBgColor = isEven
+              ? cardStyle.bgColor_1
+              : cardStyle.bgColor_2;
+            const itemFontColor = isEven
+              ? cardStyle.fontColor_1
+              : cardStyle.fontColor_2;
             const Component = cardMap[item.component];
 
             return (
@@ -257,19 +244,11 @@ export default function App() {
                     {/* カードの中身 */}
                     {item.component === "styleSetting" ? (
                       <StyleSetting
-                        bgColor_1={bgColor_1}
-                        setBgColor_1={setBgColor_1}
-                        bgColor_2={bgColor_2}
-                        setBgColor_2={setBgColor_2}
-                        fontColor_1={fontColor_1}
-                        setFontColor_1={setFontColor_1}
-                        fontColor_2={fontColor_2}
-                        setFontColor_2={setFontColor_2}
-                        fontStyle={fontStyle}
-                        setFontStyle={setFontStyle}
+                        cardStyle={cardStyle}
+                        setCardStyle={setCardStyle}
                       />
                     ) : (
-                      <Component zoomRatio={zoomRatio} />
+                      <Component zoomRatio={cardStyle.zoomRatio} />
                     )}
                   </div>
                 )}
