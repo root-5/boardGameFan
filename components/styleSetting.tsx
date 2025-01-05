@@ -1,6 +1,9 @@
 export default function StyleSetting({
   cardStyle,
   setCardStyle,
+  initialCards,
+  setCardList,
+  updateGrid,
 }: {
   cardStyle: {
     bgColor_1: string;
@@ -10,6 +13,9 @@ export default function StyleSetting({
     fontStyle: string;
   };
   setCardStyle: Function;
+  initialCards: { component: string; x: number; y: number }[];
+  setCardList: Function;
+  updateGrid: Function;
 }) {
   return (
     <div className={"relative w-56 h-56 text-center"}>
@@ -84,6 +90,15 @@ export default function StyleSetting({
             Verdana
           </option>
         </select>
+        {/* <button
+          className="w-40 h-8 text-white rounded-lg duration-200 hover:bg-red-500"
+          onClick={() => {
+            setCardList(initialCards);
+            updateGrid();
+          }}
+        >
+          {"Reset Cards"}
+        </button> */}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ export default function App() {
   const [cardList, setCardList] = useState(initialCards); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
+  const [viewRange, setViewRange] = useState({ x: 12, y: 12 }); // 表示範囲
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -114,11 +115,19 @@ export default function App() {
   // ロード時と window 幅が変わったときに呼び出される関数
   // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
   const updateGrid = () => {
+    // 内部的に保持するカードリストの最大サイズ
+    const maxCardListCols = 12;
+    const maxCardListRows = 12;
     const { cols, zoomRatio } = calcColsAndZoomRatio();
     const rows = Math.floor(window.innerHeight / 224);
-    const newCardList = updateCardList(cardListRef.current, cols, rows);
+    const newCardList = updateCardList(
+      cardListRef.current,
+      maxCardListCols,
+      maxCardListRows
+    );
     setZoomRatio(zoomRatio);
     setCardList(newCardList);
+    setViewRange({ x: cols, y: rows });
   };
 
   // ======================================================================
@@ -134,6 +143,7 @@ export default function App() {
 
   // クッキーからステートを読み込む useEffect
   useEffect(() => {
+    if (isCookieLoaded) return;
     try {
       setCardList(
         getCookie("cardList")
@@ -180,6 +190,10 @@ export default function App() {
       >
         {cardList.map(
           (item: { x: number; y: number; component: any }, index: number) => {
+            // 表示範囲外のカードはレンダリングしない
+            if (item.x >= viewRange.x || item.y >= viewRange.y) return null;
+
+            // 背景色、フォント色を設定
             const isEven = (item.x + item.y) % 2 === 0;
             const itemBgColor = isEven
               ? cardStyle.bgColor_1
@@ -230,7 +244,11 @@ export default function App() {
 
                     {/* 閉じるボタン */}
                     <div
-                      className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
+                      // StyleSetting では非表示
+                      className={
+                        "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
+                        (item.component === "styleSetting" ? " hidden" : "")
+                      }
                       onClick={() => {
                         const newList = [...cardList];
                         newList[index] = {
@@ -249,6 +267,9 @@ export default function App() {
                       <StyleSetting
                         cardStyle={cardStyle}
                         setCardStyle={setCardStyle}
+                        initialCards={initialCards}
+                        setCardList={setCardList}
+                        updateGrid={updateGrid}
                       />
                     ) : (
                       <Component zoomRatio={zoomRatio} />
