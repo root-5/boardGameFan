@@ -9,8 +9,6 @@ export default function StyleSetting({
   setFontColor_2,
   fontStyle,
   setFontStyle,
-  downloadStateAsJson,
-  loadStateFromJson,
 }: {
   bgColor_1: string;
   setBgColor_1: (color: string) => void;
@@ -22,8 +20,6 @@ export default function StyleSetting({
   setFontColor_2: (color: string) => void;
   fontStyle: string;
   setFontStyle: (style: string) => void;
-  downloadStateAsJson: () => void;
-  loadStateFromJson: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <div className={"relative w-56 h-56 text-center"}>
@@ -88,27 +84,6 @@ export default function StyleSetting({
             Verdana
           </option>
         </select>
-        <div className="w-full flex gap-1 justify-center items-center">
-          <button
-            className="px-2 py-1 text-[12px] whitespace-nowrap rounded duration-200 hover:opacity-70"
-            onClick={downloadStateAsJson}
-          >
-            Save Setting
-          </button>
-          <input
-            type="file"
-            accept=".json"
-            className="hidden"
-            id="upload-json"
-            onChange={loadStateFromJson}
-          />
-          <label
-            htmlFor="upload-json"
-            className="px-2 py-1 text-[12px] whitespace-nowrap rounded cursor-pointer duration-200 hover:opacity-70"
-          >
-            Load Setting
-          </label>
-        </div>
       </div>
     </div>
   );

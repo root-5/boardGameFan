@@ -162,8 +162,8 @@ export default function App() {
     setDragOffset(null);
   };
 
-  // ステートを JSON 形式でダウンロードする関数
-  const downloadStateAsJson = () => {
+  // ステートをクッキーに保存する関数
+  const saveStateToCookies = () => {
     const state = {
       cardList,
       bgColor_1,
@@ -171,34 +171,59 @@ export default function App() {
       fontColor_1,
       fontColor_2,
       fontStyle,
+      zoomRatio,
     };
-    const stateJson = JSON.stringify(state);
-    const blob = new Blob([stateJson], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "state.json";
-    a.click();
-    URL.revokeObjectURL(url);
+    document.cookie = "appState=" + JSON.stringify(state);
   };
+  useEffect(() => {
+    saveStateToCookies();
+    console.log(
+      document.cookie
+        .split(";")
+        .map((item) => item.trim())
+        .find((item) => item.startsWith("appState="))
+        ?.split("=")[1]
+    );
+  }, [
+    cardList,
+    bgColor_1,
+    bgColor_2,
+    fontColor_1,
+    fontColor_2,
+    fontStyle,
+    zoomRatio,
+  ]);
 
-  // JSON ファイルからステートを読み込む関数
-  const loadStateFromJson = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const state = JSON.parse(e.target?.result as string);
-        setCardList(state.cardList);
-        setBgColor_1(state.bgColor_1);
-        setBgColor_2(state.bgColor_2);
-        setFontColor_1(state.fontColor_1);
-        setFontColor_2(state.fontColor_2);
-        setFontStyle(state.fontStyle);
-      };
-      reader.readAsText(file);
+  // クッキーからステートを読み込む関数
+  const loadStateFromCookies = () => {
+    const stateJson = document.cookie
+      .split(";")
+      .map((item) => item.trim())
+      .find((item) => item.startsWith("appState="))
+      ?.split("=")[1];
+
+    console.log(
+      document.cookie
+        .split(";")
+        .map((item) => item.trim())
+        .find((item) => item.startsWith("appState="))
+        ?.split("=")[1]
+    );
+
+    if (stateJson) {
+      const state = JSON.parse(stateJson);
+      setCardList(state.cardList);
+      setBgColor_1(state.bgColor_1);
+      setBgColor_2(state.bgColor_2);
+      setFontColor_1(state.fontColor_1);
+      setFontColor_2(state.fontColor_2);
+      setFontStyle(state.fontStyle);
+      seZoomRatio(state.zoomRatio);
     }
   };
+  useEffect(() => {
+    loadStateFromCookies();
+  }, []);
 
   return (
     <>
@@ -286,8 +311,6 @@ export default function App() {
                       setFontColor_2={setFontColor_2}
                       fontStyle={fontStyle}
                       setFontStyle={setFontStyle}
-                      downloadStateAsJson={downloadStateAsJson}
-                      loadStateFromJson={loadStateFromJson}
                     />
                   ) : (
                     <Component zoomRatio={zoomRatio} />
