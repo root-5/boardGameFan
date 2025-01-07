@@ -53,8 +53,8 @@ export const initialCardsSP = [
 
 // 初期スタイル
 export const initialStyle = {
-  bgColor_1: "#0f026f",
-  bgColor_2: "#672d8c",
+  bgColor_1: "#000011",
+  bgColor_2: "#111122",
   fontColor_1: "#eeeeee",
   fontColor_2: "#ffffff",
   fontStyle: "Comic Sans MS",

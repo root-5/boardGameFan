@@ -7,7 +7,7 @@ import {
   // initialCardsSP,
   initialStyle,
 } from "../utils/cardDefinitions";
-import { getLocalStorage, setLocalStorage } from "../utils/cookieUtils";
+import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 

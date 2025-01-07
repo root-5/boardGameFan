@@ -1,5 +1,8 @@
 ## 目的
 ボドゲ等を遊ぶ時のダイス、トークン、勝利点等を表示するためのアプリを作成する。
+当面は Cloudflare Pages にデプロイ。
+
+https://boardgamefan.pages.dev/
 
 ![開発中スクショ](image.png)
 
@@ -17,7 +20,6 @@
 
 ## インフラ
 Cloudflare Pages にデプロイ
-https://boardgamefan.pages.dev/
 
 1. Cloudflare Pages にログイン
 2. リポジトリを選択（すべてのリポジトリも選択できたがしなかった）
@@ -25,6 +27,7 @@ https://boardgamefan.pages.dev/
 4. 出力ディレクトリを `out` に設定
 
 ## 改善点
+- AI のさらなる積極利用
 - 画面幅が小さくなる場合のレスポンシブ
 - プレイヤー情報を共通設定化
 - Reset Cards ボタン実装
