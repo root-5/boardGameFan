@@ -22,11 +22,11 @@ export default function RootLayout({
         className={`relative antialiased h-screen select-none overflow-x-hidden`}
       >
         {/* Image を使用してしまうと読み込みが狂ったため img を使用 */}
-        {/* <img
-          src="/bg.jpg"
+        <img
+          src="/okumono_moku14.png"
           alt="background"
           className="absolute h-full w-full z-[-10] object-cover"
-        /> */}
+        />
         {children}
       </body>
     </html>
