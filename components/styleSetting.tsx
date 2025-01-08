@@ -1,10 +1,10 @@
 export default function StyleSetting({
   cardStyle,
   setCardStyle,
-  // initialCards,
-  // setCardList,
-  // updateGrid,
-}: {
+}: // initialCards,
+// setCardList,
+// updateGrid,
+{
   cardStyle: {
     bgColor_1: string;
     fontColor_1: string;
@@ -26,37 +26,37 @@ export default function StyleSetting({
   return (
     <div className={"relative w-56 h-56 text-center"}>
       <div className="py-6 flex flex-col justify-center items-center gap-3">
-        <div className="px-8 grid grid-cols-2 gap-1 justify-center items-center">
-          <div className="pt-0.5 block w-28 text-left">{"Base 1"}: </div>
+        <div className="px-8 grid grid-cols-2 gap-x-2 justify-center items-center">
+          <div className="pt-0.5 block text-left">{"Base 1"}: </div>
           <input
-            className="h-6 block w-16"
+            className="block w-6 m-auto bg-transparent cursor-pointer"
             type="color"
             value={cardStyle.bgColor_1}
             onChange={(e) =>
               setCardStyle({ ...cardStyle, bgColor_1: e.target.value })
             }
           />
-          <div className="h-6 pt-0.5 block w-28 text-left">{"Font 1"}: </div>
+          <div className="h-6 pt-0.5 block text-left">{"Font 1"}: </div>
           <input
-            className="h-6 block w-16"
+            className="block w-6 m-auto bg-transparent cursor-pointer"
             type="color"
             value={cardStyle.fontColor_1}
             onChange={(e) =>
               setCardStyle({ ...cardStyle, fontColor_1: e.target.value })
             }
           />
-          <div className="h-6 pt-0.5 block w-28 text-left">{"Base 2"}: </div>
+          <div className="h-6 pt-0.5 block text-left">{"Base 2"}: </div>
           <input
-            className="h-6 block w-16"
+            className="block w-6 m-auto bg-transparent cursor-pointer"
             type="color"
             value={cardStyle.bgColor_2}
             onChange={(e) =>
               setCardStyle({ ...cardStyle, bgColor_2: e.target.value })
             }
           />
-          <div className="h-6 pt-0.5 block w-28 text-left">{"Font 2"}: </div>
+          <div className="h-6 pt-0.5 block text-left">{"Font 2"}: </div>
           <input
-            className="h-6 block w-16"
+            className="block w-6 m-auto bg-transparent cursor-pointer"
             type="color"
             value={cardStyle.fontColor_2}
             onChange={(e) =>
@@ -65,7 +65,7 @@ export default function StyleSetting({
           />
         </div>
         <select
-          className="block w-40 bg-transparent"
+          className="block w-40 bg-transparent cursor-pointer"
           value={cardStyle.fontStyle}
           onChange={(e) =>
             setCardStyle({ ...cardStyle, fontStyle: e.target.value })
