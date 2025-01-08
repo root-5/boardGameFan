@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Player } from "../utils/types";
 
 // 勝利数の最大値と最小値
 const maxWins = 99;
@@ -18,7 +19,7 @@ function adjustWinCount(value: number): number {
   return value;
 }
 
-export default function WinnerCounter({ players }) {
+export default function WinnerCounter({ players }: { players: Player[] }) {
   const [playerWins, setPlayerWins] = useState(players.map(() => 0));
   const [playerDisplayTexts, setPlayerDisplayTexts] = useState(
     players.map(() => "🏆 × 0")
@@ -49,9 +50,7 @@ export default function WinnerCounter({ players }) {
           key={index}
           className="w-full grid grid-cols-2 place-content-between"
         >
-          <div onClick={() => handleWinChange(index, 1)}>
-            {player.name}
-          </div>
+          <div onClick={() => handleWinChange(index, 1)}>{player.name}</div>
           <div onClick={() => handleWinChange(index, -1)}>
             {playerDisplayTexts[index]}
           </div>
