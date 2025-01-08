@@ -13,39 +13,6 @@ type user = {
 // 初期角速度
 const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
 
-// HSLを#rrggbb形式に変換
-const hslToHex = (h: number, s: number, l: number) => {
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = (n: number) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0'); // 16進数に変換
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-};
-
-// パステルカラー生成
-const generatePastelColors = (numColors: number) => {
-  const colors = [];
-  for (let i = 0; i < numColors; i++) {
-    const hue = (i * 360) / numColors;
-    const pastelColor = hslToHex(hue, 80, 55); // 彩度80%、輝度55%でパステルカラーを生成
-    colors.push(pastelColor);
-  }
-  return colors;
-};
-
-// 初期ユーザー
-const initialUsers = [
-  { name: "Player_1", color: generatePastelColors(6)[0] },
-  { name: "Player_2", color: generatePastelColors(6)[1] },
-  { name: "Player_3", color: generatePastelColors(6)[2] },
-  { name: "Player_4", color: generatePastelColors(6)[3] },
-  { name: "Player_5", color: generatePastelColors(6)[4] },
-  { name: "Player_6", color: generatePastelColors(6)[5] },
-];
-
 // ルーレット盤
 function RouletteModel(props: { users: Array<user> }) {
   const { users } = props;
@@ -186,18 +153,19 @@ function GroupComponent(props: {
   );
 }
 
-export default function Roulette(props: { zoomRatio: number }) {
-  const { zoomRatio } = props;
+export default function Roulette(props: {
+  zoomRatio: number;
+  players: Array<user>;
+}) {
+  const { zoomRatio, players } = props;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [users, setUsers] = useState(initialUsers);
   const [rouletteNum, setRouletteNum] = useState(0);
 
   return (
     <>
       {/* 名前表示 */}
       <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-fit text-center text-2xl font-bold bg-opacity-80">
-        {users[rouletteNum].name}
+        {players[rouletteNum].name}
       </div>
       {/* ルーレット3D描画 */}
       <Canvas
@@ -206,7 +174,7 @@ export default function Roulette(props: { zoomRatio: number }) {
         style={{ background: "transparent", zoom: 1 / zoomRatio }}
       >
         <GroupComponent
-          users={users}
+          users={players}
           rouletteNum={rouletteNum}
           setRouletteNum={setRouletteNum}
         />
@@ -222,89 +190,6 @@ export default function Roulette(props: { zoomRatio: number }) {
         <directionalLight intensity={2.5} position={[20, 50, -25]} castShadow />
         <directionalLight intensity={1.5} position={[20, 20, 55]} castShadow />
       </Canvas>
-
-      {/* 設定ボタン */}
-      <div
-        className="absolute z-20 bottom-0 left-0 px-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-        onClick={() => setIsModalOpen(true)}
-      >
-        =
-      </div>
-
-      {/* モーダル */}
-      <div
-        className="absolute z-30 top-0 left-0 w-full h-full bg-gray-400 bg-opacity-70 overflow-hidden"
-        style={{ display: isModalOpen ? "block" : "none" }}
-      >
-        <div
-          className={
-            "absolute top-2 left-2 right-2 bottom-2 p-2 rounded-lg overflow-y-auto [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-track]:rounded-xl [&::-webkit-scrollbar-thumb]:rounded-xl [&::-webkit-scrollbar-track]:bg-inherit [&::-webkit-scrollbar-thumb]:bg-inherit"
-          }
-        >
-          <div
-            className="absolute top-1 right-1 text-3xl duration-200 cursor-pointer hover:opacity-50"
-            onClick={() => setIsModalOpen(false)}
-          >
-            ×
-          </div>
-          <div>
-            <ul>
-              {users.map((user, i) => (
-                <li key={i} className="flex">
-                  {/* 削除ボタン */}
-                  <div
-                    className="pr-2 text-2xl duration-200 cursor-pointer hover:opacity-50"
-                    onClick={() => {
-                      setUsers(users.filter((u, j) => i !== j));
-                    }}
-                  >
-                    ×
-                  </div>
-
-                  {/* 色指定 */}
-                  <input
-                    className="block w-6"
-                    type="color"
-                    value={user.color}
-                    onChange={(e) => {
-                      setUsers(
-                        users.map((u, j) =>
-                          i === j ? { ...u, color: e.target.value } : u
-                        )
-                      );
-                    }}
-                  />
-
-                  {/* 名前指定 */}
-                  <input
-                    className={
-                      "block ml-1 w-28 p-1 outline-none bg-transparent"
-                    }
-                    type="text"
-                    value={user.name}
-                    onChange={(e) => {
-                      setUsers(
-                        users.map((u, j) =>
-                          i === j ? { ...u, name: e.target.value } : u
-                        )
-                      );
-                    }}
-                  />
-                </li>
-              ))}
-              {/* 追加ボタン */}
-              <div
-                className="w-full text-2xl text-center duration-200 rounded cursor-pointer hover:opacity-50"
-                onClick={() => {
-                  setUsers([...users, { name: "Name", color: "#000000" }]);
-                }}
-              >
-                +
-              </div>
-            </ul>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

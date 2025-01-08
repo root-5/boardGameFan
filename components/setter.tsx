@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { CardComponent } from "../utils/types";
 
 export default function Setter(props: {
   item: { component: string; x: number; y: number };
-  cardMap: { [key: string]: React.ComponentType<{ zoomRatio: number }> };
+  cardMap: { [key: string]: CardComponent };
   cardList: { component: string; x: number; y: number }[];
   setCardList: (arg: { component: string; x: number; y: number }[]) => void;
   itemBgColor: string;
@@ -69,7 +70,7 @@ export default function Setter(props: {
               onMouseLeave={() => setSetterDisplay("none")}
             >
               {componentKeys.map((key, index) =>
-                key === "info" ? null : (
+                key === "info" ? null : key === "playerSetting" ? null : (
                   <button
                     key={index}
                     className="flex items-center justify-center text-sm duration-200 hover:brightness-150"

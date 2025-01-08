@@ -6,10 +6,12 @@ import {
   initialCards,
   // initialCardsSP,
   initialStyle,
+  initialPlayers,
 } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
+import PlayerSetting from "../components/playerSetting";
 
 export default function App() {
   // ======================================================================
@@ -42,6 +44,7 @@ export default function App() {
     x: maxCardListCols,
     y: maxCardListRows,
   }); // 表示範囲
+  const [players, setPlayers] = useState(initialPlayers); // プレイヤーデータ
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -238,7 +241,11 @@ export default function App() {
                     // StyleSetting では非表示
                     className={
                       "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
-                      (item.component === "styleSetting" ? " hidden" : "")
+                      (item.component === "styleSetting"
+                        ? " hidden"
+                        : item.component === "playerSetting"
+                        ? " hidden"
+                        : "")
                     }
                     onClick={() => {
                       const newList = [...cardList];
@@ -259,11 +266,15 @@ export default function App() {
                       cardStyle={cardStyle}
                       setCardStyle={setCardStyle}
                       initialCards={initialCards}
-                      // setCardList={setCardList}
-                      // updateGrid={updateGrid}
                     />
+                  ) : item.component === "playerSetting" ? (
+                    <PlayerSetting players={players} setPlayers={setPlayers} />
                   ) : (
-                    <Component zoomRatio={zoomRatio} />
+                    <Component
+                      zoomRatio={zoomRatio}
+                      players={players}
+                      setPlayers={setPlayers}
+                    />
                   )}
                 </div>
               )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Player } from "../utils/types";
 
 // 勝利数の最大値と最小値
 const maxWins = 99;
@@ -18,16 +19,11 @@ function adjustWinCount(value: number): number {
   return value;
 }
 
-export default function WinnerCounter() {
-  const [playerWins, setPlayerWins] = useState([0, 0, 0, 0, 0, 0]);
-  const [playerDisplayTexts, setPlayerDisplayTexts] = useState([
-    "🏆 × 0",
-    "🏆 × 0",
-    "🏆 × 0",
-    "🏆 × 0",
-    "🏆 × 0",
-    "🏆 × 0",
-  ]);
+export default function WinnerCounter({ players }: { players: Player[] }) {
+  const [playerWins, setPlayerWins] = useState(players.map(() => 0));
+  const [playerDisplayTexts, setPlayerDisplayTexts] = useState(
+    players.map(() => "🏆 × 0")
+  );
 
   const handleWinChange = (index: number, increment: number) => {
     const newWins = [...playerWins];
@@ -49,14 +45,12 @@ export default function WinnerCounter() {
 
   return (
     <div className="p-3 h-full flex flex-col justify-center items-center gap-1">
-      {playerWins.map((_, index) => (
+      {players.map((player, index) => (
         <div
           key={index}
           className="w-full grid grid-cols-2 place-content-between"
         >
-          <div onClick={() => handleWinChange(index, 1)}>
-            Player_{index + 1}
-          </div>
+          <div onClick={() => handleWinChange(index, 1)}>{player.name}</div>
           <div onClick={() => handleWinChange(index, -1)}>
             {playerDisplayTexts[index]}
           </div>
@@ -65,15 +59,8 @@ export default function WinnerCounter() {
       <div
         className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 duration-200 hover:opacity-100"
         onClick={() => {
-          setPlayerWins([0, 0, 0, 0, 0, 0]);
-          setPlayerDisplayTexts([
-            "🏆 × 0",
-            "🏆 × 0",
-            "🏆 × 0",
-            "🏆 × 0",
-            "🏆 × 0",
-            "🏆 × 0",
-          ]);
+          setPlayerWins(players.map(() => 0));
+          setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
         }}
       >
         ↺
