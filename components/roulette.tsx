@@ -36,16 +36,6 @@ const generatePastelColors = (numColors: number) => {
   return colors;
 };
 
-// 初期ユーザー
-const initialUsers = [
-  { name: "Player_1", color: generatePastelColors(6)[0] },
-  { name: "Player_2", color: generatePastelColors(6)[1] },
-  { name: "Player_3", color: generatePastelColors(6)[2] },
-  { name: "Player_4", color: generatePastelColors(6)[3] },
-  { name: "Player_5", color: generatePastelColors(6)[4] },
-  { name: "Player_6", color: generatePastelColors(6)[5] },
-];
-
 // ルーレット盤
 function RouletteModel(props: { users: Array<user> }) {
   const { users } = props;
@@ -186,18 +176,17 @@ function GroupComponent(props: {
   );
 }
 
-export default function Roulette(props: { zoomRatio: number }) {
-  const { zoomRatio } = props;
+export default function Roulette(props: { zoomRatio: number, players: Array<user> }) {
+  const { zoomRatio, players } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [users, setUsers] = useState(initialUsers);
   const [rouletteNum, setRouletteNum] = useState(0);
 
   return (
     <>
       {/* 名前表示 */}
       <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-fit text-center text-2xl font-bold bg-opacity-80">
-        {users[rouletteNum].name}
+        {players[rouletteNum].name}
       </div>
       {/* ルーレット3D描画 */}
       <Canvas
@@ -206,7 +195,7 @@ export default function Roulette(props: { zoomRatio: number }) {
         style={{ background: "transparent", zoom: 1 / zoomRatio }}
       >
         <GroupComponent
-          users={users}
+          users={players}
           rouletteNum={rouletteNum}
           setRouletteNum={setRouletteNum}
         />
@@ -249,7 +238,7 @@ export default function Roulette(props: { zoomRatio: number }) {
           </div>
           <div>
             <ul>
-              {users.map((user, i) => (
+              {players.map((user, i) => (
                 <li key={i} className="flex">
                   {/* 削除ボタン */}
                   <div

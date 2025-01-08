@@ -10,6 +10,7 @@ import {
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
+import PlayerSetting from "../components/playerSetting";
 
 export default function App() {
   // ======================================================================
@@ -42,6 +43,10 @@ export default function App() {
     x: maxCardListCols,
     y: maxCardListRows,
   }); // 表示範囲
+  const [players, setPlayers] = useState([
+    { name: "Player 1", color: "#ff0000" },
+    { name: "Player 2", color: "#00ff00" },
+  ]); // プレイヤーデータ
 
   // ドラッグ＆ドロップ関連
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -180,6 +185,7 @@ export default function App() {
           zoom: zoomRatio,
         }}
       >
+        <PlayerSetting onPlayersChange={setPlayers} />
         {cardList.map((item, index) => {
           // 表示範囲外のカードはレンダリングしない
           if (item.x >= viewRange.x || item.y >= viewRange.y) return null;
@@ -263,7 +269,7 @@ export default function App() {
                       // updateGrid={updateGrid}
                     />
                   ) : (
-                    <Component zoomRatio={zoomRatio} />
+                    <Component zoomRatio={zoomRatio} players={players} />
                   )}
                 </div>
               )}
