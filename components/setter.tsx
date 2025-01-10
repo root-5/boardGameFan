@@ -21,7 +21,7 @@ export default function Setter(props: {
     setCardList(
       cardList.map((c) =>
         c.x === item.x && c.y === item.y
-          ? { componentName: key, x: item.x, y: item.y }
+          ? { component: key, x: item.x, y: item.y }
           : c
       )
     );

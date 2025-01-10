@@ -12,7 +12,7 @@ export type CardComponent = React.ComponentType<{
 }>;
 
 export type CardSetting = {
-  componentName: string;
+  component: string;
   x: number;
   y: number;
 };

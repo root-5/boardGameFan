@@ -28,7 +28,7 @@ export default function App() {
         (comp) => comp.x === x && comp.y === y
       );
       if (!existingComponent) {
-        initialCardsSetting.push({ componentName: "setter", x, y });
+        initialCardsSetting.push({ component: "setter", x, y });
       }
     }
   }
@@ -199,11 +199,11 @@ export default function App() {
           const itemFontColor = isEven
             ? cardStyle.fontColor_1
             : cardStyle.fontColor_2;
-          const Component = cardMap[item.componentName];
+          const Component = cardMap[item.component];
 
           return (
             <div key={`${item.x}-${item.y}`}>
-              {item.componentName === "setter" ? (
+              {item.component === "setter" ? (
                 // Setter カードのみ特殊呼び出し
                 <Setter
                   item={item}
@@ -245,16 +245,16 @@ export default function App() {
                     // StyleSetting では非表示
                     className={
                       "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
-                      (item.componentName === "styleSetting"
+                      (item.component === "styleSetting"
                         ? " hidden"
-                        : item.componentName === "playerSetting"
+                        : item.component === "playerSetting"
                         ? " hidden"
                         : "")
                     }
                     onClick={() => {
                       const newList = [...cardList];
                       newList[index] = {
-                        componentName: "setter",
+                        component: "setter",
                         x: newList[index].x,
                         y: newList[index].y,
                       };
@@ -265,12 +265,12 @@ export default function App() {
                   </div>
 
                   {/* カードの中身 */}
-                  {item.componentName === "styleSetting" ? (
+                  {item.component === "styleSetting" ? (
                     <StyleSetting
                       cardStyle={cardStyle}
                       setCardStyle={setCardStyle}
                     />
-                  ) : item.componentName === "playerSetting" ? (
+                  ) : item.component === "playerSetting" ? (
                     <PlayerSetting players={players} setPlayers={setPlayers} />
                   ) : (
                     <Component
