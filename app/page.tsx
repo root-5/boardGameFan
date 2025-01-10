@@ -9,6 +9,7 @@ import {
   initialPlayers,
 } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
+import { useDragDrop } from "../utils/dragDropUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 import PlayerSetting from "../components/playerSetting";
@@ -63,44 +64,14 @@ export default function App() {
   // ======================================================================
   // ドラッグ＆ドロップ処理
   // ======================================================================
-  const handleDragStart = (
-    index: number,
-    e: React.DragEvent<HTMLDivElement>
-  ) => {
-    setDragIndex(index);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    if (dragIndex === null || dragOffset === null) return;
-    const cardSize = 224;
-    const newList = [...cardList];
-    const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
-    const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
-    if (newX >= 0 && newY >= 0) {
-      const targetIndex = newList.findIndex(
-        (item) => item.x === newX && item.y === newY
-      );
-      if (targetIndex !== -1) {
-        [newList[targetIndex], newList[dragIndex]] = [
-          { ...newList[dragIndex], x: newX, y: newY },
-          {
-            ...newList[targetIndex],
-            x: newList[dragIndex].x,
-            y: newList[dragIndex].y,
-          },
-        ];
-      } else {
-        newList[dragIndex] = { ...newList[dragIndex], x: newX, y: newY };
-      }
-      setCardList(newList);
-    }
-    setDragIndex(null);
-    setDragOffset(null);
-  };
+  const { handleDragStart, handleDragOver, handleDrop } = useDragDrop(
+    setDragIndex,
+    setDragOffset,
+    dragIndex,
+    dragOffset,
+    cardList,
+    setCardList
+  );
 
   // ======================================================================
   // グリッド関連処理
@@ -148,7 +119,7 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, [isCookieLoaded]); // 初回のみ実行でいいので、isCookieLoaded を監視対象にする
 
-  // クッキーからステートを読み込む useEffect
+  // ローカルストレージからステートを読み込む useEffect
   useEffect(() => {
     if (isCookieLoaded) return;
     const cardListStorage = getLocalStorage("cardList");
