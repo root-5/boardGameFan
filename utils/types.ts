@@ -10,3 +10,5 @@ export type CardComponent = React.ComponentType<{
   players:  Player[];
   setPlayers: (arg: Player[]) => void;
 }>;
+
+export type NodeJS.Timeout = ReturnType<typeof setTimeout>;

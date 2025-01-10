@@ -12,6 +12,7 @@ import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 import PlayerSetting from "../components/playerSetting";
+import { Player, CardComponent } from "../utils/types";
 
 export default function App() {
   // ======================================================================

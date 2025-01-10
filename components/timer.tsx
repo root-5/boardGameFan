@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { NodeJS } from "../utils/types";
 
 const timerMax = 359999; // 99:59:59 (最大値)
 const timerMin = 0; // 00:00:00 (最小値)
