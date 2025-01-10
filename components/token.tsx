@@ -37,7 +37,9 @@ export default function Token() {
   return (
     <>
       <div className="h-full flex flex-col justify-center items-center gap-2 p-4 text-2xl">
-        <p className="my-[-10px] text-[9px] opacity-50">INPUT / ARROW KEY / SCROLL</p>
+        <p className="my-[-10px] text-[9px] opacity-50">
+          INPUT / ARROW KEY / SCROLL
+        </p>
         {tokenCounts.map((count, index) => (
           <div key={index} className="flex justify-center items-center">
             <div
@@ -55,9 +57,11 @@ export default function Token() {
               {tokenIcons[index]}
             </div>
             <input
-              className="inline-block ml-4 w-9 bg-transparent outline-none text-center"
+              className="inline-block ml-3 w-12 bg-transparent outline-none text-center"
               type="number"
-              onChange={(e) => handleInputChange(index, parseInt(e.target.value))}
+              onChange={(e) =>
+                handleInputChange(index, parseInt(e.target.value))
+              }
               value={count}
             />
             <div

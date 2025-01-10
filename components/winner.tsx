@@ -50,8 +50,16 @@ export default function WinnerCounter({ players }: { players: Player[] }) {
           key={index}
           className="w-full grid grid-cols-2 place-content-between"
         >
-          <div onClick={() => handleWinChange(index, 1)}>{player.name}</div>
-          <div onClick={() => handleWinChange(index, -1)}>
+          <div
+            className="cursor-pointer"
+            onClick={() => handleWinChange(index, 1)}
+          >
+            {player.name}
+          </div>
+          <div
+            className="cursor-pointer"
+            onClick={() => handleWinChange(index, -1)}
+          >
             {playerDisplayTexts[index]}
           </div>
         </div>
