@@ -1,3 +1,5 @@
+import { CardStyle } from "../utils/types";
+
 export default function StyleSetting({
   cardStyle,
   setCardStyle,
@@ -5,22 +7,9 @@ export default function StyleSetting({
 // setCardList,
 // updateGrid,
 {
-  cardStyle: {
-    bgColor_1: string;
-    fontColor_1: string;
-    bgColor_2: string;
-    fontColor_2: string;
-    fontStyle: string;
-  };
-  setCardStyle: (cardStyle: {
-    bgColor_1: string;
-    fontColor_1: string;
-    bgColor_2: string;
-    fontColor_2: string;
-    fontStyle: string;
-  }) => void;
-  initialCards: { component: string; x: number; y: number }[];
-  // setCardList: (cardList: { component: string; x: number; y: number }[]) => void;
+  cardStyle: CardStyle;
+  setCardStyle: (cardStyle: CardStyle) => void;
+  // setCardList: (cardList: CardSetting[]) => void;
   // updateGrid: () => void;
 }) {
   return (

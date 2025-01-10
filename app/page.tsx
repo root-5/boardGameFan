@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import {
   cardMap,
-  initialCards,
-  // initialCardsSP,
+  initialCardsSetting,
+  // initialCardsSettingSP,
   initialStyle,
   initialPlayers,
 } from "../utils/cardDefinitions";
@@ -21,14 +21,14 @@ export default function App() {
   const maxCardListCols = 20;
   const maxCardListRows = 20;
 
-  // initialCards の空きを setter カードで埋める
+  // initialCardsSetting の空きを setter カードで埋める
   for (let y = 0; y < maxCardListRows; y++) {
     for (let x = 0; x < maxCardListCols; x++) {
-      const existingComponent = initialCards.find(
+      const existingComponent = initialCardsSetting.find(
         (comp) => comp.x === x && comp.y === y
       );
       if (!existingComponent) {
-        initialCards.push({ component: "setter", x, y });
+        initialCardsSetting.push({ componentName: "setter", x, y });
       }
     }
   }
@@ -37,7 +37,7 @@ export default function App() {
   // ステート定義
   // ======================================================================
   const [isCookieLoaded, setIsCookieLoaded] = useState(false); // クッキー読み込み完了フラグ
-  const [cardList, setCardList] = useState(initialCards); // カードリスト
+  const [cardList, setCardList] = useState(initialCardsSetting); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
   const [viewRange, setViewRange] = useState({
@@ -127,7 +127,9 @@ export default function App() {
     const rows = Math.floor(window.innerHeight / 224);
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
-    setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCards);
+    setCardList(
+      cardListStorage ? JSON.parse(cardListStorage) : initialCardsSetting
+    );
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
     );
@@ -151,7 +153,9 @@ export default function App() {
     if (isCookieLoaded) return;
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
-    setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCards);
+    setCardList(
+      cardListStorage ? JSON.parse(cardListStorage) : initialCardsSetting
+    );
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
     );
@@ -160,7 +164,7 @@ export default function App() {
 
   // 各ステート変更をローカルストレージに保存する useEffect
   useEffect(() => {
-    if (cardList === initialCards) return;
+    if (cardList === initialCardsSetting) return;
     setLocalStorage("cardList", JSON.stringify(cardList));
   }, [cardList]);
   useEffect(() => {
@@ -195,11 +199,11 @@ export default function App() {
           const itemFontColor = isEven
             ? cardStyle.fontColor_1
             : cardStyle.fontColor_2;
-          const Component = cardMap[item.component];
+          const Component = cardMap[item.componentName];
 
           return (
             <div key={`${item.x}-${item.y}`}>
-              {item.component === "setter" ? (
+              {item.componentName === "setter" ? (
                 // Setter カードのみ特殊呼び出し
                 <Setter
                   item={item}
@@ -241,16 +245,16 @@ export default function App() {
                     // StyleSetting では非表示
                     className={
                       "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
-                      (item.component === "styleSetting"
+                      (item.componentName === "styleSetting"
                         ? " hidden"
-                        : item.component === "playerSetting"
+                        : item.componentName === "playerSetting"
                         ? " hidden"
                         : "")
                     }
                     onClick={() => {
                       const newList = [...cardList];
                       newList[index] = {
-                        component: "setter",
+                        componentName: "setter",
                         x: newList[index].x,
                         y: newList[index].y,
                       };
@@ -261,13 +265,12 @@ export default function App() {
                   </div>
 
                   {/* カードの中身 */}
-                  {item.component === "styleSetting" ? (
+                  {item.componentName === "styleSetting" ? (
                     <StyleSetting
                       cardStyle={cardStyle}
                       setCardStyle={setCardStyle}
-                      initialCards={initialCards}
                     />
-                  ) : item.component === "playerSetting" ? (
+                  ) : item.componentName === "playerSetting" ? (
                     <PlayerSetting players={players} setPlayers={setPlayers} />
                   ) : (
                     <Component

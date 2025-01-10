@@ -29,31 +29,31 @@ export const cardMap: {
 };
 
 // 初期カード
-export const initialCards = [
-  { component: "winner", x: 0, y: 0 },
-  { component: "turn", x: 1, y: 0 },
-  { component: "dice", x: 2, y: 0 },
-  { component: "token", x: 0, y: 1 },
-  { component: "roulette", x: 1, y: 1 },
-  { component: "timer", x: 2, y: 1 },
-  { component: "score", x: 0, y: 2 },
-  { component: "styleSetting", x: 1, y: 2 },
-  { component: "info", x: 2, y: 2 },
-  { component: "playerSetting", x: 0, y: 3 },
+export const initialCardsSetting = [
+  { componentName: "winner", x: 0, y: 0 },
+  { componentName: "turn", x: 1, y: 0 },
+  { componentName: "dice", x: 2, y: 0 },
+  { componentName: "token", x: 0, y: 1 },
+  { componentName: "roulette", x: 1, y: 1 },
+  { componentName: "timer", x: 2, y: 1 },
+  { componentName: "score", x: 0, y: 2 },
+  { componentName: "styleSetting", x: 1, y: 2 },
+  { componentName: "info", x: 2, y: 2 },
+  { componentName: "playerSetting", x: 0, y: 3 },
 ];
 
 // 初期カード（SPモード、x=0 のみ）
-export const initialCardsSP = [
-  { component: "winner", x: 0, y: 0 },
-  { component: "turn", x: 0, y: 1 },
-  { component: "dice", x: 0, y: 2 },
-  { component: "token", x: 0, y: 3 },
-  { component: "roulette", x: 0, y: 4 },
-  { component: "timer", x: 0, y: 5 },
-  { component: "score", x: 0, y: 6 },
-  { component: "styleSetting", x: 0, y: 7 },
-  { component: "info", x: 0, y: 8 },
-  { component: "playerSetting", x: 0, y: 9 },
+export const initialCardsSettingSP = [
+  { componentName: "winner", x: 0, y: 0 },
+  { componentName: "turn", x: 0, y: 1 },
+  { componentName: "dice", x: 0, y: 2 },
+  { componentName: "token", x: 0, y: 3 },
+  { componentName: "roulette", x: 0, y: 4 },
+  { componentName: "timer", x: 0, y: 5 },
+  { componentName: "score", x: 0, y: 6 },
+  { componentName: "styleSetting", x: 0, y: 7 },
+  { componentName: "info", x: 0, y: 8 },
+  { componentName: "playerSetting", x: 0, y: 9 },
 ];
 
 // 初期スタイル

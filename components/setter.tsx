@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { CardComponent } from "../utils/types";
+import { CardComponent, CardSetting } from "../utils/types";
 
 export default function Setter(props: {
-  item: { component: string; x: number; y: number };
+  item: CardSetting;
   cardMap: { [key: string]: CardComponent };
-  cardList: { component: string; x: number; y: number }[];
-  setCardList: (arg: { component: string; x: number; y: number }[]) => void;
+  cardList: CardSetting[];
+  setCardList: (arg: CardSetting[]) => void;
   itemBgColor: string;
   fontColor: string;
 }) {
@@ -21,7 +21,7 @@ export default function Setter(props: {
     setCardList(
       cardList.map((c) =>
         c.x === item.x && c.y === item.y
-          ? { component: key, x: item.x, y: item.y }
+          ? { componentName: key, x: item.x, y: item.y }
           : c
       )
     );

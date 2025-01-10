@@ -10,3 +10,17 @@ export type CardComponent = React.ComponentType<{
   players:  Player[];
   setPlayers: (arg: Player[]) => void;
 }>;
+
+export type CardSetting = {
+  componentName: string;
+  x: number;
+  y: number;
+};
+
+export type CardStyle = {
+  bgColor_1: string;
+  fontColor_1: string;
+  bgColor_2: string;
+  fontColor_2: string;
+  fontStyle: string;
+};
