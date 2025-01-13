@@ -1,12 +1,11 @@
-import Score from "../components/score";
-import Dice from "../components/dice";
-import Token from "../components/token";
-import Timer from "../components/timer";
-import Roulette from "../components/roulette";
-import Turn from "../components/turn";
-import Winner from "../components/winner";
-import Info from "../components/info";
-import PlayerSetting from "../components/playerSetting";
+import Score from "../components/cardMain/Score";
+import Dice from "../components/cardMain/Dice";
+import Token from "../components/cardMain/Token";
+import Timer from "../components/cardMain/Timer";
+import Roulette from "../components/cardMain/Roulette";
+import Turn from "../components/cardMain/Turn";
+import Winner from "../components/cardMain/Winner";
+import Info from "../components/cardMain/Info";
 import { CardComponent } from "./types";
 
 // カードコンポーネントとカード名の対応表
@@ -21,7 +20,7 @@ export const cardMap: {
   turn: Turn,
   winner: Winner,
   info: Info,
-  
+
   // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
   // playerSetting: PlayerSetting,
   // setter: Setter,

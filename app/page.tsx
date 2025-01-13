@@ -10,6 +10,8 @@ import {
 } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import { useDragDrop } from "../utils/dragDropUtils";
+import DragIcon from "../components/cardModule/DragIcon";
+import CloseButton from "../components/cardModule/CloseButton";
 import Setter from "../components/setter";
 import StyleSetting from "../components/styleSetting";
 import PlayerSetting from "../components/playerSetting";
@@ -195,45 +197,25 @@ export default function App() {
                   }}
                 >
                   {/* ドラッグアイコン */}
-                  <div
-                    className="absolute z-10 top-0 left-0 p-1 cursor-move duration-200 opacity-30 hover:opacity-100"
-                    draggable
-                    onDragStart={(e) => handleDragStart(index, e)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="20px"
-                      viewBox="0 -960 960 960"
-                      width="20px"
-                      fill={itemFontColor}
-                    >
-                      <path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z" />
-                    </svg>
-                  </div>
+                  <DragIcon
+                    index={index}
+                    handleDragStart={handleDragStart}
+                    itemFontColor={itemFontColor}
+                  />
 
                   {/* 閉じるボタン */}
-                  <div
-                    // StyleSetting では非表示
-                    className={
-                      "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100" +
-                      (item.component === "styleSetting"
-                        ? " hidden"
+                  <CloseButton
+                    index={index}
+                    cardList={cardList}
+                    setCardList={setCardList}
+                    isHidden={
+                      item.component === "styleSetting"
+                        ? true
                         : item.component === "playerSetting"
-                        ? " hidden"
-                        : "")
+                        ? true
+                        : false
                     }
-                    onClick={() => {
-                      const newList = [...cardList];
-                      newList[index] = {
-                        component: "setter",
-                        x: newList[index].x,
-                        y: newList[index].y,
-                      };
-                      setCardList(newList);
-                    }}
-                  >
-                    ×
-                  </div>
+                  />
 
                   {/* カードの中身 */}
                   {item.component === "styleSetting" ? (
@@ -244,10 +226,7 @@ export default function App() {
                   ) : item.component === "playerSetting" ? (
                     <PlayerSetting players={players} setPlayers={setPlayers} />
                   ) : (
-                    <Component
-                      zoomRatio={zoomRatio}
-                      players={players}
-                    />
+                    <Component zoomRatio={zoomRatio} players={players} />
                   )}
                 </div>
               )}
