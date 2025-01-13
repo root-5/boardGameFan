@@ -21,12 +21,11 @@ export default function App() {
   // 定数定義
   // ======================================================================
   // 内部的に保持するカードリストの最大サイズ
-  const maxCardListCols = 20;
-  const maxCardListRows = 20;
+  const { maxRows, maxCols } = { maxRows: 20, maxCols: 20 };
 
   // initialCardsSetting の空きを setter カードで埋める
-  for (let y = 0; y < maxCardListRows; y++) {
-    for (let x = 0; x < maxCardListCols; x++) {
+  for (let y = 0; y < maxRows; y++) {
+    for (let x = 0; x < maxCols; x++) {
       const existingComponent = initialCardsSetting.find(
         (comp) => comp.x === x && comp.y === y
       );
@@ -43,10 +42,7 @@ export default function App() {
   const [cardList, setCardList] = useState(initialCardsSetting); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
-  const [viewRange, setViewRange] = useState({
-    x: maxCardListCols,
-    y: maxCardListRows,
-  }); // 表示範囲
+  const [viewRange, setViewRange] = useState({ x: maxCols, y: maxRows }); // 表示範囲
   const [players, setPlayers] = useState(initialPlayers); // プレイヤーデータ
 
   // ドラッグ＆ドロップ関連
@@ -113,7 +109,7 @@ export default function App() {
   // ======================================================================
   // useEffect
   // ======================================================================
-  // グリッドの更新 useEffect
+  // グリッド更新の useEffect
   useEffect(() => {
     updateGrid();
     const handleResize = () => updateGrid();
@@ -194,14 +190,11 @@ export default function App() {
                     top: item.y * 224, // 224 は カードの幅
                   }}
                 >
-                  {/* ドラッグアイコン */}
                   <DragIcon
                     index={index}
                     handleDragStart={handleDragStart}
                     fontColor={fontColor}
                   />
-
-                  {/* 閉じるボタン */}
                   <CloseButton
                     index={index}
                     cardList={cardList}
@@ -214,7 +207,6 @@ export default function App() {
                         : false
                     }
                   />
-
                   {/* カードの中身 */}
                   {item.component === "styleSetting" ? (
                     <StyleSetting
