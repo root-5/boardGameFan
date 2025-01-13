@@ -12,9 +12,9 @@ import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import { useDragDrop } from "../utils/dragDropUtils";
 import DragIcon from "../components/cardModule/DragIcon";
 import CloseButton from "../components/cardModule/CloseButton";
-import Setter from "../components/setter";
-import StyleSetting from "../components/styleSetting";
-import PlayerSetting from "../components/playerSetting";
+import Setter from "../components/Setter";
+import StyleSetting from "../components/StyleSetting";
+import PlayerSetting from "../components/PlayerSetting";
 
 export default function App() {
   // ======================================================================
@@ -166,10 +166,8 @@ export default function App() {
 
           // 背景色、フォント色を設定
           const isEven = (item.x + item.y) % 2 === 0;
-          const itemBgColor = isEven
-            ? cardStyle.bgColor_1
-            : cardStyle.bgColor_2;
-          const itemFontColor = isEven
+          const bgColor = isEven ? cardStyle.bgColor_1 : cardStyle.bgColor_2;
+          const fontColor = isEven
             ? cardStyle.fontColor_1
             : cardStyle.fontColor_2;
           const Component = cardMap[item.component];
@@ -183,15 +181,15 @@ export default function App() {
                   cardMap={cardMap}
                   cardList={cardList}
                   setCardList={setCardList}
-                  itemBgColor={itemBgColor}
-                  fontColor={itemFontColor}
+                  bgColor={bgColor}
+                  fontColor={fontColor}
                 />
               ) : (
                 <div
                   className={"absolute w-56 h-56 text-center"}
                   style={{
-                    backgroundColor: itemBgColor,
-                    color: itemFontColor,
+                    backgroundColor: bgColor,
+                    color: fontColor,
                     left: item.x * 224, // 224 は カードの幅
                     top: item.y * 224, // 224 は カードの幅
                   }}
@@ -200,7 +198,7 @@ export default function App() {
                   <DragIcon
                     index={index}
                     handleDragStart={handleDragStart}
-                    itemFontColor={itemFontColor}
+                    fontColor={fontColor}
                   />
 
                   {/* 閉じるボタン */}

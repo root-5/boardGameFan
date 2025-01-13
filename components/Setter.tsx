@@ -8,10 +8,10 @@ export default function Setter(props: {
   cardMap: { [key: string]: CardComponent };
   cardList: CardSetting[];
   setCardList: (arg: CardSetting[]) => void;
-  itemBgColor: string;
+  bgColor: string;
   fontColor: string;
 }) {
-  const { item, cardMap, cardList, setCardList, itemBgColor, fontColor } =
+  const { item, cardMap, cardList, setCardList, bgColor, fontColor } =
     props;
 
   // カードの状態（表示なし、＋ボタン表示、コンポーネントリスト表示）
@@ -76,7 +76,7 @@ export default function Setter(props: {
                     className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
                     onClick={() => handleClick(key)}
                     style={{
-                      backgroundColor: itemBgColor,
+                      backgroundColor: bgColor,
                       borderColor: fontColor,
                       borderWidth: 1,
                       borderStyle: "dashed",
