@@ -21,9 +21,9 @@ export const cardMap: {
   turn: Turn,
   winner: Winner,
   info: Info,
-  playerSetting: PlayerSetting,
-
+  
   // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
+  // playerSetting: PlayerSetting,
   // setter: Setter,
   // styleSetting: StyleSetting,
 };

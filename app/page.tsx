@@ -247,7 +247,6 @@ export default function App() {
                     <Component
                       zoomRatio={zoomRatio}
                       players={players}
-                      setPlayers={setPlayers}
                     />
                   )}
                 </div>
