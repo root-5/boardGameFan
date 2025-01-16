@@ -1,5 +1,5 @@
-import { Player } from "../utils/types";
-import { initialPlayers } from "../utils/cardDefinitions";
+import { Player } from "../../utils/types";
+import { initialPlayers } from "../../utils/cardDefinitions";
 
 export default function PlayerSetting({
   players,

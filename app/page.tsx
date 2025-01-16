@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   cardMap,
   initialCardsSetting,
-  // initialCardsSettingSP,
   initialStyle,
   initialPlayers,
 } from "../utils/cardDefinitions";
@@ -13,8 +12,6 @@ import { useDragDrop } from "../utils/dragDropUtils";
 import DragIcon from "../components/cardModule/DragIcon";
 import CloseButton from "../components/cardModule/CloseButton";
 import Setter from "../components/Setter";
-import StyleSetting from "../components/StyleSetting";
-import PlayerSetting from "../components/PlayerSetting";
 
 export default function App() {
   // ======================================================================
@@ -201,16 +198,13 @@ export default function App() {
                     setCardList={setCardList}
                   />
                   {/* カードの中身 */}
-                  {item.component === "styleSetting" ? (
-                    <StyleSetting
-                      cardStyle={cardStyle}
-                      setCardStyle={setCardStyle}
-                    />
-                  ) : item.component === "playerSetting" ? (
-                    <PlayerSetting players={players} setPlayers={setPlayers} />
-                  ) : (
-                    <Component zoomRatio={zoomRatio} players={players} />
-                  )}
+                  <Component
+                    zoomRatio={zoomRatio}
+                    players={players}
+                    setPlayers={setPlayers}
+                    cardStyle={cardStyle}
+                    setCardStyle={setCardStyle}
+                  />
                 </div>
               )}
             </div>

@@ -6,13 +6,13 @@ import Roulette from "../components/cardMain/Roulette";
 import Turn from "../components/cardMain/Turn";
 import Winner from "../components/cardMain/Winner";
 import Info from "../components/cardMain/Info";
-import StyleSetting from "../components/StyleSetting";
-import PlayerSetting from "../components/PlayerSetting";
+import StyleSetting from "../components/cardMain/StyleSetting";
+import PlayerSetting from "../components/cardMain/PlayerSetting";
 import { CardComponent } from "./types";
 
 // カードコンポーネントとカード名の対応表
 export const cardMap: {
-  [key: string]: any;
+  [key: string]: CardComponent;
 } = {
   score: Score,
   dice: Dice,
@@ -22,8 +22,8 @@ export const cardMap: {
   turn: Turn,
   winner: Winner,
   info: Info,
-  style: StyleSetting,
-  player: PlayerSetting,
+  styleSetting: StyleSetting,
+  playerSetting: PlayerSetting,
 
   // setter は特殊なコンポーネントなので、ここでは設定しない
   // setter: Setter,

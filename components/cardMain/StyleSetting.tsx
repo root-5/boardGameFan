@@ -1,4 +1,4 @@
-import { CardStyle } from "../utils/types";
+import { CardStyle } from "../../utils/types";
 
 export default function StyleSetting({
   cardStyle,

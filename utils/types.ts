@@ -5,11 +5,6 @@ export type Player = {
   color: string;
 };
 
-export type CardComponent = React.ComponentType<{
-  zoomRatio: number;
-  players:  Player[];
-}>;
-
 export type CardSetting = {
   component: string;
   x: number;
@@ -23,3 +18,11 @@ export type CardStyle = {
   fontColor_2: string;
   fontStyle: string;
 };
+
+export type CardComponent = React.ComponentType<{
+  zoomRatio: number;
+  players:  Player[];
+  setPlayers: (arg: Player[]) => void;
+  cardStyle: CardStyle;
+  setCardStyle: (arg: CardStyle) => void;
+}>;

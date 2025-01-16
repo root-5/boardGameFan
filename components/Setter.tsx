@@ -31,9 +31,12 @@ export default function Setter(props: {
     return null; // cardMap または cardList が未定義の場合は何も表示しない
   }
 
-  const componentKeys = Object.keys(cardMap).filter(
-    (key) => key !== "info"
-  );
+  const componentKeys = Object.keys(cardMap);
+
+  // StyleSetting のような 2 単語で構成される文字列を改行する関数
+  const formatKey = (key: string) => {
+    return key.replace(/([a-z])([A-Z])/g, "$1\n$2");
+  };
 
   return (
     <div className="relative">
@@ -80,7 +83,7 @@ export default function Setter(props: {
                     borderStyle: "dashed",
                   }}
                 >
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                  {formatKey(key.charAt(0).toUpperCase() + key.slice(1))}
                 </button>
               ))}
             </div>
