@@ -25,4 +25,5 @@ export type CardComponent = React.ComponentType<{
   setPlayers: (arg: Player[]) => void;
   cardStyle: CardStyle;
   setCardStyle: (arg: CardStyle) => void;
+  setCardList: (arg: CardSetting[]) => void;
 }>;

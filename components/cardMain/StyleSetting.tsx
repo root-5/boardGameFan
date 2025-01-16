@@ -1,16 +1,12 @@
 import { CardStyle } from "../../utils/types";
+import { initialStyle } from "../../utils/cardDefinitions";
 
 export default function StyleSetting({
   cardStyle,
   setCardStyle,
-}: // initialCards,
-// setCardList,
-// updateGrid,
-{
+}: {
   cardStyle: CardStyle;
   setCardStyle: (cardStyle: CardStyle) => void;
-  // setCardList: (cardList: CardSetting[]) => void;
-  // updateGrid: () => void;
 }) {
   return (
     <div className={"relative w-56 h-56 text-center"}>
@@ -85,15 +81,14 @@ export default function StyleSetting({
             Verdana
           </option>
         </select>
-        {/* <button
-          className="w-40 h-8 text-white rounded-lg duration-200 hover:bg-red-500"
-          onClick={() => {
-            setCardList(initialCards);
-            updateGrid();
-          }}
-        >
-          {"Reset Cards"}
-        </button> */}
+      </div>
+      <div
+        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
+        onClick={() => {
+          setCardStyle(initialStyle);
+        }}
+      >
+        ↺
       </div>
     </div>
   );

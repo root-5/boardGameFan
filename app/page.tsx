@@ -204,6 +204,7 @@ export default function App() {
                     setPlayers={setPlayers}
                     cardStyle={cardStyle}
                     setCardStyle={setCardStyle}
+                    setCardList={setCardList}
                   />
                 </div>
               )}

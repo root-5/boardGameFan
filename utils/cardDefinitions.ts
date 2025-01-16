@@ -39,8 +39,8 @@ export const initialCardsSetting = [
   { component: "timer", x: 2, y: 1 },
   { component: "score", x: 0, y: 2 },
   { component: "styleSetting", x: 1, y: 2 },
-  { component: "info", x: 2, y: 2 },
-  { component: "playerSetting", x: 0, y: 3 },
+  { component: "playerSetting", x: 2, y: 2 },
+  { component: "info", x: 0, y: 3 },
 ];
 
 // 初期カード（SPモード、x=0 のみ）
@@ -61,7 +61,7 @@ export const initialCardsSettingSP = [
 export const initialStyle = {
   bgColor_1: "#390ba2",
   bgColor_2: "#5216df",
-  fontColor_1: "#eeeeee",
+  fontColor_1: "#ffffff",
   fontColor_2: "#ffffff",
   fontStyle: "Comic Sans MS",
 };
