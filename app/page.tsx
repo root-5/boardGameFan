@@ -199,13 +199,6 @@ export default function App() {
                     index={index}
                     cardList={cardList}
                     setCardList={setCardList}
-                    isHidden={
-                      item.component === "styleSetting"
-                        ? true
-                        : item.component === "playerSetting"
-                        ? true
-                        : false
-                    }
                   />
                   {/* カードの中身 */}
                   {item.component === "styleSetting" ? (

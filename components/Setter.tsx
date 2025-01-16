@@ -11,8 +11,7 @@ export default function Setter(props: {
   bgColor: string;
   fontColor: string;
 }) {
-  const { item, cardMap, cardList, setCardList, bgColor, fontColor } =
-    props;
+  const { item, cardMap, cardList, setCardList, bgColor, fontColor } = props;
 
   // カードの状態（表示なし、＋ボタン表示、コンポーネントリスト表示）
   const [setterDisplay, setSetterDisplay] = useState("none");
@@ -33,7 +32,7 @@ export default function Setter(props: {
   }
 
   const componentKeys = Object.keys(cardMap).filter(
-    (key) => key !== "styleSetting" && key !== "setter"
+    (key) => key !== "info"
   );
 
   return (
@@ -69,23 +68,21 @@ export default function Setter(props: {
               className="w-full h-full grid grid-cols-4 grid-rows-4"
               onMouseLeave={() => setSetterDisplay("none")}
             >
-              {componentKeys.map((key, index) =>
-                key === "info" ? null : key === "playerSetting" ? null : (
-                  <button
-                    key={index}
-                    className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
-                    onClick={() => handleClick(key)}
-                    style={{
-                      backgroundColor: bgColor,
-                      borderColor: fontColor,
-                      borderWidth: 1,
-                      borderStyle: "dashed",
-                    }}
-                  >
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </button>
-                )
-              )}
+              {componentKeys.map((key, index) => (
+                <button
+                  key={index}
+                  className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
+                  onClick={() => handleClick(key)}
+                  style={{
+                    backgroundColor: bgColor,
+                    borderColor: fontColor,
+                    borderWidth: 1,
+                    borderStyle: "dashed",
+                  }}
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </button>
+              ))}
             </div>
           </div>
         )}

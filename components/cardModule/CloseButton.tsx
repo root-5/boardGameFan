@@ -1,6 +1,5 @@
 import React from "react";
 import { CardSetting } from "../../utils/types";
-import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 interface CloseButtonProps {
   index: number;

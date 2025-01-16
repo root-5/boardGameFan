@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Player } from "../utils/types";
+import { Player } from "../../utils/types";
 
 // 勝利数の最大値と最小値
 const maxWins = 99;
@@ -25,6 +25,7 @@ export default function WinnerCounter({ players }: { players: Player[] }) {
     players.map(() => "🏆 × 0")
   );
 
+  // 勝利数と勝利数表示更新する関数
   const handleWinChange = (index: number, increment: number) => {
     const newWins = [...playerWins];
     const newCount = adjustWinCount(newWins[index] + increment);
@@ -43,8 +44,14 @@ export default function WinnerCounter({ players }: { players: Player[] }) {
     setPlayerDisplayTexts(newDisplayTexts);
   };
 
+  // プレイヤー数に変更があった際はステートを更新
+  if (players.length !== playerWins.length) {
+    setPlayerWins(players.map(() => 0));
+    setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
+  }
+
   return (
-    <div className="p-3 h-full flex flex-col justify-center items-center gap-1">
+    <div className="p-3 h-full flex flex-col justify-center items-center gap-1 overflow-auto">
       {players.map((player, index) => (
         <div
           key={index}
