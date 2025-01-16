@@ -55,8 +55,6 @@ export default function Timer() {
     )}:${String(seconds).padStart(2, "0")}`;
   };
 
-  const handleTimeAdjust = (adjustment: number) => {};
-
   const timeAdjustments = [
     { label: "-10s", value: -10 },
     { label: "-1s", value: -1 },
