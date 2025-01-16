@@ -1,12 +1,13 @@
-import Score from "../components/score";
-import Dice from "../components/dice";
-import Token from "../components/token";
-import Timer from "../components/timer";
-import Roulette from "../components/roulette";
-import Turn from "../components/turn";
-import Winner from "../components/winner";
-import Info from "../components/info";
-import PlayerSetting from "../components/playerSetting";
+import Score from "../components/cardMain/Score";
+import Dice from "../components/cardMain/Dice";
+import Token from "../components/cardMain/Token";
+import Timer from "../components/cardMain/Timer";
+import Roulette from "../components/cardMain/Roulette";
+import Turn from "../components/cardMain/Turn";
+import Winner from "../components/cardMain/Winner";
+import Info from "../components/cardMain/Info";
+import StyleSetting from "../components/cardMain/StyleSetting";
+import PlayerSetting from "../components/cardMain/PlayerSetting";
 import { CardComponent } from "./types";
 
 // カードコンポーネントとカード名の対応表
@@ -21,15 +22,15 @@ export const cardMap: {
   turn: Turn,
   winner: Winner,
   info: Info,
+  styleSetting: StyleSetting,
   playerSetting: PlayerSetting,
 
-  // setter と styleSetting は特殊なコンポーネントなので、ここでは設定しない
+  // setter は特殊なコンポーネントなので、ここでは設定しない
   // setter: Setter,
-  // styleSetting: StyleSetting,
 };
 
 // 初期カード
-export const initialCards = [
+export const initialCardsSetting = [
   { component: "winner", x: 0, y: 0 },
   { component: "turn", x: 1, y: 0 },
   { component: "dice", x: 2, y: 0 },
@@ -38,12 +39,12 @@ export const initialCards = [
   { component: "timer", x: 2, y: 1 },
   { component: "score", x: 0, y: 2 },
   { component: "styleSetting", x: 1, y: 2 },
-  { component: "info", x: 2, y: 2 },
-  { component: "playerSetting", x: 0, y: 3 },
+  { component: "playerSetting", x: 2, y: 2 },
+  { component: "info", x: 0, y: 3 },
 ];
 
 // 初期カード（SPモード、x=0 のみ）
-export const initialCardsSP = [
+export const initialCardsSettingSP = [
   { component: "winner", x: 0, y: 0 },
   { component: "turn", x: 0, y: 1 },
   { component: "dice", x: 0, y: 2 },
@@ -60,7 +61,7 @@ export const initialCardsSP = [
 export const initialStyle = {
   bgColor_1: "#390ba2",
   bgColor_2: "#5216df",
-  fontColor_1: "#eeeeee",
+  fontColor_1: "#ffffff",
   fontColor_2: "#ffffff",
   fontStyle: "Comic Sans MS",
 };

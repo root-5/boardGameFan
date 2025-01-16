@@ -1,5 +1,5 @@
-import { Player } from "../utils/types";
-import { initialPlayers } from "../utils/cardDefinitions";
+import { Player } from "../../utils/types";
+import { initialPlayers } from "../../utils/cardDefinitions";
 
 export default function PlayerSetting({
   players,
@@ -21,9 +21,11 @@ export default function PlayerSetting({
   };
 
   const addPlayer = () => {
+    // ランダムな色を生成し、新しいプレイヤーを追加
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     const newPlayers = [
       ...players,
-      { name: `Player ${players.length + 1}`, color: "#0000ff" },
+      { name: `Player ${players.length + 1}`, color: randomColor },
     ];
     setPlayers(newPlayers);
   };
@@ -35,7 +37,7 @@ export default function PlayerSetting({
 
   return (
     <>
-      <div className="px-6 py-4 h-full overflow-y-auto">
+      <div className="px-6 py-4 h-full overflow-y-auto max-h-[400px] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
         {players.map((player, index) => (
           <div key={index} className="flex items-center align-middle gap-1">
             <button

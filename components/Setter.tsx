@@ -1,18 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { CardComponent } from "../utils/types";
+import { CardComponent, CardSetting } from "../utils/types";
 
 export default function Setter(props: {
-  item: { component: string; x: number; y: number };
+  item: CardSetting;
   cardMap: { [key: string]: CardComponent };
-  cardList: { component: string; x: number; y: number }[];
-  setCardList: (arg: { component: string; x: number; y: number }[]) => void;
-  itemBgColor: string;
+  cardList: CardSetting[];
+  setCardList: (arg: CardSetting[]) => void;
+  bgColor: string;
   fontColor: string;
 }) {
-  const { item, cardMap, cardList, setCardList, itemBgColor, fontColor } =
-    props;
+  const { item, cardMap, cardList, setCardList, bgColor, fontColor } = props;
 
   // カードの状態（表示なし、＋ボタン表示、コンポーネントリスト表示）
   const [setterDisplay, setSetterDisplay] = useState("none");
@@ -32,9 +31,12 @@ export default function Setter(props: {
     return null; // cardMap または cardList が未定義の場合は何も表示しない
   }
 
-  const componentKeys = Object.keys(cardMap).filter(
-    (key) => key !== "styleSetting" && key !== "setter"
-  );
+  const componentKeys = Object.keys(cardMap);
+
+  // StyleSetting のような 2 単語で構成される文字列を改行する関数
+  const formatKey = (key: string) => {
+    return key.replace(/([a-z])([A-Z])/g, "$1\n$2");
+  };
 
   return (
     <div className="relative">
@@ -69,23 +71,21 @@ export default function Setter(props: {
               className="w-full h-full grid grid-cols-4 grid-rows-4"
               onMouseLeave={() => setSetterDisplay("none")}
             >
-              {componentKeys.map((key, index) =>
-                key === "info" ? null : key === "playerSetting" ? null : (
-                  <button
-                    key={index}
-                    className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
-                    onClick={() => handleClick(key)}
-                    style={{
-                      backgroundColor: itemBgColor,
-                      borderColor: fontColor,
-                      borderWidth: 1,
-                      borderStyle: "dashed",
-                    }}
-                  >
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </button>
-                )
-              )}
+              {componentKeys.map((key, index) => (
+                <button
+                  key={index}
+                  className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
+                  onClick={() => handleClick(key)}
+                  style={{
+                    backgroundColor: bgColor,
+                    borderColor: fontColor,
+                    borderWidth: 1,
+                    borderStyle: "dashed",
+                  }}
+                >
+                  {formatKey(key.charAt(0).toUpperCase() + key.slice(1))}
+                </button>
+              ))}
             </div>
           </div>
         )}

@@ -1,6 +1,13 @@
 "use client";
 
-export default function TurnCounter() {
+import { CardSetting } from "../../utils/types";
+import { initialCardsSetting } from "../../utils/cardDefinitions";
+
+export default function TurnCounter(props: {
+  setCardList: (arg: CardSetting[]) => void;
+}) {
+  const { setCardList } = props;
+
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
       <div className="flex items-center justify-center gap-x-2">
@@ -29,7 +36,15 @@ export default function TurnCounter() {
         <p>GitHub Copilot</p>
         <p>Copilot Workspace</p>
       </div>
-      <p className="mt-8 text-xs">© 2024 root-5</p>
+      <button
+        onClick={() => {
+          setCardList(initialCardsSetting);
+        }}
+        className="mt-4 p-2 rounded-md duration-200 hover:bg-red-500"
+      >
+        Reset Cards
+      </button>
+      <p className="mt-4 text-xs">© 2024 root-5</p>
     </div>
   );
 }
