@@ -59,19 +59,18 @@ export const initialCardsSettingSP = [
 
 // 初期スタイル
 export const initialStyle = {
-  bgColor_1: "#390ba2",
-  bgColor_2: "#5216df",
-  fontColor_1: "#ffffff",
-  fontColor_2: "#ffffff",
+  bgColor_1: "#432E54",
+  bgColor_2: "#4B4376",
+  fontColor_1: "#f0f6fc",
+  fontColor_2: "#f0f6fc",
   fontStyle: "Comic Sans MS",
 };
 
 // 初期プレイヤー
 export const initialPlayers = [
-  { name: "Player 1", color: "#ff0000" },
-  { name: "Player 2", color: "#00ff00" },
-  { name: "Player 3", color: "#0000ff" },
-  { name: "Player 4", color: "#ffff00" },
-  { name: "Player 5", color: "#ff00ff" },
-  { name: "Player 6", color: "#00ffff" },
+  { name: "Player 1", color: "#aa11ff" },
+  { name: "Player 2", color: "#5b97f9" },
+  { name: "Player 3", color: "#11ff11" },
+  { name: "Player 4", color: "#ffaa11" },
+  { name: "Player 5", color: "#a91111" },
 ];

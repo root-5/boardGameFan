@@ -37,7 +37,7 @@ export default function PlayerSetting({
 
   return (
     <>
-      <div className="px-6 py-4 h-full overflow-y-auto max-h-[400px] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <div className="p-6 h-full overflow-y-auto max-h-[400px] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
         {players.map((player, index) => (
           <div key={index} className="flex items-center align-middle gap-1">
             <button

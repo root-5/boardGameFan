@@ -51,7 +51,7 @@ export default function WinnerCounter({ players }: { players: Player[] }) {
   }
 
   return (
-    <div className="p-3 h-full flex flex-col items-center gap-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
+    <div className="p-6 h-full flex flex-col items-center gap-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
       {players.map((player, index) => (
         <div
           key={index}
