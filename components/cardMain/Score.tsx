@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const scoreMax = 99999;
 const scoreMin = -99999;
@@ -16,6 +16,7 @@ function ajustScoreValue(value: number): number {
 
 export default function Score() {
   const [count, setCount] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scoreAdjustments = [
     { label: "<", value: -1, className: "mt-[-8px] text-3xl" },
@@ -27,6 +28,20 @@ export default function Score() {
     { label: "-10000", value: -10000 },
     { label: "+10000", value: 10000 },
   ];
+
+  const handleMouseDown = (adjustment: number) => {
+    setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
+    intervalRef.current = setInterval(() => {
+      setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
+    }, 150);
+  };
+
+  const handleMouseUp = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
 
   return (
     <>
@@ -42,16 +57,16 @@ export default function Score() {
           <div className="grid grid-cols-2 gap-0 text-base">
             {scoreAdjustments.map((adjustment, index) => (
               <div key={index}>
-                <div
-                  className={`px-2 cursor-pointer duration-200 hover:opacity-70 ${
+                <button
+                  className={`px-2 duration-200 hover:opacity-70 ${
                     adjustment.className || ""
                   }`}
-                  onClick={() =>
-                    setCount(ajustScoreValue(count + adjustment.value))
-                  }
+                  onMouseDown={() => handleMouseDown(adjustment.value)}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
                 >
                   {adjustment.label}
-                </div>
+                </button>
               </div>
             ))}
           </div>

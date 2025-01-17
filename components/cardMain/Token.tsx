@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const tokenMax = 99;
 const tokenMin = -99;
@@ -17,6 +17,7 @@ function ajustTokenValue(value: number): number {
 export default function Token() {
   const [tokenCounts, setTokenCounts] = useState([0, 0, 0, 0]);
   const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleTokenChange = (index: number, adjustment: number) => {
     setTokenCounts((prevCounts) => {
@@ -34,6 +35,20 @@ export default function Token() {
     });
   };
 
+  const handleMouseDown = (index: number, adjustment: number) => {
+    handleTokenChange(index, adjustment);
+    intervalRef.current = setInterval(() => {
+      handleTokenChange(index, adjustment);
+    }, 150);
+  };
+
+  const handleMouseUp = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
   return (
     <>
       <div className="h-full flex flex-col justify-center items-center gap-2 p-4 text-2xl">
@@ -42,12 +57,14 @@ export default function Token() {
         </p>
         {tokenCounts.map((count, index) => (
           <div key={index} className="flex justify-center items-center">
-            <div
-              className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:-translate-x-2"
-              onClick={() => handleTokenChange(index, -1)}
+            <button
+              className="px-4 text-center transition hover:opacity-70 hover:-translate-x-2"
+              onMouseDown={() => handleMouseDown(index, -1)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
               {"<"}
-            </div>
+            </button>
             <div
               className={"text-3xl h-8 leading-8"}
               style={{
@@ -64,12 +81,14 @@ export default function Token() {
               }
               value={count}
             />
-            <div
-              className="px-4 text-center cursor-pointer transition hover:opacity-70 hover:translate-x-2"
-              onClick={() => handleTokenChange(index, 1)}
+            <button
+              className="px-4 text-center transition hover:opacity-70 hover:translate-x-2"
+              onMouseDown={() => handleMouseDown(index, 1)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
               {">"}
-            </div>
+            </button>
           </div>
         ))}
         <div

@@ -70,6 +70,20 @@ export default function Timer() {
     { label: "+10h", value: 36000 },
   ];
 
+  const handleMouseDown = (adjustment: number) => {
+    setTime((prevTime) => adjustTimerValue(prevTime + adjustment));
+    intervalRef.current = setInterval(() => {
+      setTime((prevTime) => adjustTimerValue(prevTime + adjustment));
+    }, 150);
+  };
+
+  const handleMouseUp = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
   return (
     <>
       <div className={"p-4 text-center" + (isTimeUp ? " shake-animation" : "")}>
@@ -114,20 +128,19 @@ export default function Timer() {
         <div className="grid grid-cols-4 grid-rows-3 justify-center align-middle text-base">
           {timeAdjustments.map((adjustment, index) => (
             <div key={index} className="flex place-content-between text-base">
-              <div
+              <button
                 className={
                   "px-1 py-0.5 duration-200" +
                   (isTimeUp || isRunning
                     ? " opacity-70"
-                    : " cursor-pointer hover:opacity-70")
+                    : " hover:opacity-70")
                 }
-                onClick={() => {
-                  if (isTimeUp || isRunning) return;
-                  setTime(adjustTimerValue(time + adjustment.value));
-                }}
+                onMouseDown={() => handleMouseDown(adjustment.value)}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
               >
                 {adjustment.label}
-              </div>
+              </button>
             </div>
           ))}
         </div>
