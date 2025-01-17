@@ -1,5 +1,6 @@
 import Score from "../components/cardMain/Score";
 import Dice from "../components/cardMain/Dice";
+import Coin from "../components/cardMain/Coin";
 import Token from "../components/cardMain/Token";
 import Timer from "../components/cardMain/Timer";
 import Roulette from "../components/cardMain/Roulette";
@@ -16,6 +17,7 @@ export const cardMap: {
 } = {
   score: Score,
   dice: Dice,
+  coin: Coin,
   token: Token,
   timer: Timer,
   roulette: Roulette,
@@ -33,14 +35,15 @@ export const cardMap: {
 export const initialCardsSetting = [
   { component: "winner", x: 0, y: 0 },
   { component: "turn", x: 1, y: 0 },
-  { component: "dice", x: 2, y: 0 },
-  { component: "token", x: 0, y: 1 },
-  { component: "roulette", x: 1, y: 1 },
-  { component: "timer", x: 2, y: 1 },
-  { component: "score", x: 0, y: 2 },
-  { component: "styleSetting", x: 1, y: 2 },
-  { component: "playerSetting", x: 2, y: 2 },
-  { component: "info", x: 0, y: 3 },
+  { component: "coin", x: 2, y: 0 },
+  { component: "dice", x: 0, y: 1 },
+  { component: "token", x: 1, y: 1 },
+  { component: "roulette", x: 2, y: 1 },
+  { component: "timer", x: 0, y: 2 },
+  { component: "score", x: 1, y: 2 },
+  { component: "styleSetting", x: 2, y: 2 },
+  { component: "playerSetting", x: 0, y: 3 },
+  { component: "info", x: 1, y: 3 },
 ];
 
 // 初期カード（SPモード、x=0 のみ）
