@@ -8,6 +8,7 @@ const tokenSlice = createSlice({
   reducers: {
     reset: () => initialState,
     setToken: (state, action) => {
+      // 値を -99 ～ 99 の範囲に収めた上でセット
       state[action.payload.index] = Math.max(Math.min(action.payload.value, 99), -99);
     },
   },

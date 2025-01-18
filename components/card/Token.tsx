@@ -1,39 +1,28 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { reset, setToken } from "../../store/tokenSlice";
-
-const tokenMax = 99;
-const tokenMin = -99;
-
-function ajustTokenValue(value: number): number {
-  if (value > tokenMax) {
-    return tokenMax;
-  } else if (value < tokenMin) {
-    return tokenMin;
-  }
-  return value;
-}
 
 export default function Token() {
   const tokenCounts = useSelector((state: { token: number[] }) => state.token);
   const dispatch = useDispatch();
   const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const latestTokenCounts = useRef(tokenCounts);
 
   const handleTokenChange = (index: number, adjustment: number) => {
-    dispatch(setToken({ index, value: ajustTokenValue(tokenCounts[index] + adjustment) }));
+    dispatch(setToken({ index, value: latestTokenCounts.current[index] + adjustment }));
   };
 
   const handleInputChange = (index: number, value: number) => {
-    dispatch(setToken({ index, value: ajustTokenValue(value) }));
+    dispatch(setToken({ index, value: value }));
   };
 
   const handleMouseDown = (index: number, adjustment: number) => {
     handleTokenChange(index, adjustment);
     intervalRef.current = setInterval(() => {
-      handleTokenChange(index, adjustment);
+      dispatch(setToken({ index, value: latestTokenCounts.current[index] + adjustment }));
     }, 150);
   };
 
@@ -43,6 +32,18 @@ export default function Token() {
       intervalRef.current = null;
     }
   };
+
+  useEffect(() => {
+    latestTokenCounts.current = tokenCounts;
+  }, [tokenCounts]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
