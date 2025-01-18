@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { increment, decrement, reset, setToken } from "../../features/tokenSlice";
+import { increment, decrement, reset, setToken } from "../../store/tokenSlice";
 
 const tokenMax = 99;
 const tokenMin = -99;
@@ -17,7 +17,7 @@ function ajustTokenValue(value: number): number {
 }
 
 export default function Token() {
-  const tokenCounts = useSelector((state) => state.token);
+  const tokenCounts = useSelector((state: { token: number[] }) => state.token);
   const dispatch = useDispatch();
   const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
   const intervalRef = useRef<NodeJS.Timeout | null>(null);

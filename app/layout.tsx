@@ -1,12 +1,14 @@
+"use client";
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { Provider } from "react-redux";
-import { store } from "../store";
+import { store } from "../store/store";
 
-export const metadata: Metadata = {
-  title: "Game Tools!",
-  description: "For board games, card games, and more! Streamer friendly!",
-};
+// export const metadata: Metadata = {
+//   title: "Game Tools!",
+//   description: "For board games, card games, and more! Streamer friendly!",
+// };
 
 export default function RootLayout({
   children,
