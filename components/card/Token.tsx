@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { increment, decrement, reset, setToken } from "../../store/tokenSlice";
+import { reset, setToken } from "../../store/tokenSlice";
 
 const tokenMax = 99;
 const tokenMin = -99;
