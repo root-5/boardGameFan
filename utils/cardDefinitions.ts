@@ -1,14 +1,14 @@
-import Score from "../components/cardMain/Score";
-import Dice from "../components/cardMain/Dice";
-import Coin from "../components/cardMain/Coin";
-import Token from "../components/cardMain/Token";
-import Timer from "../components/cardMain/Timer";
-import Roulette from "../components/cardMain/Roulette";
-import Turn from "../components/cardMain/Turn";
-import Winner from "../components/cardMain/Winner";
-import Info from "../components/cardMain/Info";
-import StyleSetting from "../components/cardMain/StyleSetting";
-import PlayerSetting from "../components/cardMain/PlayerSetting";
+import Score from "../components/card/Score";
+import Dice from "../components/card/Dice";
+import Coin from "../components/card/Coin";
+import Token from "../components/card/Token";
+import Timer from "../components/card/Timer";
+import Roulette from "../components/card/Roulette";
+import Turn from "../components/card/Turn";
+import Winner from "../components/card/Winner";
+import Info from "../components/card/Info";
+import StyleSetting from "../components/card/StyleSetting";
+import PlayerSetting from "../components/card/PlayerSetting";
 import { CardComponent } from "./types";
 
 // カードコンポーネントとカード名の対応表

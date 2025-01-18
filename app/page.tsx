@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
 import {
   cardMap,
   initialCardsSetting,
@@ -9,8 +11,8 @@ import {
 } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
 import { useDragDrop } from "../utils/dragDropUtils";
-import DragIcon from "../components/cardModule/DragIcon";
-import CloseButton from "../components/cardModule/CloseButton";
+import DragIcon from "../components/card/module/DragIcon";
+import CloseButton from "../components/card/module/CloseButton";
 import Setter from "../components/Setter";
 
 export default function App() {
@@ -142,7 +144,7 @@ export default function App() {
   // レンダリング
   // ======================================================================
   return (
-    <>
+    <Provider store={store}>
       <div
         className={"relative w-full h-full"}
         id="card-container"
@@ -212,6 +214,6 @@ export default function App() {
           );
         })}
       </div>
-    </>
+    </Provider>
   );
 }
