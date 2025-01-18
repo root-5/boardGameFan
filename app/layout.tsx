@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Provider } from "react-redux";
+import { store } from "../store";
 
 export const metadata: Metadata = {
   title: "Game Tools!",
@@ -27,7 +29,9 @@ export default function RootLayout({
           alt="background"
           className="absolute h-full w-full z-[-10] object-cover"
         />
-        {children}
+        <Provider store={store}>
+          {children}
+        </Provider>
       </body>
     </html>
   );
