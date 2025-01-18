@@ -2,11 +2,12 @@
 
 import { CardSetting } from "../../utils/types";
 import { initialCardsSetting } from "../../utils/cardDefinitions";
+import { useSelector, useDispatch } from "react-redux";
+import { setCardList } from "../../store/cardSlice";
 
-export default function TurnCounter(props: {
-  setCardList: (arg: CardSetting[]) => void;
-}) {
-  const { setCardList } = props;
+export default function TurnCounter() {
+  const cardList = useSelector((state: { card: CardSetting[] }) => state.card);
+  const dispatch = useDispatch();
 
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
@@ -38,7 +39,7 @@ export default function TurnCounter(props: {
       </div>
       <button
         onClick={() => {
-          setCardList(initialCardsSetting);
+          dispatch(setCardList(initialCardsSetting));
         }}
         className="mt-4 p-2 rounded-md duration-200 hover:bg-red-500"
       >

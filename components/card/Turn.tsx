@@ -1,39 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setTurnCount, setTurnPlayerIndex, toggleTurnMode, resetTurn } from "../../store/turnSlice";
 import { Player } from "../../utils/types";
 
 export default function TurnCounter(props: { players: Player[] }) {
   const { players } = props;
 
-  const [turnCount, setTurnCount] = useState(0);
-  const [turnPlayerIndex, setTurnPlayerIndex] = useState(0);
-  const [isTurnCountMode, setIsTurnCountMode] = useState(true);
+  const turnCount = useSelector((state: { turn: { turnCount: number } }) => state.turn.turnCount);
+  const turnPlayerIndex = useSelector((state: { turn: { turnPlayerIndex: number } }) => state.turn.turnPlayerIndex);
+  const isTurnCountMode = useSelector((state: { turn: { isTurnCountMode: boolean } }) => state.turn.isTurnCountMode);
+  const dispatch = useDispatch();
 
   const handleNext = () => {
     if (isTurnCountMode) {
-      setTurnCount(turnCount + 1);
+      dispatch(setTurnCount(turnCount + 1));
     } else {
-      setTurnPlayerIndex((turnPlayerIndex + 1) % players.length);
+      dispatch(setTurnPlayerIndex((turnPlayerIndex + 1) % players.length));
     }
   };
 
   const handlePrevious = () => {
     if (isTurnCountMode) {
-      setTurnCount((prevCount) => Math.max(prevCount - 1, 0));
+      dispatch(setTurnCount(Math.max(turnCount - 1, 0)));
     } else {
-      setTurnPlayerIndex(
-        (turnPlayerIndex - 1 + players.length) % players.length
-      );
+      dispatch(setTurnPlayerIndex((turnPlayerIndex - 1 + players.length) % players.length));
     }
   };
 
   const handleReset = () => {
-    if (isTurnCountMode) {
-      setTurnCount(0);
-    } else {
-      setTurnPlayerIndex(0);
-    }
+    dispatch(resetTurn());
   };
 
   return (
@@ -45,9 +41,7 @@ export default function TurnCounter(props: { players: Player[] }) {
             ? "text-6xl mt-4 leading-none cursor-pointer"
             : "text-4xl mt-4 leading-none cursor-pointer"
         }
-        onClick={() => setIsTurnCountMode(
-          (prevMode) => !prevMode
-        )}
+        onClick={() => dispatch(toggleTurnMode())}
       >
         {isTurnCountMode ? turnCount : players[turnPlayerIndex].name}
       </p>

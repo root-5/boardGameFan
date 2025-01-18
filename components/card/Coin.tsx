@@ -2,8 +2,10 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Euler } from "three";
+import { useSelector, useDispatch } from "react-redux";
+import { setCoinState } from "../../store/coinSlice";
 
 // ==============================
 // 設定
@@ -28,36 +30,29 @@ function CoinModel() {
 
 // グループ（複数のモデルの集合）
 function Group() {
-  const [rotation, setRotation] = useState(
-    new Euler((2 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2)
-  );
-  const [isFlipping, setIsFlipping] = useState(false);
-  const [isFlippingLast, setIsFlippingLast] = useState(false);
+  const rotation = useSelector((state: { coin: { rotation: Euler } }) => state.coin.rotation);
+  const isFlipping = useSelector((state: { coin: { isFlipping: boolean } }) => state.coin.isFlipping);
+  const dispatch = useDispatch();
 
   useFrame(() => {
-    if (isFlipping === isFlippingLast) {
-      // モデルの回転
-      if (isFlipping) {
-        setRotation(
-          (prevRotation) =>
-            new Euler(
-              prevRotation.x + (Math.PI * 15) / 100,
-              prevRotation.y,
-              prevRotation.z
-            )
-          );
-        }
-      } else {
-        // コインフリップの切り替え時にランダムな回転角にする
-        setRotation(
-          (prevRotation) =>
-          new Euler(
-            ((Math.floor(Math.random() * 2) + 1) * Math.PI),
-            prevRotation.y,
-            prevRotation.z,
-          )
-      );
-      setIsFlippingLast(isFlipping);
+    if (isFlipping) {
+      dispatch(setCoinState({
+        rotation: new Euler(
+          rotation.x + (Math.PI * 15) / 100,
+          rotation.y,
+          rotation.z
+        ),
+        isFlipping: true
+      }));
+    } else {
+      dispatch(setCoinState({
+        rotation: new Euler(
+          ((Math.floor(Math.random() * 2) + 1) * Math.PI),
+          rotation.y,
+          rotation.z,
+        ),
+        isFlipping: false
+      }));
     }
   });
 
@@ -66,7 +61,7 @@ function Group() {
       rotation={rotation} // モデルの回転
       onClick={() => {
         // クリック時の処理
-        setIsFlipping(!isFlipping);
+        dispatch(setCoinState({ rotation, isFlipping: !isFlipping }));
       }}
     >
       {/* モデル */}

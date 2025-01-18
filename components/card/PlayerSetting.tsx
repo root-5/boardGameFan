@@ -1,38 +1,36 @@
 import { Player } from "../../utils/types";
 import { initialPlayers } from "../../utils/cardDefinitions";
+import { useSelector, useDispatch } from "react-redux";
+import { setPlayersState } from "../../store/playersSlice";
 
-export default function PlayerSetting({
-  players,
-  setPlayers,
-}: {
-  players: Player[];
-  setPlayers: (arg: Player[]) => void;
-}) {
+export default function PlayerSetting() {
+  const players = useSelector((state: { players: Player[] }) => state.players);
+  const dispatch = useDispatch();
+
   const handleNameChange = (index: number, newName: string) => {
     const newPlayers = [...players];
     newPlayers[index].name = newName;
-    setPlayers(newPlayers);
+    dispatch(setPlayersState(newPlayers));
   };
 
   const handleColorChange = (index: number, newColor: string) => {
     const newPlayers = [...players];
     newPlayers[index].color = newColor;
-    setPlayers(newPlayers);
+    dispatch(setPlayersState(newPlayers));
   };
 
   const addPlayer = () => {
-    // ランダムな色を生成し、新しいプレイヤーを追加
     const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     const newPlayers = [
       ...players,
       { name: `Player ${players.length + 1}`, color: randomColor },
     ];
-    setPlayers(newPlayers);
+    dispatch(setPlayersState(newPlayers));
   };
 
   const removePlayer = (index: number) => {
     const newPlayers = players.filter((_, i) => i !== index);
-    setPlayers(newPlayers);
+    dispatch(setPlayersState(newPlayers));
   };
 
   return (
@@ -70,7 +68,7 @@ export default function PlayerSetting({
       <div
         className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
         onClick={() => {
-          setPlayers(initialPlayers);
+          dispatch(setPlayersState(initialPlayers));
         }}
       >
         ↺

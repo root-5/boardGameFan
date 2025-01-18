@@ -1,13 +1,12 @@
 import { CardStyle } from "../../utils/types";
 import { initialStyle } from "../../utils/cardDefinitions";
+import { useSelector, useDispatch } from "react-redux";
+import { setCardStyleState } from "../../store/cardStyleSlice";
 
-export default function StyleSetting({
-  cardStyle,
-  setCardStyle,
-}: {
-  cardStyle: CardStyle;
-  setCardStyle: (cardStyle: CardStyle) => void;
-}) {
+export default function StyleSetting() {
+  const cardStyle = useSelector((state: { cardStyle: CardStyle }) => state.cardStyle);
+  const dispatch = useDispatch();
+
   return (
     <div className={"relative w-56 h-56 text-center"}>
       <div className="py-6 flex flex-col justify-center items-center gap-3">
@@ -18,7 +17,7 @@ export default function StyleSetting({
             type="color"
             value={cardStyle.bgColor_1}
             onChange={(e) =>
-              setCardStyle({ ...cardStyle, bgColor_1: e.target.value })
+              dispatch(setCardStyleState({ ...cardStyle, bgColor_1: e.target.value }))
             }
           />
           <div className="h-6 pt-0.5 block text-left">{"Font 1"}: </div>
@@ -27,7 +26,7 @@ export default function StyleSetting({
             type="color"
             value={cardStyle.fontColor_1}
             onChange={(e) =>
-              setCardStyle({ ...cardStyle, fontColor_1: e.target.value })
+              dispatch(setCardStyleState({ ...cardStyle, fontColor_1: e.target.value }))
             }
           />
           <div className="h-6 pt-0.5 block text-left">{"Base 2"}: </div>
@@ -36,7 +35,7 @@ export default function StyleSetting({
             type="color"
             value={cardStyle.bgColor_2}
             onChange={(e) =>
-              setCardStyle({ ...cardStyle, bgColor_2: e.target.value })
+              dispatch(setCardStyleState({ ...cardStyle, bgColor_2: e.target.value }))
             }
           />
           <div className="h-6 pt-0.5 block text-left">{"Font 2"}: </div>
@@ -45,7 +44,7 @@ export default function StyleSetting({
             type="color"
             value={cardStyle.fontColor_2}
             onChange={(e) =>
-              setCardStyle({ ...cardStyle, fontColor_2: e.target.value })
+              dispatch(setCardStyleState({ ...cardStyle, fontColor_2: e.target.value }))
             }
           />
         </div>
@@ -53,7 +52,7 @@ export default function StyleSetting({
           className="block w-40 bg-transparent cursor-pointer"
           value={cardStyle.fontStyle}
           onChange={(e) =>
-            setCardStyle({ ...cardStyle, fontStyle: e.target.value })
+            dispatch(setCardStyleState({ ...cardStyle, fontStyle: e.target.value }))
           }
         >
           <option className="bg-transparent text-black" value="Comic Sans MS">
@@ -85,7 +84,7 @@ export default function StyleSetting({
       <div
         className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
         onClick={() => {
-          setCardStyle(initialStyle);
+          dispatch(setCardStyleState(initialStyle));
         }}
       >
         ↺

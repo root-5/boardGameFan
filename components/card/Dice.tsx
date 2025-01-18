@@ -2,8 +2,10 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Euler } from "three";
+import { useSelector, useDispatch } from "react-redux";
+import { setDiceState } from "../../store/diceSlice";
 
 // ==============================
 // 設定
@@ -28,35 +30,29 @@ function DiceModel() {
 
 // グループ（複数のモデルの集合）
 function Group() {
-  const [rotation, setRotation] = useState(
-    new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2)
-  );
-  const [isRolling, setIsRolling] = useState(false);
-  const [isRollingLast, setIsRollingLast] = useState(false);
+  const rotation = useSelector((state: { dice: { rotation: Euler } }) => state.dice.rotation);
+  const isRolling = useSelector((state: { dice: { isRolling: boolean } }) => state.dice.isRolling);
+  const dispatch = useDispatch();
 
   useFrame(() => {
-    if (isRolling === isRollingLast) {
-      // モデルの回転
-      if (isRolling) {
-        setRotation(
-          (prevRotation) =>
-            new Euler(
-              prevRotation.x + (Math.PI * 15) / 100,
-              prevRotation.y + (Math.PI * 15) / 100,
-              prevRotation.z + (Math.PI * 15) / 100
-            )
-        );
-      }
+    if (isRolling) {
+      dispatch(setDiceState({
+        rotation: new Euler(
+          rotation.x + (Math.PI * 15) / 100,
+          rotation.y + (Math.PI * 15) / 100,
+          rotation.z + (Math.PI * 15) / 100
+        ),
+        isRolling: true
+      }));
     } else {
-      // ダイスロールの切り替え時にランダムな回転角にする
-      setRotation(
-        new Euler(
+      dispatch(setDiceState({
+        rotation: new Euler(
           ((Math.floor(Math.random() * 6) + 1) * Math.PI) / 2,
           ((Math.floor(Math.random() * 6) + 1) * Math.PI) / 2,
           ((Math.floor(Math.random() * 6) + 1) * Math.PI) / 2
-        )
-      );
-      setIsRollingLast(isRolling);
+        ),
+        isRolling: false
+      }));
     }
   });
 
@@ -65,7 +61,7 @@ function Group() {
       rotation={rotation} // モデルの回転
       onClick={() => {
         // クリック時の処理
-        setIsRolling(!isRolling);
+        dispatch(setDiceState({ rotation, isRolling: !isRolling }));
       }}
     >
       {/* モデル */}

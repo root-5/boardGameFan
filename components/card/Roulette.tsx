@@ -2,7 +2,8 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setRouletteState } from "../../store/rouletteSlice";
 import { Euler } from "three";
 
 type user = {
@@ -55,8 +56,9 @@ function GroupComponent(props: {
   setRouletteNum: (num: number) => void;
 }) {
   const { users, rouletteNum, setRouletteNum } = props;
-  const [rotation, setRotation] = useState(new Euler(0, 1 * Math.PI, 0));
-  const [isSpinning, setIsSpinning] = useState(false); // 回転状態の判定
+  const rotation = useSelector((state: { roulette: { rotation: Euler } }) => state.roulette.rotation);
+  const isSpinning = useSelector((state: { roulette: { isSpinning: boolean } }) => state.roulette.isSpinning);
+  const dispatch = useDispatch();
   const [isSpinningLast, setIsSpinningLast] = useState(true); // isSpinning だけでも表現はできるが、isSpinningLast を加えることで停止中の useFrame 内の計算をなしにできる
   const [angularVelocity, setAngularVelocity] = useState(
     // 角速度
@@ -82,17 +84,20 @@ function GroupComponent(props: {
           }
         });
         // 計算した角速度をもとに次フレームの回転角を設定
-        setRotation(
-          (prevRotation) =>
-            new Euler(
-              prevRotation.x,
-              prevRotation.y + angularVelocity,
-              prevRotation.z
-            )
-        );
+        dispatch(setRouletteState({
+          rotation: new Euler(
+            rotation.x,
+            rotation.y + angularVelocity,
+            rotation.z
+          ),
+          isSpinning: true
+        }));
       } else {
         // 角速度が 0 に収束した際は静止への移行状態をステートへ反映
-        setIsSpinning(false);
+        dispatch(setRouletteState({
+          rotation,
+          isSpinning: false
+        }));
         setIsSpinningLast(true);
       }
     } else if (!isSpinning && isSpinningLast) {
@@ -119,8 +124,10 @@ function GroupComponent(props: {
         onClick={() => {
           // 静止状態のみトリガー
           if (!isSpinning && !isSpinningLast) {
-            setRotation(new Euler(0, Math.random() * Math.PI * 2, 0));
-            setIsSpinning(true);
+            dispatch(setRouletteState({
+              rotation: new Euler(0, Math.random() * Math.PI * 2, 0),
+              isSpinning: true
+            }));
             setIsSpinningLast(false);
           }
         }}
