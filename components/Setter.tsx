@@ -74,7 +74,7 @@ export default function Setter(props: {
               {componentKeys.map((key, index) => (
                 <button
                   key={index}
-                  className="flex items-center justify-center text-sm duration-200 hover:brightness-150"
+                  className="flex items-center justify-center text-xs duration-200 hover:brightness-150"
                   onClick={() => handleClick(key)}
                   style={{
                     backgroundColor: bgColor,

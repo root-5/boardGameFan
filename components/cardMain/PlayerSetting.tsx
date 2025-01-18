@@ -41,7 +41,7 @@ export default function PlayerSetting({
         {players.map((player, index) => (
           <div key={index} className="flex items-center align-middle gap-1">
             <button
-              className="block px-2 pb-1 rounded pointer-cursor duration-200 hover:bg-red-500"
+              className="block px-2 pb-1 rounded duration-200 hover:bg-red-500"
               onClick={() => removePlayer(index)}
             >
               -
@@ -61,14 +61,14 @@ export default function PlayerSetting({
           </div>
         ))}
         <button
-          className="w-full px-2 duration-200 hover:opacity-70"
+          className="mt-1 w-full px-2 duration-200 hover:opacity-70"
           onClick={addPlayer}
         >
           ＋
         </button>
       </div>
       <div
-        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 duration-200 hover:opacity-100"
+        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
         onClick={() => {
           setPlayers(initialPlayers);
         }}

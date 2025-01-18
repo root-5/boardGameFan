@@ -72,7 +72,7 @@ export default function WinnerCounter({ players }: { players: Player[] }) {
         </div>
       ))}
       <div
-        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 duration-200 hover:opacity-100"
+        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
         onClick={() => {
           setPlayerWins(players.map(() => 0));
           setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
