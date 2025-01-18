@@ -6,20 +6,28 @@ https://boardgamefan.pages.dev/
 
 ![開発中スクショ](image.png)
 
-## 使用コマンドメモ
+## 開発作業
 
+### 開発メモ
+- 基本的にほぼすべてのレンダリングはクライアント側で行うが、TOPの layout.tsx だけはサーバーサイドで行う。
+
+### 初期導入・ライブラリインストール
 1. `npx create-next-app`
 2. `npm install three @react-three/fiber`
 3. `npm i @react-three/drei`
 4. `npm install @reduxjs/toolkit react-redux`
 5. `npm run dev`
 
-## 本番ビルド関係
+### 開発中に使うスクリプト
+- ローカルストレージ削除（Chrome コンソール） `localStorage.clear()`
+- ローカルストレージ閲覧（Chrome コンソール） `console.log(localStorage)`
+
+### 本番ビルド関係
 1. 今回は Cloudflare Pages にデプロイするため静的ファイルを生成する
    1. next.config.js に `output: 'export'` を追加
 2. `npm run build`
 
-## インフラ
+### インフラ
 Cloudflare Pages にデプロイ
 
 1. Cloudflare Pages にログイン
@@ -69,12 +77,9 @@ Cloudflare Pages にデプロイ
   - https://colorhunt.co/
 
 ## AI の使い方メモ
+Copilot Chat や Copilot Workspace を積極的に使用する。
 ```
 リファクタリングがしたいです。 セキュリティ的に問題がある場所もっと効率的に書ける場所があったら教えてください
 
 コードの提示は修正箇所のみでいいです。
 ```
-
-## その他
-- ローカルストレージ削除 `localStorage.clear()`
-- ローカルストレージ閲覧 `console.log(localStorage)`
