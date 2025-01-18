@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setTimerState, resetTimer } from "../../store/timerSlice";
 
 const timerMax = 359999; // 99:59:59 (最大値)
 const timerMin = 0; // 00:00:00 (最小値)
@@ -15,24 +17,20 @@ function adjustTimerValue(value: number): number {
 }
 
 export default function Timer() {
-  const [defaultTime, setDefaultTime] = useState(0);
-  const [time, setTime] = useState(defaultTime);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isTimeUp, setIsTimeUp] = useState(false);
-  const [saveDefaultText, setSaveDefaultText] = useState("SAVE AS DEFAULT");
+  const { defaultTime, time, isRunning, isTimeUp, saveDefaultText } = useSelector((state: { timer: any }) => state.timer);
+  const dispatch = useDispatch();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
-        setTime((prevTime) => {
-          const nextTime = adjustTimerValue(prevTime - 1);
+        dispatch(setTimerState((prevState: any) => {
+          const nextTime = adjustTimerValue(prevState.time - 1);
           if (nextTime === timerMin) {
-            setIsRunning(false);
-            setIsTimeUp(true);
+            return { ...prevState, time: nextTime, isRunning: false, isTimeUp: true };
           }
-          return nextTime;
-        });
+          return { ...prevState, time: nextTime };
+        }));
       }, 1000);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -43,7 +41,7 @@ export default function Timer() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning]);
+  }, [isRunning, dispatch]);
 
   const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600);
@@ -71,9 +69,15 @@ export default function Timer() {
   ];
 
   const handleMouseDown = (adjustment: number) => {
-    setTime((prevTime) => adjustTimerValue(prevTime + adjustment));
+    dispatch(setTimerState((prevState: any) => ({
+      ...prevState,
+      time: adjustTimerValue(prevState.time + adjustment)
+    })));
     intervalRef.current = setInterval(() => {
-      setTime((prevTime) => adjustTimerValue(prevTime + adjustment));
+      dispatch(setTimerState((prevState: any) => ({
+        ...prevState,
+        time: adjustTimerValue(prevState.time + adjustment)
+      })));
     }, 150);
   };
 
@@ -105,7 +109,10 @@ export default function Timer() {
             }
             onClick={() => {
               if (!isTimeUp) {
-                setIsRunning(!isRunning);
+                dispatch(setTimerState((prevState: any) => ({
+                  ...prevState,
+                  isRunning: !prevState.isRunning
+                })));
               }
             }}
           >
@@ -118,8 +125,11 @@ export default function Timer() {
             }
             onClick={() => {
               if (isRunning) return;
-              setTime(defaultTime);
-              setIsTimeUp(false);
+              dispatch(setTimerState((prevState: any) => ({
+                ...prevState,
+                time: defaultTime,
+                isTimeUp: false
+              })));
             }}
           >
             RESET
@@ -151,10 +161,16 @@ export default function Timer() {
           }
           onClick={() => {
             if (isTimeUp || isRunning) return;
-            setDefaultTime(time);
-            setSaveDefaultText("SAVED");
+            dispatch(setTimerState((prevState: any) => ({
+              ...prevState,
+              defaultTime: prevState.time,
+              saveDefaultText: "SAVED"
+            })));
             setTimeout(() => {
-              setSaveDefaultText("SAVE AS DEFAULT");
+              dispatch(setTimerState((prevState: any) => ({
+                ...prevState,
+                saveDefaultText: "SAVE AS DEFAULT"
+              })));
             }, 2000);
           }}
         >

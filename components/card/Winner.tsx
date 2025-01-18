@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Player } from "../../utils/types";
+import { setPlayerWins, resetPlayerWins } from "../../store/winnerSlice";
 
 // 勝利数の最大値と最小値
 const maxWins = 99;
@@ -20,34 +21,18 @@ function adjustWinCount(value: number): number {
 }
 
 export default function WinnerCounter({ players }: { players: Player[] }) {
-  const [playerWins, setPlayerWins] = useState(players.map(() => 0));
-  const [playerDisplayTexts, setPlayerDisplayTexts] = useState(
-    players.map(() => "🏆 × 0")
-  );
+  const playerWins = useSelector((state: { winner: number[] }) => state.winner);
+  const dispatch = useDispatch();
 
   // 勝利数と勝利数表示更新する関数
   const handleWinChange = (index: number, increment: number) => {
-    const newWins = [...playerWins];
-    const newCount = adjustWinCount(newWins[index] + increment);
-    newWins[index] = newCount;
-
-    const newDisplayTexts = [...playerDisplayTexts];
-    if (newCount == 0) {
-      newDisplayTexts[index] = "🏆 × 0";
-    } else if (newCount <= maxDisplayWins) {
-      newDisplayTexts[index] = "🏆".repeat(newCount);
-    } else {
-      newDisplayTexts[index] = "🏆 × " + newCount;
-    }
-
-    setPlayerWins(newWins);
-    setPlayerDisplayTexts(newDisplayTexts);
+    const newCount = adjustWinCount(playerWins[index] + increment);
+    dispatch(setPlayerWins({ index, value: newCount }));
   };
 
   // プレイヤー数に変更があった際はステートを更新
   if (players.length !== playerWins.length) {
-    setPlayerWins(players.map(() => 0));
-    setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
+    dispatch(resetPlayerWins(players.length));
   }
 
   return (
@@ -67,16 +52,17 @@ export default function WinnerCounter({ players }: { players: Player[] }) {
             className="cursor-pointer"
             onClick={() => handleWinChange(index, -1)}
           >
-            {playerDisplayTexts[index]}
+            {playerWins[index] === 0
+              ? "🏆 × 0"
+              : playerWins[index] <= maxDisplayWins
+              ? "🏆".repeat(playerWins[index])
+              : "🏆 × " + playerWins[index]}
           </div>
         </div>
       ))}
       <div
         className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-        onClick={() => {
-          setPlayerWins(players.map(() => 0));
-          setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
-        }}
+        onClick={() => dispatch(resetPlayerWins(players.length))}
       >
         ↺
       </div>

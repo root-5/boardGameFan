@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setScore } from "../../store/scoreSlice";
 
 const scoreMax = 99999;
 const scoreMin = -99999;
@@ -15,7 +17,8 @@ function ajustScoreValue(value: number): number {
 }
 
 export default function Score() {
-  const [count, setCount] = useState(0);
+  const count = useSelector((state: { score: number }) => state.score);
+  const dispatch = useDispatch();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scoreAdjustments = [
@@ -30,9 +33,9 @@ export default function Score() {
   ];
 
   const handleMouseDown = (adjustment: number) => {
-    setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
+    dispatch(setScore(ajustScoreValue(count + adjustment)));
     intervalRef.current = setInterval(() => {
-      setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
+      dispatch(setScore(ajustScoreValue(count + adjustment)));
     }, 150);
   };
 
@@ -50,7 +53,7 @@ export default function Score() {
         <input
           className="inline-block w-44 bg-transparent text-5xl text-center font-bold outline-none"
           type="number"
-          onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
+          onChange={(e) => dispatch(setScore(ajustScoreValue(parseInt(e.target.value))))}
           value={count}
         />
         <div>
@@ -73,7 +76,7 @@ export default function Score() {
         </div>
         <div
           className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-          onClick={() => setCount(0)}
+          onClick={() => dispatch(setScore(0))}
         >
           ↺
         </div>
