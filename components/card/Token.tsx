@@ -18,7 +18,6 @@ export default function Token() {
   const [tokenCounts, setTokenCounts] = useState([0, 0, 0, 0]);
   const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const latestTokenCounts = useRef(tokenCounts);
 
   const handleTokenChange = (index: number, adjustment: number) => {
     setTokenCounts((prevCounts) => {
@@ -39,7 +38,7 @@ export default function Token() {
   const handleMouseDown = (index: number, adjustment: number) => {
     handleTokenChange(index, adjustment);
     intervalRef.current = setInterval(() => {
-      dispatch(setToken({ index, value: latestTokenCounts.current[index] + adjustment }));
+      handleTokenChange(index, adjustment);
     }, 150);
   };
 
@@ -49,18 +48,6 @@ export default function Token() {
       intervalRef.current = null;
     }
   };
-
-  useEffect(() => {
-    latestTokenCounts.current = tokenCounts;
-  }, [tokenCounts]);
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 
   return (
     <>
