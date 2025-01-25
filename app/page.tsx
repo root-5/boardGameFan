@@ -90,14 +90,6 @@ export default function App() {
     // 内部的に保持するカードリストの最大サイズ
     const { cols, zoomRatio } = calcColsAndZoomRatio();
     const rows = Math.floor(window.innerHeight / 224);
-    const cardListStorage = getLocalStorage("cardList");
-    const cardStyleStorage = getLocalStorage("cardStyle");
-    setCardList(
-      cardListStorage ? JSON.parse(cardListStorage) : initialCardsSetting
-    );
-    setCardStyle(
-      cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
-    );
     setZoomRatio(zoomRatio);
     setViewRange({ x: cols, y: rows });
   };
