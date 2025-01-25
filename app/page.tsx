@@ -1,14 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  cardMap,
-  initialCardsSetting,
-  initialStyle,
-  initialPlayers,
-} from "../utils/cardDefinitions";
+import { cardMap, initialCardsSetting, initialStyle, initialPlayers } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
-import { useDragDrop } from "../utils/dragDropUtils";
+import { useDragDrop, calculateAndUpdateGrid } from "../utils/cardFunctions";
 import DragIcon from "../components/card/module/DragIcon";
 import CloseButton from "../components/card/module/CloseButton";
 import Setter from "../components/Setter";
@@ -59,48 +54,19 @@ export default function App() {
   // ドラッグ＆ドロップ処理
   // ======================================================================
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop(
-    setDragIndex,
-    setDragOffset,
-    dragIndex,
-    dragOffset,
-    cardList,
-    setCardList
+    setDragIndex, setDragOffset, dragIndex, dragOffset, cardList, setCardList
   );
-
-  // ======================================================================
-  // グリッド関連処理
-  // ======================================================================
-  // window 幅をもとに、カードの列数とズーム倍率を計算する関数
-  const calcColsAndZoomRatio = () => {
-    const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
-    let zoomRatio = 1;
-    let cols = 1;
-    // 幅が 500px 以下は列数を１にしてカード幅を画面幅に合わせる
-    if (window.outerWidth <= 500) {
-      zoomRatio = window.outerWidth / cardSize;
-    } else {
-      cols = Math.floor(window.innerWidth / cardSize);
-      zoomRatio = Math.min(window.innerWidth / (cols * cardSize));
-    }
-    return { cols, zoomRatio };
-  };
-  // ロード時と window 幅が変わったときに呼び出される関数
-  // window 幅、カードリストをもとにカードの行数、列数、ズーム倍率を計算し、カードリストを更新する
-  const updateGrid = () => {
-    // 内部的に保持するカードリストの最大サイズ
-    const { cols, zoomRatio } = calcColsAndZoomRatio();
-    const rows = Math.floor(window.innerHeight / 224);
-    setZoomRatio(zoomRatio);
-    setViewRange({ x: cols, y: rows });
-  };
 
   // ======================================================================
   // useEffect
   // ======================================================================
   // グリッド更新の useEffect
   useEffect(() => {
-    updateGrid();
-    const handleResize = () => updateGrid();
+    const handleResize = () => {
+      const { zoomRatio, cols, rows } = calculateAndUpdateGrid(window.outerWidth, window.innerWidth);
+      setZoomRatio(zoomRatio);
+      setViewRange({ x: cols, y: rows });
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []); // 初回のみ実行
@@ -149,9 +115,7 @@ export default function App() {
           // 背景色、フォント色を設定
           const isEven = (item.x + item.y) % 2 === 0;
           const bgColor = isEven ? cardStyle.bgColor_1 : cardStyle.bgColor_2;
-          const fontColor = isEven
-            ? cardStyle.fontColor_1
-            : cardStyle.fontColor_2;
+          const fontColor = isEven ? cardStyle.fontColor_1 : cardStyle.fontColor_2;
           const Component = cardMap[item.component];
 
           return (

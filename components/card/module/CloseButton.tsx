@@ -1,5 +1,5 @@
 import React from "react";
-import { CardSetting } from "../../utils/types";
+import { CardSetting } from "../../../utils/types";
 
 interface CloseButtonProps {
   index: number;
