@@ -46,7 +46,7 @@ export default function App() {
   // ======================================================================
   // useEffect
   // ======================================================================
-  // グリッド更新の useEffect
+  // グリッドの列数、行数、ズーム倍率を更新するための useEffect
   useEffect(() => {
     const handleResize = () => {
       const { zoomRatio, cols, rows } = calculateAndUpdateGrid(window.outerWidth, window.innerWidth);
@@ -57,15 +57,19 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []); // 初回のみ実行
 
-  // ローカルストレージからステートを読み込む useEffect
+  // 一部プロパティをローカルストレージからステートへ読み込む useEffect
   useEffect(() => {
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
+    const playersStorage = getLocalStorage("players");
     setCardList(
       cardListStorage ? JSON.parse(cardListStorage) : initialCardsList
     );
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
+    );
+    setPlayers(
+      playersStorage ? JSON.parse(playersStorage) : initialPlayers
     );
   }, []);
 

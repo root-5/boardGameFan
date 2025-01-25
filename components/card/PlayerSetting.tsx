@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Player } from "../../utils/types";
 import { initialPlayers } from "../../utils/cardDefinitions";
+import { setLocalStorage } from "../../utils/localStorageUtils";
 
 export default function PlayerSetting({
   players,
@@ -34,6 +36,11 @@ export default function PlayerSetting({
     const newPlayers = players.filter((_, i) => i !== index);
     setPlayers(newPlayers);
   };
+
+  useEffect(() => {
+    if (players === initialPlayers) return;
+    setLocalStorage("players", JSON.stringify(players));
+  }, [players]);
 
   return (
     <>
@@ -71,6 +78,7 @@ export default function PlayerSetting({
         className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
         onClick={() => {
           setPlayers(initialPlayers);
+          setLocalStorage("players", JSON.stringify(initialPlayers));
         }}
       >
         ↺

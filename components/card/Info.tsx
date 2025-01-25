@@ -2,6 +2,7 @@
 
 import { CardSetting } from "../../utils/types";
 import { initialCardsList } from "../../utils/cardDefinitions";
+import { setLocalStorage } from "../../utils/localStorageUtils";
 
 export default function TurnCounter(props: {
   setCardList: (arg: CardSetting[]) => void;
@@ -39,6 +40,7 @@ export default function TurnCounter(props: {
       <button
         onClick={() => {
           setCardList(initialCardsList);
+          setLocalStorage("cardList", JSON.stringify(initialCardsList));
         }}
         className="mt-4 p-2 rounded-md duration-200 hover:bg-red-500"
       >
