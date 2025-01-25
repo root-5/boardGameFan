@@ -1,6 +1,11 @@
 // ローカルストレージの操作を行うためのユーティリティ関数を定義
 
-const secretKey = "your-secret-key"; // 秘密鍵を設定（適宜変更してください）
+// この暗号化は現状フロントで行っている
+// 目的はローカルストレージに保存する値を安易に見られないようにするためだが、フロントで行うことなのでセキュリティ的にはあまり意味がない
+// 本格的にセキュリティを考慮する場合はサーバーサイドで暗号化を行うべき
+const isEncryption = false; // 暗号化を行うかどうか
+const secretKey = "your-secret-key"; // 秘密鍵を設定
+
 
 /**
  * 簡単な暗号化関数
@@ -44,7 +49,7 @@ const decrypt = (encrypted: string): string => {
 export const getLocalStorage = (key: string): string | null => {
   const encryptedValue = localStorage.getItem(key);
   if (encryptedValue) {
-    return decrypt(encryptedValue);
+    return isEncryption ? decrypt(encryptedValue) : encryptedValue;
   }
   return null;
 };
@@ -56,6 +61,6 @@ export const getLocalStorage = (key: string): string | null => {
  * @returns {void}
  */
 export const setLocalStorage = (key: string, value: string): void => {
-  const encryptedValue = encrypt(value);
+  const encryptedValue = isEncryption ? encrypt(value) : value;
   localStorage.setItem(key, encryptedValue);
 };

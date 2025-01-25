@@ -35,7 +35,6 @@ export default function App() {
   // ======================================================================
   // ステート定義
   // ======================================================================
-  const [isCookieLoaded, setIsCookieLoaded] = useState(false); // クッキー読み込み完了フラグ
   const [cardList, setCardList] = useState(initialCardsSetting); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
@@ -112,11 +111,10 @@ export default function App() {
     const handleResize = () => updateGrid();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [isCookieLoaded]); // 初回のみ実行でいいので、isCookieLoaded を監視対象にする
+  }, []); // 初回のみ実行
 
   // ローカルストレージからステートを読み込む useEffect
   useEffect(() => {
-    if (isCookieLoaded) return;
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
     setCardList(
@@ -125,10 +123,9 @@ export default function App() {
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
     );
-    setIsCookieLoaded(true);
-  }, [isCookieLoaded]);
+  }, []);
 
-  // 各ステート変更をローカルストレージに保存する useEffect
+  // カードリスト変更、カードスタイル変更をローカルストレージに保存する useEffect
   useEffect(() => {
     if (cardList === initialCardsSetting) return;
     setLocalStorage("cardList", JSON.stringify(cardList));
