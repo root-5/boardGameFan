@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { cardMap, initialCardsList, initialStyle, initialPlayers } from "../utils/cardDefinitions";
+import { cardMap, initialCardsListSP, initialStyle, initialPlayers } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
-import CloseButton from "../components/card/module/CloseButton";
-import Setter from "../components/Setter";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
 
 export default function GridSP() {
   // ======================================================================
   // ステート定義
   // ======================================================================
-  const [cardList, setCardList] = useState(initialCardsList); // カードリスト
+  const [cardList, setCardList] = useState(initialCardsListSP); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [players, setPlayers] = useState(initialPlayers); // プレイヤーデータ
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
@@ -39,7 +37,7 @@ export default function GridSP() {
     const cardStyleStorage = getLocalStorage("cardStyle");
     const playersStorage = getLocalStorage("players");
     setCardList(
-      cardListStorage ? JSON.parse(cardListStorage) : initialCardsList
+      cardListStorage ? JSON.parse(cardListStorage) : initialCardsListSP
     );
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
@@ -51,7 +49,7 @@ export default function GridSP() {
 
   // カードリスト変更、カードスタイル変更をローカルストレージに保存する useEffect
   useEffect(() => {
-    if (cardList === initialCardsList) return;
+    if (cardList === initialCardsListSP) return;
     setLocalStorage("cardList", JSON.stringify(cardList));
   }, [cardList]);
   useEffect(() => {
@@ -78,11 +76,11 @@ export default function GridSP() {
       } else if (deltaX < -50) { // 左スワイプ
         setCurrentIndex((prevIndex) => (prevIndex + 1) % cardList.length);
       }
-      console.log(currentCard);
+      console.log(currentIndex);
     }
     setTouchStart(null);
     setTouchEnd(null);
-  };
+  }; // 0-10  length 11
 
   // ======================================================================
   // レンダリング
@@ -111,16 +109,9 @@ export default function GridSP() {
         <div
           className="absolute top-1/2 w-56 h-56 text-center transform -translate-y-1/2"
           style={{
-            backgroundColor: bgColor,
-            color: fontColor,
             zoom: zoomRatio,
           }}
         >
-          <CloseButton
-            index={currentIndex}
-            cardList={cardList}
-            setCardList={setCardList}
-          />
           {/* カードの中身 */}
           <Component
             zoomRatio={zoomRatio}
