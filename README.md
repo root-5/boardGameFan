@@ -15,8 +15,7 @@ https://boardgamefan.pages.dev/
 1. `npx create-next-app`
 2. `npm install three @react-three/fiber`
 3. `npm i @react-three/drei`
-4. `npm install @reduxjs/toolkit react-redux`
-5. `npm run dev`
+4. `npm run dev`
 
 ### 開発中に使うスクリプト
 - ローカルストレージ削除（Chrome コンソール） `localStorage.clear()`
