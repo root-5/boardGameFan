@@ -158,7 +158,6 @@ export default function Roulette(props: {
   players: Array<user>;
 }) {
   const { zoomRatio, players } = props;
-
   const [rouletteNum, setRouletteNum] = useState(0);
 
   return (

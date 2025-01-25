@@ -56,16 +56,17 @@ export const initialCardsList = [
 
 // 初期カード（SPモード、x=0 のみ）
 export const initialCardsListSP = [
+  { component: "dice", x: 0, y: 1 },
+  { component: "coin", x: 2, y: 0 },
+  { component: "roulette", x: 2, y: 1 },
+  { component: "timer", x: 0, y: 2 },
+  { component: "token", x: 1, y: 1 },
+  { component: "score", x: 1, y: 2 },
+  { component: "turn", x: 1, y: 0 },
   { component: "winner", x: 0, y: 0 },
-  { component: "turn", x: 0, y: 1 },
-  { component: "dice", x: 0, y: 2 },
-  { component: "token", x: 0, y: 3 },
-  { component: "roulette", x: 0, y: 4 },
-  { component: "timer", x: 0, y: 5 },
-  { component: "score", x: 0, y: 6 },
-  { component: "styleSetting", x: 0, y: 7 },
-  { component: "info", x: 0, y: 8 },
-  { component: "playerSetting", x: 0, y: 9 },
+  { component: "styleSetting", x: 2, y: 2 },
+  { component: "playerSetting", x: 0, y: 3 },
+  { component: "info", x: 1, y: 3 },
 ];
 
 // 初期スタイル
