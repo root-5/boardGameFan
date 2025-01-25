@@ -40,22 +40,8 @@ export const cardMap: {
 export const maxRange = { rows: 20, cols: 20 };
 
 // 初期カード
+// PC の場合は x,y で画面を構成、SP の場合は配列の順番で画面を構成
 export const initialCardsList = [
-  { component: "winner", x: 0, y: 0 },
-  { component: "turn", x: 1, y: 0 },
-  { component: "coin", x: 2, y: 0 },
-  { component: "dice", x: 0, y: 1 },
-  { component: "token", x: 1, y: 1 },
-  { component: "roulette", x: 2, y: 1 },
-  { component: "timer", x: 0, y: 2 },
-  { component: "score", x: 1, y: 2 },
-  { component: "styleSetting", x: 2, y: 2 },
-  { component: "playerSetting", x: 0, y: 3 },
-  { component: "info", x: 1, y: 3 },
-];
-
-// 初期カード（SPモード、x=0 のみ）
-export const initialCardsListSP = [
   { component: "dice", x: 0, y: 1 },
   { component: "coin", x: 2, y: 0 },
   { component: "roulette", x: 2, y: 1 },

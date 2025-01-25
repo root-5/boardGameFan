@@ -63,15 +63,9 @@ export default function Grid() {
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
     const playersStorage = getLocalStorage("players");
-    setCardList(
-      cardListStorage ? JSON.parse(cardListStorage) : initialCardsList
-    );
-    setCardStyle(
-      cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
-    );
-    setPlayers(
-      playersStorage ? JSON.parse(playersStorage) : initialPlayers
-    );
+    setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCardsList);
+    setCardStyle(cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle);
+    setPlayers(playersStorage ? JSON.parse(playersStorage) : initialPlayers);
   }, []);
 
   // カードリスト変更、カードスタイル変更をローカルストレージに保存する useEffect
