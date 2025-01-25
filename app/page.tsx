@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Provider } from "react-redux";
-import { store } from "../store/store";
 import {
   cardMap,
   initialCardsSetting,
@@ -144,7 +142,7 @@ export default function App() {
   // レンダリング
   // ======================================================================
   return (
-    <Provider store={store}>
+    <>
       <div
         className={"relative w-full h-full"}
         id="card-container"
@@ -214,6 +212,6 @@ export default function App() {
           );
         })}
       </div>
-    </Provider>
+    </>
   );
 }
