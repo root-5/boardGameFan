@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Player } from "../../utils/types";
 import { initialPlayers } from "../../utils/cardDefinitions";
-import { setLocalStorage } from "../../utils/localStorageUtils";
+import { setLocalStorage } from "../../utils/localFuncs";
 
 export default function PlayerSetting({
   players,

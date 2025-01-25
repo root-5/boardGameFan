@@ -1,3 +1,7 @@
+/**
+ * カード系で使用する関数をまとめる
+ */
+
 import { Dispatch, SetStateAction } from "react";
 
 /**

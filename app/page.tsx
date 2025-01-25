@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { cardMap, maxRange, initialCardsList, initialStyle, initialPlayers } from "../utils/cardDefinitions";
-import { setInitialCardsList, useDragDrop, calculateAndUpdateGrid } from "../utils/cardFunctions";
-import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
+import { setInitialCardsList, useDragDrop, calculateAndUpdateGrid } from "../utils/cardFuncs";
+import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import DragIcon from "../components/card/module/DragIcon";
 import CloseButton from "../components/card/module/CloseButton";
 import Setter from "../components/Setter";

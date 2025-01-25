@@ -1,11 +1,11 @@
-// ローカルストレージの操作を行うためのユーティリティ関数を定義
+/**
+ * ローカルストレージの操作を行うためのユーティリティ関数を定義
+ */
 
-// この暗号化は現状フロントで行っている
-// 目的はローカルストレージに保存する値を安易に見られないようにするためだが、フロントで行うことなのでセキュリティ的にはあまり意味がない
-// 本格的にセキュリティを考慮する場合はサーバーサイドで暗号化を行うべき
+// 目的は保存する値を取得されても安易に見られないようにするため暗号化を行っている
+// ただフロントでの処理の時点で程度は知れれている、本格的にセキュリティを考慮する場合はサーバーサイドで暗号化を行うべき
 const isEncryption = false; // 暗号化を行うかどうか
 const secretKey = "your-secret-key"; // 秘密鍵を設定
-
 
 /**
  * 簡単な暗号化関数
@@ -14,9 +14,8 @@ const secretKey = "your-secret-key"; // 秘密鍵を設定
  */
 const encrypt = (value: string): string => {
   const textToChars = (text: string) => text.split('').map(c => c.charCodeAt(0));
-  const byteHex = (n: number) => ("0" + Number(n).toString(16)).substr(-2);
+  const byteHex = (n: number) => ("0" + Number(n).toString(16)).substring(-2);
   const applySecretToChar = (code: number) => textToChars(secretKey).reduce((a, b) => a ^ b, code);
-
   return value.split('')
     .map(c => applySecretToChar(c.charCodeAt(0)))
     .map(byteHex)

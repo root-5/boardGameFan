@@ -1,3 +1,8 @@
+/**
+ * カード全体にかかわる定数をまとめる
+ * カード個別の定数は、各カードのコンポーネント内に記述する
+ */
+
 import Score from "../components/card/Score";
 import Dice from "../components/card/Dice";
 import Coin from "../components/card/Coin";

@@ -1,3 +1,8 @@
+/**
+ * カード全体にかかわる型をまとめる
+ * カード個別の型は、各カードのコンポーネント内に記述する
+ */
+
 import React from "react";
 
 export type Player = {

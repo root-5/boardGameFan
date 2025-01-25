@@ -2,7 +2,7 @@
 
 import { CardStyle } from "../../utils/types";
 import { initialStyle } from "../../utils/cardDefinitions";
-import { setLocalStorage } from "../../utils/localStorageUtils";
+import { setLocalStorage } from "../../utils/localFuncs";
 
 const colorFields = [
   { label: "Base 1", key: "bgColor_1" },

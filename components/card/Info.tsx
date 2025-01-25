@@ -2,7 +2,7 @@
 
 import { CardSetting } from "../../utils/types";
 import { initialCardsList } from "../../utils/cardDefinitions";
-import { setLocalStorage } from "../../utils/localStorageUtils";
+import { setLocalStorage } from "../../utils/localFuncs";
 
 export default function TurnCounter(props: {
   setCardList: (arg: CardSetting[]) => void;
