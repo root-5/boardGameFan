@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, SetStateAction, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cardMap, initialCardsList, initialStyle, initialPlayers } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
@@ -76,7 +76,6 @@ export default function GridSP() {
     if (!touchStart || !touchEnd) return;
     const deltaX = touchEnd.x - touchStart.x;
     const deltaY = touchEnd.y - touchStart.y;
-    console.log(cardListRef.current);
     if (Math.abs(deltaX) > Math.abs(deltaY)) { // 水平方向のスワイプ
       if (deltaX > 50) { // 右スワイプ
         setCurrentIndex((prevIndex) => (prevIndex - 1 + cardListRef.current.length) % cardListRef.current.length);
