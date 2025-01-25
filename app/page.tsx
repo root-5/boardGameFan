@@ -53,6 +53,7 @@ export default function App() {
       setZoomRatio(zoomRatio);
       setViewRange({ x: cols, y: rows });
     };
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []); // 初回のみ実行

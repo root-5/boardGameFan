@@ -19,7 +19,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`relative antialiased h-screen select-none overflow-x-hidden`}
+        className={`relative antialiased h-screen select-none overflow-x-hidden overflow-y-hidden`}
       >
         {/* Image を使用してしまうと読み込みが狂ったため img を使用 */}
         <img
