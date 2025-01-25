@@ -49,12 +49,7 @@ export default function GridSP() {
 
   // カードリストに setter がふくまれている場合は取り除く
   useEffect(() => {
-    let newCardList: SetStateAction<{ component: string; x: number; y: number; }[]> = [];
-    cardList.forEach((card) => {
-      if (card.component !== "setter") {
-        newCardList.push(card);
-      }
-    });
+    const newCardList = cardList.filter(card => card.component !== "setter");
     setCardList(newCardList);
   }, []);
 
