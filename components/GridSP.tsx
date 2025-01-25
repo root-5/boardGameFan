@@ -23,7 +23,7 @@ export default function GridSP() {
   // グリッドの列数、行数、ズーム倍率を更新するための useEffect
   useEffect(() => {
     const handleResize = () => {
-      const { zoomRatio, cols, rows } = calculateAndUpdateGrid(window.outerWidth, window.innerWidth);
+      const { zoomRatio } = calculateAndUpdateGrid(window.outerWidth, window.innerWidth);
       setZoomRatio(zoomRatio);
     };
     handleResize();
@@ -76,7 +76,6 @@ export default function GridSP() {
       } else if (deltaX < -50) { // 左スワイプ
         setCurrentIndex((prevIndex) => (prevIndex + 1) % cardList.length);
       }
-      console.log(currentIndex);
     }
     setTouchStart(null);
     setTouchEnd(null);
