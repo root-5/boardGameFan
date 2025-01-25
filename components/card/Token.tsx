@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { reset, setToken } from "../../store/tokenSlice";
 
 export default function Token() {
-  const tokenCounts = useSelector((state: { token: number[] }) => state.token);
+  const tokenCounts = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
