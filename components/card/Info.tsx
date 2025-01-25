@@ -1,7 +1,7 @@
 "use client";
 
 import { CardSetting } from "../../utils/types";
-import { initialCardsSetting } from "../../utils/cardDefinitions";
+import { initialCardsList } from "../../utils/cardDefinitions";
 
 export default function TurnCounter(props: {
   setCardList: (arg: CardSetting[]) => void;
@@ -38,7 +38,7 @@ export default function TurnCounter(props: {
       </div>
       <button
         onClick={() => {
-          setCardList(initialCardsSetting);
+          setCardList(initialCardsList);
         }}
         className="mt-4 p-2 rounded-md duration-200 hover:bg-red-500"
       >

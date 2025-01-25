@@ -1,6 +1,33 @@
 import { Dispatch, SetStateAction } from "react";
 
 /**
+ * setInitialCardsList 関数
+ * 初期カードリストを設定する関数
+ * 
+ * @param {{ component: string, x: number, y: number }[]} initialCardsList - 初期カードリスト
+ * @param {number} maxRows - 最大行数
+ * @param {number} maxCols - 最大列数
+ * @returns {{ component: string, x: number, y: number }[]} 初期カードリスト
+ */
+export const setInitialCardsList = (
+  initialCardsList: { component: string, x: number, y: number }[],
+  maxRows: number,
+  maxCols: number
+): { component: string, x: number, y: number }[] => {
+  for (let y = 0; y < maxRows; y++) {
+    for (let x = 0; x < maxCols; x++) {
+      const existingComponent = initialCardsList.find(
+        (comp) => comp.x === x && comp.y === y
+      );
+      if (!existingComponent) {
+        initialCardsList.push({ component: "setter", x, y });
+      }
+    }
+  }
+  return initialCardsList;
+};
+
+/**
  * useDragDrop カスタムフック
  * ドラッグ＆ドロップの処理を管理するためのフック
  * 

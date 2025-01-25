@@ -74,7 +74,7 @@ export default function Timer() {
     setTime((prevTime) => adjustTimerValue(prevTime + adjustment));
     intervalRef.current = setInterval(() => {
       setTime((prevTime) => adjustTimerValue(prevTime + adjustment));
-    }, 150);
+    }, 100);
   };
 
   const handleMouseUp = () => {

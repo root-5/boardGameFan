@@ -39,7 +39,7 @@ export default function Token() {
     handleTokenChange(index, adjustment);
     intervalRef.current = setInterval(() => {
       handleTokenChange(index, adjustment);
-    }, 150);
+    }, 100);
   };
 
   const handleMouseUp = () => {

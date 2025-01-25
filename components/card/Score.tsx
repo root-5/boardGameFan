@@ -33,7 +33,7 @@ export default function Score() {
     setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
     intervalRef.current = setInterval(() => {
       setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
-    }, 150);
+    }, 100);
   };
 
   const handleMouseUp = () => {

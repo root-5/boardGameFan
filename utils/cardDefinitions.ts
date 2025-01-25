@@ -31,8 +31,11 @@ export const cardMap: {
   // setter: Setter,
 };
 
+// カードリストの最大サイズ
+export const maxRange = { rows: 20, cols: 20 };
+
 // 初期カード
-export const initialCardsSetting = [
+export const initialCardsList = [
   { component: "winner", x: 0, y: 0 },
   { component: "turn", x: 1, y: 0 },
   { component: "coin", x: 2, y: 0 },
@@ -47,7 +50,7 @@ export const initialCardsSetting = [
 ];
 
 // 初期カード（SPモード、x=0 のみ）
-export const initialCardsSettingSP = [
+export const initialCardsListSP = [
   { component: "winner", x: 0, y: 0 },
   { component: "turn", x: 0, y: 1 },
   { component: "dice", x: 0, y: 2 },

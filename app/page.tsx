@@ -1,44 +1,30 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { cardMap, initialCardsSetting, initialStyle, initialPlayers } from "../utils/cardDefinitions";
+import { cardMap, maxRange, initialCardsList, initialStyle, initialPlayers } from "../utils/cardDefinitions";
+import { setInitialCardsList, useDragDrop, calculateAndUpdateGrid } from "../utils/cardFunctions";
 import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtils";
-import { useDragDrop, calculateAndUpdateGrid } from "../utils/cardFunctions";
 import DragIcon from "../components/card/module/DragIcon";
 import CloseButton from "../components/card/module/CloseButton";
 import Setter from "../components/Setter";
 
+// ======================================================================
+// 定数定義
+// ======================================================================
+const initialCardsListFilled = setInitialCardsList(initialCardsList, maxRange.rows, maxRange.cols);
+
+
 export default function App() {
-  // ======================================================================
-  // 定数定義
-  // ======================================================================
-  // 内部的に保持するカードリストの最大サイズ
-  const { maxRows, maxCols } = { maxRows: 20, maxCols: 20 };
-
-  // initialCardsSetting の空きを setter カードで埋める
-  for (let y = 0; y < maxRows; y++) {
-    for (let x = 0; x < maxCols; x++) {
-      const existingComponent = initialCardsSetting.find(
-        (comp) => comp.x === x && comp.y === y
-      );
-      if (!existingComponent) {
-        initialCardsSetting.push({ component: "setter", x, y });
-      }
-    }
-  }
-
   // ======================================================================
   // ステート定義
   // ======================================================================
-  const [cardList, setCardList] = useState(initialCardsSetting); // カードリスト
+  const [cardList, setCardList] = useState(initialCardsListFilled); // カードリスト
   const [cardStyle, setCardStyle] = useState(initialStyle); // スタイル設定
   const [zoomRatio, setZoomRatio] = useState(1); // ズーム倍率
-  const [viewRange, setViewRange] = useState({ x: maxCols, y: maxRows }); // 表示範囲
+  const [viewRange, setViewRange] = useState({ x: maxRange.cols, y: maxRange.rows }); // 表示範囲
   const [players, setPlayers] = useState(initialPlayers); // プレイヤーデータ
-
-  // ドラッグ＆ドロップ関連
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(
+  const [dragIndex, setDragIndex] = useState<number | null>(null); // ドラッグ中のカードのインデックス
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>( // ドラッグ中のカードのオフセット
     null
   );
 
@@ -76,7 +62,7 @@ export default function App() {
     const cardListStorage = getLocalStorage("cardList");
     const cardStyleStorage = getLocalStorage("cardStyle");
     setCardList(
-      cardListStorage ? JSON.parse(cardListStorage) : initialCardsSetting
+      cardListStorage ? JSON.parse(cardListStorage) : initialCardsList
     );
     setCardStyle(
       cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle
@@ -85,7 +71,7 @@ export default function App() {
 
   // カードリスト変更、カードスタイル変更をローカルストレージに保存する useEffect
   useEffect(() => {
-    if (cardList === initialCardsSetting) return;
+    if (cardList === initialCardsList) return;
     setLocalStorage("cardList", JSON.stringify(cardList));
   }, [cardList]);
   useEffect(() => {
