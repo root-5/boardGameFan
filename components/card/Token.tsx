@@ -1,22 +1,39 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { reset, setToken } from "../../store/tokenSlice";
+import { useState, useRef } from "react";
+
+const tokenMax = 99;
+const tokenMin = -99;
+
+function ajustTokenValue(value: number): number {
+  if (value > tokenMax) {
+    return tokenMax;
+  } else if (value < tokenMin) {
+    return tokenMin;
+  }
+  return value;
+}
 
 export default function Token() {
-  const tokenCounts = useSelector((state) => state.token);
-  const dispatch = useDispatch();
+  const [tokenCounts, setTokenCounts] = useState([0, 0, 0, 0]);
   const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const latestTokenCounts = useRef(tokenCounts);
 
   const handleTokenChange = (index: number, adjustment: number) => {
-    dispatch(setToken({ index, value: latestTokenCounts.current[index] + adjustment }));
+    setTokenCounts((prevCounts) => {
+      const newCounts = [...prevCounts];
+      newCounts[index] = ajustTokenValue(newCounts[index] + adjustment);
+      return newCounts;
+    });
   };
 
   const handleInputChange = (index: number, value: number) => {
-    dispatch(setToken({ index, value: value }));
+    setTokenCounts((prevCounts) => {
+      const newCounts = [...prevCounts];
+      newCounts[index] = ajustTokenValue(value);
+      return newCounts;
+    });
   };
 
   const handleMouseDown = (index: number, adjustment: number) => {
@@ -89,7 +106,7 @@ export default function Token() {
         ))}
         <div
           className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-          onClick={() => dispatch(reset())}
+          onClick={() => setTokenCounts([0, 0, 0, 0])}
         >
           ↺
         </div>
