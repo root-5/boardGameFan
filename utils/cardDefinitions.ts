@@ -5,6 +5,7 @@
 
 import Score from "../components/card/Score";
 import Dice from "../components/card/Dice";
+import OneOnOne from "../components/card/OneOnOne";
 import Coin from "../components/card/Coin";
 import Token from "../components/card/Token";
 import Timer from "../components/card/Timer";
@@ -28,9 +29,10 @@ export const cardMap: {
   roulette: Roulette,
   turn: Turn,
   winner: Winner,
-  info: Info,
-  styleSetting: StyleSetting,
+  oneOnOne: OneOnOne,
   playerSetting: PlayerSetting,
+  styleSetting: StyleSetting,
+  info: Info,
 
   // setter は特殊なコンポーネントなので、ここでは設定しない
   // setter: Setter,
@@ -45,14 +47,15 @@ export const initialCardsList = [
   { component: "dice", x: 0, y: 1 },
   { component: "coin", x: 2, y: 0 },
   { component: "roulette", x: 2, y: 1 },
+  { component: "oneOnOne", x: 2, y: 2 },
   { component: "timer", x: 0, y: 2 },
   { component: "token", x: 1, y: 1 },
   { component: "score", x: 1, y: 2 },
   { component: "turn", x: 1, y: 0 },
   { component: "winner", x: 0, y: 0 },
-  { component: "styleSetting", x: 2, y: 2 },
   { component: "playerSetting", x: 0, y: 3 },
-  { component: "info", x: 1, y: 3 },
+  { component: "styleSetting", x: 1, y: 3 },
+  { component: "info", x: 2, y: 3 },
 ];
 
 // 初期スタイル

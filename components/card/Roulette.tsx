@@ -104,7 +104,7 @@ function GroupComponent(props: {
         Math.round(
           // (((回転角 + π<判定場所を手前側にずらすため>) % 2π) / 2π) * (色数 - 1)
           (((rotation.y + Math.PI) % (Math.PI * 2)) / (Math.PI * 2)) *
-            (users.length - 1)
+          (users.length - 1)
         )
       );
       setIsSpinningLast(false);
@@ -163,7 +163,7 @@ export default function Roulette(props: {
   return (
     <>
       {/* 名前表示 */}
-      <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-fit text-center text-2xl font-bold bg-opacity-80">
+      <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-2/3 text-center text-2xl bg-opacity-80">
         {players[rouletteNum].name}
       </div>
       {/* ルーレット3D描画 */}
