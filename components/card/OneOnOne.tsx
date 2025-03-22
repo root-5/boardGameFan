@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 
 const tokenMax = 99;
-const tokenMin = 0;
+const tokenMin = -99;
 
 function ajustTokenValue(value: number): number {
   if (value > tokenMax) {

@@ -11,7 +11,7 @@ export default function TurnCounter(props: {
 
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
-      <div className="mt-4 flex items-center justify-center gap-x-2">
+      {/* <div className="mt-4 flex items-center justify-center gap-x-2">
         <a
           href="https://x.com/root_5_web"
           target="_blank"
@@ -29,7 +29,7 @@ export default function TurnCounter(props: {
         >
           GitHub
         </a>
-      </div>
+      </div> */}
       <div className="flex flex-col items-center gap-1 mt-4 text-xs">
         <p>Free for Everyone !</p>
         <p>Use for anything !</p>
@@ -43,7 +43,7 @@ export default function TurnCounter(props: {
       >
         Reset Cards
       </button>
-      <p className="mt-2 text-xs">© 2024 root-5</p>
+      <p className="mt-2 text-xs">© 2025 root-5</p>
     </div>
   );
 }
