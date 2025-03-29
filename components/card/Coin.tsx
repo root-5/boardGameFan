@@ -20,7 +20,7 @@ function CoinModel() {
     <primitive
       object={clonedScene}
       // 今回はコインの中心が原点になるように調整
-      position={[0, -5, 0]} // モデルの位置
+      position={[0, 0, 0]} // モデルの位置
       scale={[10, 10, 10]} // モデルの大きさ
     />
   );
@@ -45,12 +45,12 @@ function Group() {
               prevRotation.y,
               prevRotation.z
             )
-          );
-        }
-      } else {
-        // コインフリップの切り替え時にランダムな回転角にする
-        setRotation(
-          (prevRotation) =>
+        );
+      }
+    } else {
+      // コインフリップの切り替え時にランダムな回転角にする
+      setRotation(
+        (prevRotation) =>
           new Euler(
             ((Math.floor(Math.random() * 2) + 1) * Math.PI),
             prevRotation.y,

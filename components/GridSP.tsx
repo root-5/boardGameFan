@@ -5,6 +5,8 @@ import { cardMap, initialCardsList, initialStyle, initialPlayers } from "../util
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
 
+const swipeThreshold = 40; // スワイプの閾値
+
 export default function GridSP() {
   // ======================================================================
   // ステート定義
@@ -74,14 +76,12 @@ export default function GridSP() {
   };
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
+  
     const deltaX = touchEnd.x - touchStart.x;
-    const deltaY = touchEnd.y - touchStart.y;
-    if (Math.abs(deltaX) > Math.abs(deltaY)) { // 水平方向のスワイプ
-      if (deltaX > 50) { // 右スワイプ
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + cardListRef.current.length) % cardListRef.current.length);
-      } else if (deltaX < -50) { // 左スワイプ
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
-      }
+    if (deltaX > swipeThreshold) { // 右スワイプ
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + cardListRef.current.length) % cardListRef.current.length);
+    } else if (deltaX < -swipeThreshold) { // 左スワイプ
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
     }
     setTouchStart(null);
     setTouchEnd(null);

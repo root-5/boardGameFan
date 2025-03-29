@@ -50,69 +50,74 @@ export default function OneOnOne() {
   };
 
   return (
-    <div className="p-4 h-full flex justify-center items-center gap-2">
-      <div className="flex flex-col justify-center items-center gap-1">
-        <button
-          onMouseDown={() => handleMouseDown(1, 1)}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className="text-3xl"
-        >
-          +
-        </button>
-        <input
-          type="number"
-          value={player1Points}
-          onChange={(e) => handleInputChange(1, parseInt(e.target.value))}
-          className="block w-20 text-5xl bg-transparent outline-none text-center"
-        />
-        <button
-          onMouseDown={() => handleMouseDown(1, -1)}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className="text-3xl"
+    <div className="p-6">
+      <p className="text-[9px] opacity-50">
+        INPUT / ARROW KEY / SCROLL
+      </p>
+      <div className="mt-2 flex justify-center items-center gap-2">
+        <div className="flex flex-col justify-center items-center gap-1">
+          <button
+            onMouseDown={() => handleMouseDown(1, 1)}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="text-3xl"
+          >
+            +
+          </button>
+          <input
+            type="number"
+            value={player1Points}
+            onChange={(e) => handleInputChange(1, parseInt(e.target.value))}
+            className="block w-20 text-5xl bg-transparent outline-none text-center"
+          />
+          <button
+            onMouseDown={() => handleMouseDown(1, -1)}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="text-3xl"
+          >
+            -
+          </button>
+        </div>
+        <div
+          className="text-4xl"
         >
           -
-        </button>
-      </div>
-      <div
-        className="text-4xl"
-      >
-        -
-      </div>
-      <div className="flex flex-col justify-center items-center gap-1">
-        <button
-          onMouseDown={() => handleMouseDown(2, 1)}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className="text-3xl"
-        >
-          +
-        </button>
-        <input
-          type="number"
-          value={player2Points}
-          onChange={(e) => handleInputChange(2, parseInt(e.target.value))}
-          className="block w-20 text-5xl bg-transparent outline-none text-center"
+        </div>
+        <div className="flex flex-col justify-center items-center gap-1">
+          <button
+            onMouseDown={() => handleMouseDown(2, 1)}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="text-3xl"
+          >
+            +
+          </button>
+          <input
+            type="number"
+            value={player2Points}
+            onChange={(e) => handleInputChange(2, parseInt(e.target.value))}
+            className="block w-20 text-5xl bg-transparent outline-none text-center"
 
-        />
-        <button
-          onMouseDown={() => handleMouseDown(2, -1)}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className="text-3xl"
+          />
+          <button
+            onMouseDown={() => handleMouseDown(2, -1)}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="text-3xl"
+          >
+            -
+          </button>
+        </div>
+        <div
+          className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
+          onClick={() => {
+            setPlayer1Points(0);
+            setPlayer2Points(0);
+          }}
         >
-          -
-        </button>
-      </div>
-      <div
-        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-        onClick={() => {
-          setPlayer1Points(0);
-          setPlayer2Points(0);
-        }}
-      >
-        ↺
+          ↺
+        </div>
       </div>
     </div>
   );
