@@ -33,10 +33,7 @@ export default function GridSP() {
     setWindowWidth(window.innerWidth);
   }, []);
 
-  // ======================================================================
-  // useEffect
-  // ======================================================================
-  // グリッドの列数、行数、ズーム倍率を更新するための useEffect
+  // グリッドのズーム倍率を更新する useEffect
   useEffect(() => {
     const handleResize = () => {
       const { zoomRatio } = calculateAndUpdateGrid(window.outerWidth, window.innerWidth);
@@ -152,8 +149,15 @@ export default function GridSP() {
     if (position === 'prev') translateX = -100;
     if (position === 'next') translateX = 100;
 
-    // windowWidth が 0 の場合（SSR時）は変換しない
-    const offsetPercent = windowWidth === 0 ? 0 : (swipeOffset / windowWidth) * 100;
+    // スワイプのオフセット値に基づいてぼかし効果を計算
+    const offsetPercent = (swipeOffset / windowWidth) * 100;
+    let blurAmount = 0;
+    if (position === 'current') {
+      // 現在のカードは、スワイプしたときにぼやける
+      blurAmount = Math.abs(offsetPercent) * 0.2;
+    } else {
+      blurAmount = 0;
+    }
 
     return (
       <div
@@ -161,24 +165,31 @@ export default function GridSP() {
         style={{
           ...getCardStyle(index),
           transform: `translateX(${translateX + offsetPercent}%)`,
-          transition: isAnimating ? 'transform 0.3s ease-out' : 'none',
+          transition: isAnimating ? 'transform 0.3s ease-out, filter 0.3s ease-out' : 'none',
         }}
       >
         <div
-          className="absolute top-1/2 left-1/2 w-56 h-56 transform -translate-x-1/2 -translate-y-1/2"
+          className="w-full h-full"
           style={{
-            zoom: zoomRatio,
+            filter: `blur(${blurAmount}px)`,
           }}
         >
-          {/* カードの中身 */}
-          <Component
-            zoomRatio={zoomRatio}
-            players={players}
-            setPlayers={setPlayers}
-            cardStyle={cardStyle}
-            setCardStyle={setCardStyle}
-            setCardList={setCardList}
-          />
+          <div
+            className="absolute top-1/2 left-1/2 w-56 h-56 transform -translate-x-1/2 -translate-y-1/2"
+            style={{
+              zoom: zoomRatio,
+            }}
+          >
+            {/* カードの中身 */}
+            <Component
+              zoomRatio={zoomRatio}
+              players={players}
+              setPlayers={setPlayers}
+              cardStyle={cardStyle}
+              setCardStyle={setCardStyle}
+              setCardList={setCardList}
+            />
+          </div>
         </div>
       </div>
     );
@@ -192,21 +203,14 @@ export default function GridSP() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* windowWidthが0の場合（SSRの場合）は、現在のカードのみを表示 */}
-      {windowWidth === 0 ? (
-        renderCard(currentIndex, 'current')
-      ) : (
-        <>
-          {/* 前のカード */}
-          {renderCard(prevIndex, 'prev')}
-
-          {/* 現在のカード */}
-          {renderCard(currentIndex, 'current')}
-
-          {/* 次のカード */}
-          {renderCard(nextIndex, 'next')}
-        </>
-      )}
+      <>
+        {/* 前のカード */}
+        {renderCard(prevIndex, 'prev')}
+        {/* 現在のカード */}
+        {renderCard(currentIndex, 'current')}
+        {/* 次のカード */}
+        {renderCard(nextIndex, 'next')}
+      </>
 
       {/* ページインジケーター */}
       <div className="absolute bottom-6 left-0 right-0 flex justify-center">
