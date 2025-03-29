@@ -143,7 +143,7 @@ export default function GridSP() {
   // 各カードのコンポーネント
   const renderCard = (index: number, position: 'prev' | 'current' | 'next') => {
     const card = cardList[index];
-    const Component = cardMap[card.component];
+    const Component = cardMap[card.component] || (() => <div>コンポーネントが見つかりません</div>);
 
     let translateX = 0;
     if (position === 'prev') translateX = -100;
