@@ -21,7 +21,7 @@ export type CardStyle = {
   fontColor_1: string;
   bgColor_2: string;
   fontColor_2: string;
-  fontStyle: string;
+  fontStyle: number;
 };
 
 export type CardComponent = React.ComponentType<{

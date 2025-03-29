@@ -11,16 +11,7 @@ const colorFields = [
   { label: "Font 2", key: "fontColor_2" },
 ];
 
-const fontOptions = [
-  "Comic Sans MS",
-  "Arial",
-  "Courier",
-  "Georgia",
-  "Impact",
-  "Times New Roman",
-  "Trebuchet MS",
-  "Verdana",
-];
+const fontsMax = 10;
 
 export default function StyleSetting({
   cardStyle,
@@ -45,19 +36,35 @@ export default function StyleSetting({
             />
           </div>
         ))}
-        <select
-          className="block w-40 bg-transparent cursor-pointer"
-          value={cardStyle.fontStyle}
-          onChange={(e) =>
-            setCardStyle({ ...cardStyle, fontStyle: e.target.value })
-          }
+        <div
+          className="flex justify-center items-center text-xl"
         >
-          {fontOptions.map((font) => (
-            <option key={font} className="bg-transparent text-black" value={font}>
-              {font}
-            </option>
-          ))}
-        </select>
+          <div
+            onClick={() => {
+              setCardStyle({
+                ...cardStyle,
+                fontStyle: cardStyle.fontStyle - 1 < 1 ? fontsMax : cardStyle.fontStyle - 1,
+              });
+            }}
+            className="w-4 cursor-pointer duration-200 opacity-30 hover:opacity-100"
+          >
+            {"<"}
+          </div>
+          <div className="text-center w-32">
+            Font Style {cardStyle.fontStyle}
+          </div>
+          <div
+            onClick={() => {
+              setCardStyle({
+                ...cardStyle,
+                fontStyle: cardStyle.fontStyle + 1 > fontsMax ? 1 : cardStyle.fontStyle + 1,
+              });
+            }}
+            className="w-4 cursor-pointer duration-200 opacity-30 hover:opacity-100"
+          >
+            {">"}
+          </div>
+        </div>
       </div>
       <div
         className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"

@@ -64,7 +64,7 @@ export const initialStyle = {
   bgColor_2: "#4B4376",
   fontColor_1: "#f0f6fc",
   fontColor_2: "#f0f6fc",
-  fontStyle: "Comic Sans MS",
+  fontStyle: 1,
 };
 
 // 初期プレイヤー
