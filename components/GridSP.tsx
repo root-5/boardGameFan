@@ -5,7 +5,7 @@ import { cardMap, initialCardsList, initialStyle, initialPlayers } from "../util
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
 
-const swipeThreshold = 40; // スワイプの閾値
+const swipeThreshold = 55; // スワイプの閾値
 
 export default function GridSP() {
   // ======================================================================
