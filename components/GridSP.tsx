@@ -5,7 +5,8 @@ import { cardMap, initialCardsList, initialStyle, initialPlayers } from "../util
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
 
-const swipeThreshold = 55; // スワイプの閾値
+const cardTransitionThreshold = 80; // スワイプの閾値
+const swipeEffectThreshold = 50; // // スワイプの遊び閾値
 
 export default function GridSP() {
   // ======================================================================
@@ -88,18 +89,24 @@ export default function GridSP() {
     setTouchEnd({ x: touch.clientX, y: touch.clientY });
     const deltaX = touch.clientX - touchStart.x;
 
+    // スワイプの閾値を超えたところのみを実効値とする
+    if (Math.abs(deltaX) < swipeEffectThreshold) {
+      setSwipeOffset(0);
+      return;
+    }
+    const effectiveDeltaX = (Math.abs(deltaX) - swipeEffectThreshold) * (deltaX > 0 ? 1 : -1);
+
     // スワイプのオフセット値はスワイプした距離の2乗根をベースに計算
-    const newOffset = Math.sqrt(Math.abs(deltaX)) * 5 * (deltaX > 0 ? 1 : -1);
+    const newOffset = Math.sqrt(Math.abs(effectiveDeltaX)) * 5 * (effectiveDeltaX > 0 ? 1 : -1);
     setSwipeOffset(newOffset);
   };
 
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd || isAnimating) return;
-
-    const deltaX = touchEnd.x - touchStart.x;
     setIsAnimating(true);
 
-    if (deltaX > swipeThreshold) { // 右スワイプ
+    const deltaX = touchEnd.x - touchStart.x;
+    if (deltaX > cardTransitionThreshold) { // 右スワイプ
       // アニメーションの終了を待つ
       setSwipeOffset(windowWidth * 0.3);
       setTimeout(() => {
@@ -107,7 +114,7 @@ export default function GridSP() {
         setSwipeOffset(0);
         setIsAnimating(false);
       }, 300);
-    } else if (deltaX < -swipeThreshold) { // 左スワイプ
+    } else if (deltaX < -cardTransitionThreshold) { // 左スワイプ
       setSwipeOffset(-windowWidth * 0.3);
       setTimeout(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
@@ -132,8 +139,7 @@ export default function GridSP() {
 
   // 各カードのスタイル設定
   const getCardStyle = (index: number) => {
-    const card = cardList[index];
-    const isEven = (card.x + card.y) % 2 === 0;
+    const isEven = index % 2 === 0;
     return {
       backgroundColor: isEven ? cardStyle.bgColor_1 : cardStyle.bgColor_2,
       color: isEven ? cardStyle.fontColor_1 : cardStyle.fontColor_2,
