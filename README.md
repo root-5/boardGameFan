@@ -20,6 +20,7 @@ https://boardgamefan.pages.dev/
 ### 開発中に使うスクリプト
 - ローカルストレージ削除（Chrome コンソール） `localStorage.clear()`
 - ローカルストレージ閲覧（Chrome コンソール） `console.log(localStorage)`
+- デプロイ前にビルドエラーを確認 `npm run lint`
 
 ### 本番ビルド関係
 1. 今回は Cloudflare Pages にデプロイするため静的ファイルを生成する
