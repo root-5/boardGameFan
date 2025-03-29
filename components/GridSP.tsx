@@ -18,12 +18,20 @@ export default function GridSP() {
   const [currentIndex, setCurrentIndex] = useState(0); // 現在表示しているカードのインデックス
   const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null); // タッチ開始位置
   const [touchEnd, setTouchEnd] = useState<{ x: number, y: number } | null>(null); // タッチ終了位置
+  const [swipeOffset, setSwipeOffset] = useState(0); // スワイプのオフセット値
+  const [isAnimating, setIsAnimating] = useState(false); // アニメーション中かどうか
+  const [windowWidth, setWindowWidth] = useState(0); // ウィンドウの幅
 
   const cardListRef = useRef(cardList);
 
   useEffect(() => {
     cardListRef.current = cardList;
   }, [cardList]);
+
+  // クライアントサイドでのみ実行される useEffect
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
 
   // ======================================================================
   // useEffect
@@ -33,6 +41,7 @@ export default function GridSP() {
     const handleResize = () => {
       const { zoomRatio } = calculateAndUpdateGrid(window.outerWidth, window.innerWidth);
       setZoomRatio(zoomRatio);
+      setWindowWidth(window.innerWidth);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -52,8 +61,10 @@ export default function GridSP() {
   // カードリストに setter がふくまれている場合は取り除く
   useEffect(() => {
     const newCardList = cardList.filter(card => card.component !== "setter");
-    setCardList(newCardList);
-  }, []);
+    if (newCardList.length !== cardList.length) {
+      setCardList(newCardList);
+    }
+  }, [cardList]);
 
   // カードリスト変更、カードスタイル変更をローカルストレージに保存する useEffect
   useEffect(() => {
@@ -67,52 +78,94 @@ export default function GridSP() {
 
   // スワイプハンドラ
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isAnimating) return;
     const touch = e.touches[0];
     setTouchStart({ x: touch.clientX, y: touch.clientY });
+    setTouchEnd({ x: touch.clientX, y: touch.clientY });
+    setSwipeOffset(0);
   };
+
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStart || isAnimating) return;
     const touch = e.touches[0];
     setTouchEnd({ x: touch.clientX, y: touch.clientY });
+    const deltaX = touch.clientX - touchStart.x;
+
+    // スワイプのオフセット値はスワイプした距離の2乗根をベースに計算
+    const newOffset = Math.sqrt(Math.abs(deltaX)) * 5 * (deltaX > 0 ? 1 : -1);
+    setSwipeOffset(newOffset);
   };
+
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-  
+    if (!touchStart || !touchEnd || isAnimating) return;
+
     const deltaX = touchEnd.x - touchStart.x;
+    setIsAnimating(true);
+
     if (deltaX > swipeThreshold) { // 右スワイプ
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + cardListRef.current.length) % cardListRef.current.length);
+      // アニメーションの終了を待つ
+      setSwipeOffset(windowWidth * 0.3);
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + cardListRef.current.length) % cardListRef.current.length);
+        setSwipeOffset(0);
+        setIsAnimating(false);
+      }, 300);
     } else if (deltaX < -swipeThreshold) { // 左スワイプ
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
+      setSwipeOffset(-windowWidth * 0.3);
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
+        setSwipeOffset(0);
+        setIsAnimating(false);
+      }, 300);
+    } else {
+      // スワイプが閾値未満の場合、元の位置に戻す
+      setSwipeOffset(0);
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 300);
     }
+
     setTouchStart(null);
     setTouchEnd(null);
   };
 
-  // ======================================================================
-  // レンダリング
-  // ======================================================================
-  const currentCard = cardList[currentIndex];
-  const isEven = (currentCard.x + currentCard.y) % 2 === 0;
-  const bgColor = isEven ? cardStyle.bgColor_1 : cardStyle.bgColor_2;
-  const fontColor = isEven ? cardStyle.fontColor_1 : cardStyle.fontColor_2;
-  const Component = cardMap[currentCard.component];
+  // 前のカード、現在のカード、次のカードのインデックスを計算
+  const prevIndex = (currentIndex - 1 + cardList.length) % cardList.length;
+  const nextIndex = (currentIndex + 1) % cardList.length;
 
-  return (
-    <div
-      className="relative w-full h-full"
-      style={{ fontFamily: `${cardStyle.fontStyle}` }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+  // 各カードのスタイル設定
+  const getCardStyle = (index: number) => {
+    const card = cardList[index];
+    const isEven = (card.x + card.y) % 2 === 0;
+    return {
+      backgroundColor: isEven ? cardStyle.bgColor_1 : cardStyle.bgColor_2,
+      color: isEven ? cardStyle.fontColor_1 : cardStyle.fontColor_2,
+    };
+  };
+
+  // 各カードのコンポーネント
+  const renderCard = (index: number, position: 'prev' | 'current' | 'next') => {
+    const card = cardList[index];
+    const Component = cardMap[card.component];
+
+    let translateX = 0;
+    if (position === 'prev') translateX = -100;
+    if (position === 'next') translateX = 100;
+
+    // windowWidth が 0 の場合（SSR時）は変換しない
+    const offsetPercent = windowWidth === 0 ? 0 : (swipeOffset / windowWidth) * 100;
+
+    return (
       <div
         className="absolute w-full h-full text-center"
         style={{
-          backgroundColor: bgColor,
-          color: fontColor,
+          ...getCardStyle(index),
+          transform: `translateX(${translateX + offsetPercent}%)`,
+          transition: isAnimating ? 'transform 0.3s ease-out' : 'none',
         }}
       >
         <div
-          className="absolute top-1/2 w-56 h-56 text-center transform -translate-y-1/2"
+          className="absolute top-1/2 left-1/2 w-56 h-56 transform -translate-x-1/2 -translate-y-1/2"
           style={{
             zoom: zoomRatio,
           }}
@@ -127,6 +180,42 @@ export default function GridSP() {
             setCardList={setCardList}
           />
         </div>
+      </div>
+    );
+  };
+
+  return (
+    <div
+      className="relative w-full h-dvh overflow-hidden"
+      style={{ fontFamily: `${cardStyle.fontStyle}` }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* windowWidthが0の場合（SSRの場合）は、現在のカードのみを表示 */}
+      {windowWidth === 0 ? (
+        renderCard(currentIndex, 'current')
+      ) : (
+        <>
+          {/* 前のカード */}
+          {renderCard(prevIndex, 'prev')}
+
+          {/* 現在のカード */}
+          {renderCard(currentIndex, 'current')}
+
+          {/* 次のカード */}
+          {renderCard(nextIndex, 'next')}
+        </>
+      )}
+
+      {/* ページインジケーター */}
+      <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+        {cardList.map((_, i) => (
+          <div
+            key={i}
+            className={`w-2 h-2 mx-1 rounded-full ${i === currentIndex ? 'bg-white' : 'bg-gray-400'}`}
+          />
+        ))}
       </div>
     </div>
   );
