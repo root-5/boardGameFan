@@ -11,7 +11,7 @@ const colorFields = [
   { label: "Font 2", key: "fontColor_2" },
 ];
 
-const fontsMax = 10;
+const fontsMax = 9;
 
 export default function StyleSetting({
   cardStyle,

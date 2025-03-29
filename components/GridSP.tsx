@@ -1,12 +1,25 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Shantell_Sans, Sansita_Swashed, Dancing_Script, Libre_Bodoni, Pixelify_Sans, Red_Hat_Text, Caveat, Stick_No_Bills, Tilt_Prism, Antonio } from 'next/font/google'
 import { cardMap, initialCardsList, initialStyle, initialPlayers } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
 
 const cardTransitionThreshold = 80; // スワイプの閾値
 const swipeEffectThreshold = 50; // スワイプの遊び閾値
+
+const font_1 = Shantell_Sans({ subsets: ['latin'] })
+const font_2 = Sansita_Swashed({ subsets: ['latin'] })
+const font_3 = Dancing_Script({ subsets: ['latin'] })
+const font_4 = Libre_Bodoni({ subsets: ['latin'] })
+const font_5 = Pixelify_Sans({ subsets: ['latin'] })
+const font_6 = Red_Hat_Text({ subsets: ['latin'] })
+const font_7 = Caveat({ subsets: ['latin'] })
+const font_8 = Stick_No_Bills({ subsets: ['latin'] })
+const font_9 = Tilt_Prism({ subsets: ['latin'] })
+const font_10 = Antonio({ subsets: ['latin'] })
+const fonts = [font_1, font_2, font_3, font_4, font_5, font_6, font_7, font_8, font_9, font_10,]
 
 export default function GridSP() {
   // ======================================================================
@@ -137,7 +150,7 @@ export default function GridSP() {
   const prevIndex = (currentIndex - 1 + cardList.length) % cardList.length;
   const nextIndex = (currentIndex + 1) % cardList.length;
 
-  // 各カードのスタイル設定
+  // 各カードの背景色・文字色設定
   const getCardStyle = (index: number) => {
     const isEven = index % 2 === 0;
     return {
@@ -203,8 +216,7 @@ export default function GridSP() {
 
   return (
     <div
-      className="relative w-full h-dvh overflow-hidden"
-      style={{ fontFamily: `${cardStyle.fontStyle}` }}
+      className={"relative w-full h-dvh overflow-hidden " + fonts[cardStyle.fontStyle].className}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

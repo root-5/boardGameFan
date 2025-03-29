@@ -73,10 +73,10 @@ export default function Grid() {
   // 一部プロパティをローカルストレージからステートへ読み込む useEffect
   useEffect(() => {
     const cardListStorage = getLocalStorage("cardList");
-    // const cardStyleStorage = getLocalStorage("cardStyle");
+    const cardStyleStorage = getLocalStorage("cardStyle");
     const playersStorage = getLocalStorage("players");
     setCardList(cardListStorage ? JSON.parse(cardListStorage) : initialCardsList);
-    // setCardStyle(cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle);
+    setCardStyle(cardStyleStorage ? JSON.parse(cardStyleStorage) : initialStyle);
     setPlayers(playersStorage ? JSON.parse(playersStorage) : initialPlayers);
   }, []);
 
