@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Grid from "../components/Grid";
 import GridSP from "../components/GridSP";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function App() {
   const [isSP, setIsSP] = useState(true); // スマホ判定
@@ -20,11 +21,13 @@ export default function App() {
   return (
     <div className="w-full h-full">
       {/* SPモードの切り替え */}
-      {isSP ? (
-        <GridSP />
-      ) : (
-        <Grid />
-      )}
+      <ErrorBoundary>
+        {isSP ? (
+          <GridSP />
+        ) : (
+          <Grid />
+        )}
+      </ErrorBoundary>
     </div>
   );
 }

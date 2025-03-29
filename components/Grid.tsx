@@ -101,7 +101,6 @@ export default function Grid() {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         style={{
-          // fontFamily: `${cardStyle.fontStyle}`,
           zoom: zoomRatio,
         }}
       >
