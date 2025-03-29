@@ -1,18 +1,17 @@
 {
-    "short_name": "BoardGameFan",
-    "name": "BoardGameFan",
+    "name": "Game Tools!",
     "icons": [
         {
-            "src": "icon-192-192.png",
+            "src": "maskable_icon_x192.png",
             "type": "image/png",
             "sizes": "192x192"
         },
         {
-            "src": "icon-512-512.png",
+            "src": "maskable_icon_x512.png",
             "type": "image/png",
             "sizes": "512x512"
         }
     ],
-    "display": "standalone",
+    "display": "fullscreen",
     "orientation": "portrait"
 }
