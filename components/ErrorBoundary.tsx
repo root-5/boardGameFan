@@ -6,7 +6,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
         this.state = { hasError: false };
     }
 
-    static getDerivedStateFromError(error: Error) {
+    static getDerivedStateFromError() {
         // エラーが発生した場合に状態を更新
         return { hasError: true };
     }
