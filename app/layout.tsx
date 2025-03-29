@@ -19,31 +19,6 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="./manifest.json" />
-        {/* 外部スクリプトとして読み込む方法 */}
-        <Script
-          id="service-worker"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ("serviceWorker" in navigator) {
-                window.addEventListener("load", () => {
-                  navigator.serviceWorker
-                    .register("./sw.js")
-                    .then((registration) => {
-                      console.log(
-                        "Service Worker registered with scope:",
-                        registration.scope
-                      );
-                    })
-                    .catch((error) => {
-                      console.error("Service Worker registration failed:", error);
-                    });
-                });
-              }
-            `,
-          }}
-        />
-
       </head>
       <body
         className={`relative antialiased h-screen select-none overflow-x-hidden overflow-y-hidden`}
