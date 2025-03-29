@@ -1,13 +1,15 @@
 {
     "name": "Game Tools!",
+    "background_color": "#432e54",
+    "theme_color": "#432e54",
     "icons": [
         {
-            "src": "maskable_icon_x192.png",
+            "src": "icon_192x192.png",
             "type": "image/png",
             "sizes": "192x192"
         },
         {
-            "src": "maskable_icon_x512.png",
+            "src": "icon_512x512.png",
             "type": "image/png",
             "sizes": "512x512"
         }
