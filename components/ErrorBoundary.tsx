@@ -25,22 +25,20 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
         if (this.state.hasError) {
             // エラー発生時に表示するUI
             return (
-                <>
-                    <h1
-                        className="mt-12 text-2xl text-center"
-                    >
-                        Error occurred. Please reload the page🙇
+                <div className="flex flex-col items-center justify-center h-screen bg-gray-700 gap-8">
+                    <h1 className="text-2xl text-center text-white" >
+                        Error occurred. <br/>Please reload the page🙇
                     </h1>
                     <div
                         onClick={() => {
                             localStorage.clear(); // ローカルストレージを削除
                             window.location.reload(); // ページをリロードして初期状態に戻す
                         }}
-                        className="mt-4 text-center text-blue-500 cursor-pointer"
+                        className="text-3xl p-4 text-center rounded-md cursor-pointer duration-200 hover:opacity-70 text-white bg-red-500"
                     >
                         Reload
                     </div>
-                </>
+                </div>
 
             );
         }
