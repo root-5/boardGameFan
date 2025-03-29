@@ -6,7 +6,7 @@ import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
 
 const cardTransitionThreshold = 80; // スワイプの閾値
-const swipeEffectThreshold = 50; // // スワイプの遊び閾値
+const swipeEffectThreshold = 50; // スワイプの遊び閾値
 
 export default function GridSP() {
   // ======================================================================
