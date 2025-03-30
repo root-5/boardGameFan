@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { cardMap, initialCardsList, initialStyle, initialPlayers, fonts } from "../utils/cardDefinitions";
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import { calculateAndUpdateGrid } from "@/utils/cardFuncs";
@@ -133,17 +133,29 @@ export default function GridSP() {
     setTouchEnd(null);
   };
 
-  // 各カードの背景色・文字色設定
-  const getCardStyle = (index: number) => {
+  // カードスタイルをメモ化して再計算を防止
+  const getCardStyle = useCallback((index: number) => {
     const isEven = index % 2 === 0;
     return {
       backgroundColor: isEven ? cardStyle.bgColor_1 : cardStyle.bgColor_2,
       color: isEven ? cardStyle.fontColor_1 : cardStyle.fontColor_2,
     };
-  };
+  }, [cardStyle]);
 
-  // 各カードのコンポーネント（全カードを常にレンダリングするよう変更）
-  const renderCard = (index: number) => {
+  // ページインジケーターをメモ化
+  const pageIndicator = useMemo(() => (
+    <div className="absolute z-10 bottom-6 left-0 right-0 flex justify-center">
+      {cardList.map((_, i) => (
+        <div
+          key={i}
+          className={`w-2 h-2 mx-1 rounded-full ${i === currentIndex ? 'bg-white' : 'bg-gray-400'}`}
+        />
+      ))}
+    </div>
+  ), [cardList.length, currentIndex]);
+
+  // 各カードのコンポーネント（全カードを常にレンダリング）
+  const renderCard = useCallback((index: number) => {
     const card = cardList[index];
     const Component = cardMap[card.component] || (() => <div>Component not found</div>);
 
@@ -178,11 +190,7 @@ export default function GridSP() {
 
     // スワイプのオフセット値に基づいてぼかし効果を計算
     const offsetPercent = (swipeOffset / windowWidth) * 100;
-    let blurAmount = 0;
-    if (normalizedPositionDiff === 0) {
-      // 現在のカードは、スワイプしたときにぼやける
-      blurAmount = Math.abs(offsetPercent) * 0.2;
-    }
+    const blurAmount = normalizedPositionDiff === 0 ? Math.abs(offsetPercent) * 0.2 : 0;
 
     return (
       <div
@@ -195,6 +203,7 @@ export default function GridSP() {
           zIndex: zIndex,
           opacity: opacity,
           display: display, // 表示状態を制御
+          willChange: 'transform, opacity', // パフォーマンス最適化
         }}
       >
         <div
@@ -222,7 +231,7 @@ export default function GridSP() {
         </div>
       </div>
     );
-  };
+  }, [cardList, currentIndex, swipeOffset, isAnimating, windowWidth, zoomRatio, players, cardStyle, getCardStyle]);
 
   return (
     <div
@@ -234,15 +243,8 @@ export default function GridSP() {
       {/* すべてのカードを常にレンダリング */}
       {cardList.map((_, index) => renderCard(index))}
 
-      {/* ページインジケーター */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-        {cardList.map((_, i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 mx-1 rounded-full ${i === currentIndex ? 'bg-white' : 'bg-gray-400'}`}
-          />
-        ))}
-      </div>
+      {/* メモ化されたページインジケーター */}
+      {pageIndicator}
     </div>
   );
 }
