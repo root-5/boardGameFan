@@ -113,20 +113,20 @@ export default function GridSP() {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + cardListRef.current.length) % cardListRef.current.length);
         setSwipeOffset(0);
         setIsAnimating(false);
-      }, 300);
+      }, 100);
     } else if (deltaX < -cardTransitionThreshold) { // 左スワイプ
       setSwipeOffset(-windowWidth * 0.3);
       setTimeout(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
         setSwipeOffset(0);
         setIsAnimating(false);
-      }, 300);
+      }, 100);
     } else {
       // スワイプが閾値未満の場合、元の位置に戻す
       setSwipeOffset(0);
       setTimeout(() => {
         setIsAnimating(false);
-      }, 300);
+      }, 100);
     }
 
     setTouchStart(null);
