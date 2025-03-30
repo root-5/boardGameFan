@@ -20,6 +20,7 @@ type DiceConfig = {
   minAzimuthAngle: number;
   maxAzimuthAngle: number;
   position: number[];
+  maxValue: number;
   eulers: Euler[];
 };
 
@@ -42,13 +43,14 @@ const diceTypes: DiceTypes = {
     minAzimuthAngle: (Math.PI * -0) / 100,
     maxAzimuthAngle: (Math.PI * 0) / 100,
     position: [0, 0, 0],
+    maxValue: 6,
     eulers: [
-      new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (0 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (1 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (3 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (4 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (5 * Math.PI) / 2, (2 * Math.PI) / 2)
+      new Euler(0, 0, 0),
+      new Euler(Math.PI / 2, 0, 0),
+      new Euler(-Math.PI / 2, 0, 0),
+      new Euler(0, 0, Math.PI / 2),
+      new Euler(0, 0, -Math.PI / 2),
+      new Euler(Math.PI, 0, 0)
     ]
   },
   d20: {
@@ -61,13 +63,28 @@ const diceTypes: DiceTypes = {
     minAzimuthAngle: (Math.PI * -0) / 100,
     maxAzimuthAngle: (Math.PI * 0) / 100,
     position: [0, 0, 0],
+    maxValue: 20,
     eulers: [
-      new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (0 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (1 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (3 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (4 * Math.PI) / 2, (2 * Math.PI) / 2),
-      new Euler((1 * Math.PI) / 2, (5 * Math.PI) / 2, (2 * Math.PI) / 2)
+      new Euler(0, 0, 0),                                   // 1の面
+      new Euler(0, Math.PI / 5, Math.PI / 3),               // 2の面
+      new Euler(0, (2 * Math.PI) / 5, (2 * Math.PI) / 3),   // 3の面
+      new Euler(0, (3 * Math.PI) / 5, Math.PI),             // 4の面
+      new Euler(0, (4 * Math.PI) / 5, (4 * Math.PI) / 3),   // 5の面
+      new Euler(Math.PI / 3, 0, 0),                         // 6の面
+      new Euler(Math.PI / 3, (2 * Math.PI) / 5, 0),         // 7の面
+      new Euler(Math.PI / 3, (4 * Math.PI) / 5, 0),         // 8の面
+      new Euler(Math.PI / 3, Math.PI, 0),                   // 9の面
+      new Euler(Math.PI / 3, (6 * Math.PI) / 5, 0),         // 10の面
+      new Euler(Math.PI / 3, (8 * Math.PI) / 5, 0),         // 11の面
+      new Euler((2 * Math.PI) / 3, 0, 0),                   // 12の面
+      new Euler((2 * Math.PI) / 3, (2 * Math.PI) / 5, 0),   // 13の面
+      new Euler((2 * Math.PI) / 3, (4 * Math.PI) / 5, 0),   // 14の面
+      new Euler((2 * Math.PI) / 3, Math.PI, 0),             // 15の面
+      new Euler((2 * Math.PI) / 3, (6 * Math.PI) / 5, 0),   // 16の面
+      new Euler((2 * Math.PI) / 3, (8 * Math.PI) / 5, 0),   // 17の面
+      new Euler(Math.PI, Math.PI / 5, Math.PI / 3),         // 18の面
+      new Euler(Math.PI, (2 * Math.PI) / 5, (2 * Math.PI) / 3), // 19の面
+      new Euler(Math.PI, 0, 0)                              // 20の面
     ]
   }
 };
@@ -77,7 +94,7 @@ const diceTypes: DiceTypes = {
 // ==============================
 function useDiceLogic(diceType: DiceDimensions) {
   const [rotation, setRotation] = useState(
-    new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2)
+    diceTypes[diceType].eulers[2] // 6面ダイスの "6" の面
   );
   const [isRolling, setIsRolling] = useState(false);
   const [isRollingLast, setIsRollingLast] = useState(false);
@@ -101,13 +118,9 @@ function useDiceLogic(diceType: DiceDimensions) {
         );
       }
     } else {
-      if (!isRolling && isRollingLast) {
-        // ロールが終了したときに新しいダイス目を設定
-      }
-
       // ダイスロールの切り替え時にランダムな回転角にする
       setRotation(
-        diceTypes[diceType].eulers[Math.floor(Math.random() * 6)]
+        diceTypes[diceType].eulers[Math.floor(Math.random() * diceTypes[diceType].maxValue)]
       );
       setIsRollingLast(isRolling);
     }
@@ -141,7 +154,6 @@ function DiceModel({ diceType }: { diceType: DiceDimensions }) {
 // ==============================
 function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
   const { rotation, rollDice } = useDiceLogic(diceType);
-
   return (
     <group
       rotation={rotation}
