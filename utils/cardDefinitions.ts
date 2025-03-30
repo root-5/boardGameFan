@@ -3,33 +3,34 @@
  * カード個別の定数は、各カードのコンポーネント内に記述する
  */
 
-import Score from "../components/card/Score";
 import Dice from "../components/card/Dice";
-import OneOnOne from "../components/card/OneOnOne";
 import Coin from "../components/card/Coin";
-import Token from "../components/card/Token";
-import Timer from "../components/card/Timer";
 import Roulette from "../components/card/Roulette";
+import OneOnOne from "../components/card/OneOnOne";
+import Timer from "../components/card/Timer";
+import Token from "../components/card/Token";
+import Score from "../components/card/Score";
 import Turn from "../components/card/Turn";
 import Winner from "../components/card/Winner";
-import Info from "../components/card/Info";
-import StyleSetting from "../components/card/StyleSetting";
 import PlayerSetting from "../components/card/PlayerSetting";
+import StyleSetting from "../components/card/StyleSetting";
+import Info from "../components/card/Info";
 import { CardComponent } from "./types";
+import { Shantell_Sans, Sansita_Swashed, Dancing_Script, Libre_Bodoni, Pixelify_Sans, Red_Hat_Text, Caveat, Stick_No_Bills, Tilt_Prism, Antonio } from 'next/font/google'
 
 // カードコンポーネントとカード名の対応表
 export const cardMap: {
   [key: string]: CardComponent;
 } = {
-  score: Score,
   dice: Dice,
   coin: Coin,
-  token: Token,
-  timer: Timer,
   roulette: Roulette,
+  oneOnOne: OneOnOne,
+  timer: Timer,
+  token: Token,
+  score: Score,
   turn: Turn,
   winner: Winner,
-  oneOnOne: OneOnOne,
   playerSetting: PlayerSetting,
   styleSetting: StyleSetting,
   info: Info,
@@ -75,3 +76,16 @@ export const initialPlayers = [
   { name: "Player 4", color: "#ffaa11" },
   { name: "Player 5", color: "#a91111" },
 ];
+
+// フォントの設定
+const font_1 = Shantell_Sans({ subsets: ['latin'] });
+const font_2 = Sansita_Swashed({ subsets: ['latin'] });
+const font_3 = Dancing_Script({ subsets: ['latin'] });
+const font_4 = Libre_Bodoni({ subsets: ['latin'] });
+const font_5 = Pixelify_Sans({ subsets: ['latin'] });
+const font_6 = Red_Hat_Text({ subsets: ['latin'] });
+const font_7 = Caveat({ subsets: ['latin'] });
+const font_8 = Stick_No_Bills({ subsets: ['latin'] });
+const font_9 = Tilt_Prism({ subsets: ['latin'] });
+const font_10 = Antonio({ subsets: ['latin'] });
+export const fonts = [font_1, font_2, font_3, font_4, font_5, font_6, font_7, font_8, font_9, font_10];
