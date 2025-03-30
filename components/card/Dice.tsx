@@ -20,11 +20,10 @@ type DiceConfig = {
   minAzimuthAngle: number;
   maxAzimuthAngle: number;
   position: number[];
-  maxValue: number;
+  eulers: Euler[];
 };
 
 interface DiceTypes {
-  [key: string]: DiceConfig;
   d6: DiceConfig;
   d20: DiceConfig;
 }
@@ -43,7 +42,14 @@ const diceTypes: DiceTypes = {
     minAzimuthAngle: (Math.PI * -0) / 100,
     maxAzimuthAngle: (Math.PI * 0) / 100,
     position: [0, 0, 0],
-    maxValue: 6
+    eulers: [
+      new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (0 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (1 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (3 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (4 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (5 * Math.PI) / 2, (2 * Math.PI) / 2)
+    ]
   },
   d20: {
     modelPath: "Dice_20.glb",
@@ -55,7 +61,14 @@ const diceTypes: DiceTypes = {
     minAzimuthAngle: (Math.PI * -0) / 100,
     maxAzimuthAngle: (Math.PI * 0) / 100,
     position: [0, 0, 0],
-    maxValue: 20
+    eulers: [
+      new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (0 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (1 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (3 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (4 * Math.PI) / 2, (2 * Math.PI) / 2),
+      new Euler((1 * Math.PI) / 2, (5 * Math.PI) / 2, (2 * Math.PI) / 2)
+    ]
   }
 };
 
@@ -68,9 +81,6 @@ function useDiceLogic(diceType: DiceDimensions) {
   );
   const [isRolling, setIsRolling] = useState(false);
   const [isRollingLast, setIsRollingLast] = useState(false);
-  const [diceValue, setDiceValue] = useState(1);
-
-  const maxDiceValue = diceTypes[diceType].maxValue;
 
   // ダイスを転がすハンドラー
   const rollDice = useCallback(() => {
@@ -93,17 +103,11 @@ function useDiceLogic(diceType: DiceDimensions) {
     } else {
       if (!isRolling && isRollingLast) {
         // ロールが終了したときに新しいダイス目を設定
-        const newValue = Math.floor(Math.random() * maxDiceValue) + 1;
-        setDiceValue(newValue);
       }
 
       // ダイスロールの切り替え時にランダムな回転角にする
       setRotation(
-        new Euler(
-          ((Math.floor(Math.random() * 6) + 1) * Math.PI) / 2,
-          ((Math.floor(Math.random() * 6) + 1) * Math.PI) / 2,
-          ((Math.floor(Math.random() * 6) + 1) * Math.PI) / 2
-        )
+        diceTypes[diceType].eulers[Math.floor(Math.random() * 6)]
       );
       setIsRollingLast(isRolling);
     }
@@ -112,7 +116,6 @@ function useDiceLogic(diceType: DiceDimensions) {
   return {
     rotation,
     isRolling,
-    diceValue,
     rollDice
   };
 }
@@ -137,7 +140,7 @@ function DiceModel({ diceType }: { diceType: DiceDimensions }) {
 // グループコンポーネント
 // ==============================
 function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
-  const { rotation, rollDice, diceValue } = useDiceLogic(diceType);
+  const { rotation, rollDice } = useDiceLogic(diceType);
 
   return (
     <group
