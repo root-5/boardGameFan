@@ -130,7 +130,7 @@ function useDiceLogic(diceType: DiceDimensions) {
       // );
       const randomIndex = Math.floor(Math.random() * diceTypes[diceType].maxValue);
       setRotation(
-        diceTypes[diceType].eulers[Math.floor(Math.random() * diceTypes[diceType].maxValue)]
+        diceTypes[diceType].eulers[randomIndex]
       );
       setIsRollingLast(isRolling);
     }
