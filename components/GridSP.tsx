@@ -133,10 +133,6 @@ export default function GridSP() {
     setTouchEnd(null);
   };
 
-  // 前のカード、現在のカード、次のカードのインデックスを計算
-  const prevIndex = (currentIndex - 1 + cardList.length) % cardList.length;
-  const nextIndex = (currentIndex + 1) % cardList.length;
-
   // 各カードの背景色・文字色設定
   const getCardStyle = (index: number) => {
     const isEven = index % 2 === 0;
@@ -146,32 +142,59 @@ export default function GridSP() {
     };
   };
 
-  // 各カードのコンポーネント
-  const renderCard = (index: number, position: 'prev' | 'current' | 'next') => {
+  // 各カードのコンポーネント（全カードを常にレンダリングするよう変更）
+  const renderCard = (index: number) => {
     const card = cardList[index];
     const Component = cardMap[card.component] || (() => <div>Component not found</div>);
 
+    // 現在のカードに対する相対位置を計算
+    const positionDiff = index - currentIndex;
+    const normalizedPositionDiff = ((positionDiff + cardList.length) % cardList.length);
+
+    // 相対位置に基づいて表示位置を決定
+    // 現在のカード: 0, 前のカード: -1, 次のカード: 1, その他は非表示
     let translateX = 0;
-    if (position === 'prev') translateX = -100;
-    if (position === 'next') translateX = 100;
+    let zIndex = 0;
+    let opacity = 0;
+    let display = "none";
+
+    // 現在表示中のカード（現在、前、次）の位置と表示状態を設定
+    if (normalizedPositionDiff === 0) { // 現在のカード
+      translateX = swipeOffset;
+      zIndex = 2;
+      opacity = 1;
+      display = "block";
+    } else if (normalizedPositionDiff === cardList.length - 1 || normalizedPositionDiff === -1) { // 前のカード
+      translateX = -100 + swipeOffset;
+      zIndex = 1;
+      opacity = 1;
+      display = "block";
+    } else if (normalizedPositionDiff === 1) { // 次のカード
+      translateX = 100 + swipeOffset;
+      zIndex = 1;
+      opacity = 1;
+      display = "block";
+    }
 
     // スワイプのオフセット値に基づいてぼかし効果を計算
     const offsetPercent = (swipeOffset / windowWidth) * 100;
     let blurAmount = 0;
-    if (position === 'current') {
+    if (normalizedPositionDiff === 0) {
       // 現在のカードは、スワイプしたときにぼやける
       blurAmount = Math.abs(offsetPercent) * 0.2;
-    } else {
-      blurAmount = 0;
     }
 
     return (
       <div
+        key={index}
         className="absolute w-full h-full text-center"
         style={{
           ...getCardStyle(index),
-          transform: `translateX(${translateX + offsetPercent}%)`,
+          transform: `translateX(${translateX}%)`,
           transition: isAnimating ? 'transform 0.3s ease-out, filter 0.3s ease-out' : 'none',
+          zIndex: zIndex,
+          opacity: opacity,
+          display: display, // 表示状態を制御
         }}
       >
         <div
@@ -208,14 +231,8 @@ export default function GridSP() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <>
-        {/* 前のカード */}
-        {renderCard(prevIndex, 'prev')}
-        {/* 現在のカード */}
-        {renderCard(currentIndex, 'current')}
-        {/* 次のカード */}
-        {renderCard(nextIndex, 'next')}
-      </>
+      {/* すべてのカードを常にレンダリング */}
+      {cardList.map((_, index) => renderCard(index))}
 
       {/* ページインジケーター */}
       <div className="absolute bottom-6 left-0 right-0 flex justify-center">
