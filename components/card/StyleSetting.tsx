@@ -1,7 +1,7 @@
 'use Client';
 
 import { CardStyle } from "../../utils/types";
-import { initialStyle } from "../../utils/cardDefinitions";
+import { initialStyle, fonts } from "../../utils/cardDefinitions";
 import { setLocalStorage } from "../../utils/localFuncs";
 
 const colorFields = [
@@ -10,8 +10,6 @@ const colorFields = [
   { label: "Base 2", key: "bgColor_2" },
   { label: "Font 2", key: "fontColor_2" },
 ];
-
-const fontsMax = 9;
 
 export default function StyleSetting({
   cardStyle,
@@ -43,7 +41,7 @@ export default function StyleSetting({
             onClick={() => {
               setCardStyle({
                 ...cardStyle,
-                fontStyle: cardStyle.fontStyle - 1 < 1 ? fontsMax : cardStyle.fontStyle - 1,
+                fontStyle: cardStyle.fontStyle - 1 < 1 ? fonts.length : cardStyle.fontStyle - 1,
               });
             }}
             className="w-4 cursor-pointer duration-200 opacity-30 hover:opacity-100"
@@ -57,7 +55,7 @@ export default function StyleSetting({
             onClick={() => {
               setCardStyle({
                 ...cardStyle,
-                fontStyle: cardStyle.fontStyle + 1 > fontsMax ? 1 : cardStyle.fontStyle + 1,
+                fontStyle: cardStyle.fontStyle + 1 > fonts.length ? 1 : cardStyle.fontStyle + 1,
               });
             }}
             className="w-4 cursor-pointer duration-200 opacity-30 hover:opacity-100"

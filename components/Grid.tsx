@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Shantell_Sans, Sansita_Swashed, Dancing_Script, Libre_Bodoni, Pixelify_Sans, Red_Hat_Text, Caveat, Stick_No_Bills, Tilt_Prism, Antonio } from 'next/font/google'
-import { cardMap, maxRange, initialCardsList, initialStyle, initialPlayers } from "../utils/cardDefinitions";
+import { cardMap, maxRange, initialCardsList, initialStyle, initialPlayers, fonts } from "../utils/cardDefinitions";
 import { setInitialCardsList, useDragDrop, calculateAndUpdateGrid } from "../utils/cardFuncs";
 import { getLocalStorage, setLocalStorage } from "../utils/localFuncs";
 import DragIcon from "../components/card/module/DragIcon";
@@ -13,18 +12,6 @@ import Setter from "../components/Setter";
 // 定数定義
 // ======================================================================
 const initialCardsListFilled = setInitialCardsList(initialCardsList, maxRange.rows, maxRange.cols);
-
-const font_1 = Shantell_Sans({ subsets: ['latin'] })
-const font_2 = Sansita_Swashed({ subsets: ['latin'] })
-const font_3 = Dancing_Script({ subsets: ['latin'] })
-const font_4 = Libre_Bodoni({ subsets: ['latin'] })
-const font_5 = Pixelify_Sans({ subsets: ['latin'] })
-const font_6 = Red_Hat_Text({ subsets: ['latin'] })
-const font_7 = Caveat({ subsets: ['latin'] })
-const font_8 = Stick_No_Bills({ subsets: ['latin'] })
-const font_9 = Tilt_Prism({ subsets: ['latin'] })
-const font_10 = Antonio({ subsets: ['latin'] })
-const fonts = [font_1, font_2, font_3, font_4, font_5, font_6, font_7, font_8, font_9, font_10,]
 
 export default function Grid() {
   // ======================================================================
@@ -96,7 +83,7 @@ export default function Grid() {
   return (
     <>
       <div
-        className={"relative w-full h-full " + fonts[cardStyle.fontStyle].className}
+        className={"relative w-full h-full " + fonts[cardStyle.fontStyle - 1].className}
         id="card-container"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
