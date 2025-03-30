@@ -7,7 +7,7 @@ import { Euler } from "three";
 
 // ==============================
 // 設定
-const modelPath = "Dice.glb";
+const modelPath = "Dice_6.glb";
 
 // ダイスモデル単体
 function DiceModel() {
@@ -19,8 +19,7 @@ function DiceModel() {
   return (
     <primitive
       object={clonedScene}
-      // 今回はサイコロの中心が原点になるように調整、元は中心が底面になっている
-      position={[0, -5, 0]} // モデルの位置
+      position={[0, 0, 0]} // モデルの位置
       scale={[100, 100, 100]} // モデルの大きさ
     />
   );
