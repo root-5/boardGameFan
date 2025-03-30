@@ -2,13 +2,14 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Euler } from "three";
 
-// 設定できるダイスタイプ
+// ==============================
+// 型定義
+// ==============================
 type DiceDimensions = "d6" | "d20";
 
-// ダイスの設定を表す型
 type DiceConfig = {
   modelPath: string;
   scale: number[];
@@ -19,9 +20,9 @@ type DiceConfig = {
   minAzimuthAngle: number;
   maxAzimuthAngle: number;
   position: number[];
+  maxValue: number;
 };
 
-// 文字列インデックスを持つダイスタイプの型
 interface DiceTypes {
   [key: string]: DiceConfig;
   d6: DiceConfig;
@@ -30,59 +31,51 @@ interface DiceTypes {
 
 // ==============================
 // 設定
+// ==============================
 const diceTypes: DiceTypes = {
   d6: {
     modelPath: "Dice_6.glb",
     scale: [100, 100, 100],
     minDistance: 15,
     maxDistance: 15,
-    minPolarAngle: (Math.PI * 43) / 100,
-    maxPolarAngle: (Math.PI * 58.5) / 100,
-    minAzimuthAngle: (Math.PI * -7) / 100,
-    maxAzimuthAngle: (Math.PI * 7) / 100,
-    position: [0, 0, 0]
+    minPolarAngle: (Math.PI * 45) / 100,
+    maxPolarAngle: (Math.PI * 45) / 100,
+    minAzimuthAngle: (Math.PI * -0) / 100,
+    maxAzimuthAngle: (Math.PI * 0) / 100,
+    position: [0, 0, 0],
+    maxValue: 6
   },
   d20: {
-    modelPath: "Dice_20.glb", // 20面ダイスのモデルパス（適宜調整してください）
+    modelPath: "Dice_20.glb",
     scale: [100, 100, 100],
     minDistance: 15,
     maxDistance: 15,
-    minPolarAngle: (Math.PI * 43) / 100,
-    maxPolarAngle: (Math.PI * 58.5) / 100,
-    minAzimuthAngle: (Math.PI * -7) / 100,
-    maxAzimuthAngle: (Math.PI * 7) / 100,
-    position: [0, 0, 0]
+    minPolarAngle: (Math.PI * 45) / 100,
+    maxPolarAngle: (Math.PI * 45) / 100,
+    minAzimuthAngle: (Math.PI * -0) / 100,
+    maxAzimuthAngle: (Math.PI * 0) / 100,
+    position: [0, 0, 0],
+    maxValue: 20
   }
 };
 
-// ダイスモデル単体
-function DiceModel(props: { diceType: DiceDimensions }) {
-  const { diceType } = props;
-  const { scene } = useGLTF(diceTypes[diceType].modelPath);
-  const clonedScene = useMemo(() => scene.clone(), [scene]);
-  const config = diceTypes[diceType];
-
-  return (
-    <primitive
-      object={clonedScene}
-      position={config.position}
-      scale={config.scale}
-    />
-  );
-}
-
-// グループ（複数のモデルの集合）
-function Group(props: { diceType: DiceDimensions }) {
-  const { diceType } = props;
+// ==============================
+// カスタムフック - ダイスロジック
+// ==============================
+function useDiceLogic(diceType: DiceDimensions) {
   const [rotation, setRotation] = useState(
     new Euler((1 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2)
   );
   const [isRolling, setIsRolling] = useState(false);
   const [isRollingLast, setIsRollingLast] = useState(false);
-  const [diceValue, setDiceValue] = useState(1); // ダイス目の値
+  const [diceValue, setDiceValue] = useState(1);
 
-  // ダイスの種類に応じた最大値
-  const maxDiceValue = diceType === 'd20' ? 20 : 6;
+  const maxDiceValue = diceTypes[diceType].maxValue;
+
+  // ダイスを転がすハンドラー
+  const rollDice = useCallback(() => {
+    setIsRolling(!isRolling);
+  }, [isRolling]);
 
   useFrame(() => {
     if (isRolling === isRollingLast) {
@@ -116,76 +109,102 @@ function Group(props: { diceType: DiceDimensions }) {
     }
   });
 
+  return {
+    rotation,
+    isRolling,
+    diceValue,
+    rollDice
+  };
+}
+
+// ==============================
+// ダイスモデルコンポーネント
+// ==============================
+function DiceModel({ diceType }: { diceType: DiceDimensions }) {
+  const { scene } = useGLTF(diceTypes[diceType].modelPath);
+  const clonedScene = useMemo(() => scene?.clone(), [scene]);
+  const config = diceTypes[diceType];
+  return (
+    <primitive
+      object={clonedScene}
+      position={config.position}
+      scale={config.scale}
+    />
+  );
+}
+
+// ==============================
+// グループコンポーネント
+// ==============================
+function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
+  const { rotation, rollDice, diceValue } = useDiceLogic(diceType);
+
   return (
     <group
-      rotation={rotation} // モデルの回転
-      onClick={() => {
-        // クリック時の処理
-        setIsRolling(!isRolling);
-      }}
+      rotation={rotation}
+      onClick={rollDice}
     >
       <DiceModel diceType={diceType} />
     </group>
   );
 }
 
+// ==============================
+// メインコンポーネント
+// ==============================
 export default function Dice(props: { zoomRatio: number }) {
   const { zoomRatio } = props;
-  const [selectedDiceDimention, setSelectedDiceDimention] = useState<DiceDimensions>('d6');
-  const config = diceTypes[selectedDiceDimention];
+  const [selectedDiceType, setSelectedDiceType] = useState<DiceDimensions>('d6');
+  const config = diceTypes[selectedDiceType];
 
   // モデルの事前読み込み
   useEffect(() => {
-    Object.values(diceTypes).forEach(type => {
-      useGLTF.preload(type.modelPath);
-    });
+    try {
+      Object.values(diceTypes).forEach(type => {
+        useGLTF.preload(type.modelPath);
+      });
+    } catch (error) {
+      console.error("モデルのプリロードに失敗しました:", error);
+    }
+  }, []);
+
+  // ダイスタイプ切り替えハンドラー
+  const toggleDiceType = useCallback(() => {
+    setSelectedDiceType(prev => prev === 'd6' ? 'd20' : 'd6');
   }, []);
 
   return (
-    <>
-      <div className="h-full w-full relative">
-        {/* ダイス選択UI */}
-        <button
-          className={"absolute z-10 block bottom-2 left-1/2 -translate-x-1/2 w-16 text-xl text-center duration-200 hover:opacity-80"}
-          onClick={() => {
-            if (selectedDiceDimention === 'd6') {
-              setSelectedDiceDimention('d20');
-            } else {
-              setSelectedDiceDimention('d6');
-            }
-          }}
-        >
-          {selectedDiceDimention}
-        </button>
+    <div className="h-full w-full relative">
+      {/* ダイス選択UI */}
+      <button
+        className={"absolute z-10 block bottom-2 left-1/2 -translate-x-1/2 w-16 text-xl text-center duration-200 hover:opacity-80"}
+        onClick={toggleDiceType}
+      >
+        {selectedDiceType}
+      </button>
 
-        <Canvas
-          className="h-full w-full"
-          camera={{
-            fov: 80,
-            position: [0, 0, 50],
-          }}
-          style={{
-            zoom: 1 / zoomRatio,
-          }}
-        >
-          {/* グループ */}
-          <Group diceType={selectedDiceDimention} />
+      <Canvas
+        className="h-full w-full"
+        style={{ zoom: 1 / zoomRatio, }}
+      >
+        {/* グループ */}
+        <DiceGroup diceType={selectedDiceType} />
 
-          {/* カメラ操作 */}
-          <OrbitControls
-            minDistance={config.minDistance}
-            maxDistance={config.maxDistance}
-            minPolarAngle={config.minPolarAngle}
-            maxPolarAngle={config.maxPolarAngle}
-            minAzimuthAngle={config.minAzimuthAngle}
-            maxAzimuthAngle={config.maxAzimuthAngle}
-          />
+        {/* カメラ操作 */}
+        <OrbitControls
+          minDistance={config.minDistance}
+          maxDistance={config.maxDistance}
+          minPolarAngle={config.minPolarAngle}
+          maxPolarAngle={config.maxPolarAngle}
+          minAzimuthAngle={config.minAzimuthAngle}
+          maxAzimuthAngle={config.maxAzimuthAngle}
+          enablePan={false}
+        />
 
-          {/* ライト */}
-          <directionalLight intensity={5} position={[10, 20, 50]} castShadow />
-          <ambientLight intensity={0.5} />
-        </Canvas>
-      </div>
-    </>
+        {/* ライト */}
+        <directionalLight intensity={5} position={[10, 20, 50]} castShadow />
+        <ambientLight intensity={0.5} />
+      </Canvas>
+    </div>
   );
 }
