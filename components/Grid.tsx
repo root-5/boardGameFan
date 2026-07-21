@@ -39,7 +39,7 @@ export default function Grid() {
   const [cardList, setCardList] = useState<CardSetting[]>(initialCardsListFilled);
   const [cardStyle, setCardStyle] = useState<CardStyle>(initialStyle);
   const [zoomRatio, setZoomRatio] = useState(1);
-  const [viewRange, setViewRange] = useState({
+  const [viewRange, setViewRange] = useState<{ x: number; y: number }>({
     x: maxRange.cols,
     y: maxRange.rows,
   });

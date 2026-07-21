@@ -7,7 +7,7 @@
  * 表示は 4 個まではトロフィー連打、それ以上は「🏆 × N」形式です。
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Player } from "@/utils/types";
 import { clamp } from "@/utils/clamp";
 import ResetButton from "@/components/card/module/ResetButton";
@@ -25,11 +25,15 @@ function formatWins(count: number): string {
 
 export default function Winner({ players = [] }: { players?: Player[] }) {
   const [playerWins, setPlayerWins] = useState(() => players.map(() => 0));
+  const prevLengthRef = useRef(players.length);
 
-  // プレイヤー人数が変わったら勝利数をリセット
+  // プレイヤー人数が変わったときだけ勝利数をリセット（名前変更などでは維持）
   useEffect(() => {
-    setPlayerWins(players.map(() => 0));
-  }, [players.length]);
+    if (prevLengthRef.current !== players.length) {
+      prevLengthRef.current = players.length;
+      setPlayerWins(players.map(() => 0));
+    }
+  }, [players]);
 
   const handleWinChange = (index: number, delta: number) => {
     setPlayerWins((prev) => {
