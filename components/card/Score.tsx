@@ -1,83 +1,69 @@
 "use client";
 
-import { useState, useRef } from "react";
+/**
+ * スコアカウンター
+ *
+ * 大きな数値入力と、±1 / ±100 / ±1000 / ±10000 の長押し加減算に対応します。
+ */
 
-const scoreMax = 99999;
-const scoreMin = -99999;
+import { useState } from "react";
+import { clamp } from "@/utils/clamp";
+import { useHoldRepeat } from "@/hooks/useHoldRepeat";
+import ResetButton from "@/components/card/module/ResetButton";
 
-function ajustScoreValue(value: number): number {
-  if (value > scoreMax) {
-    return scoreMax;
-  } else if (value < scoreMin) {
-    return scoreMin;
-  }
-  return value;
-}
+const SCORE_MAX = 99999;
+const SCORE_MIN = -99999;
+
+const SCORE_ADJUSTMENTS = [
+  { label: "<", value: -1, className: "mt-[-8px] text-3xl" },
+  { label: ">", value: 1, className: "mt-[-8px] text-3xl" },
+  { label: "-100", value: -100 },
+  { label: "+100", value: 100 },
+  { label: "-1000", value: -1000 },
+  { label: "+1000", value: 1000 },
+  { label: "-10000", value: -10000 },
+  { label: "+10000", value: 10000 },
+] as const;
 
 export default function Score() {
   const [count, setCount] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { onHoldStart, onHoldEnd } = useHoldRepeat();
 
-  const scoreAdjustments = [
-    { label: "<", value: -1, className: "mt-[-8px] text-3xl" },
-    { label: ">", value: 1, className: "mt-[-8px] text-3xl" },
-    { label: "-100", value: -100 },
-    { label: "+100", value: 100 },
-    { label: "-1000", value: -1000 },
-    { label: "+1000", value: 1000 },
-    { label: "-10000", value: -10000 },
-    { label: "+10000", value: 10000 },
-  ];
-
-  const handleMouseDown = (adjustment: number) => {
-    setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
-    intervalRef.current = setInterval(() => {
-      setCount((prevCount) => ajustScoreValue(prevCount + adjustment));
-    }, 100);
-  };
-
-  const handleMouseUp = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+  const adjust = (delta: number) => {
+    setCount((prev) => clamp(prev + delta, SCORE_MIN, SCORE_MAX));
   };
 
   return (
-    <>
-      <div className="p-6">
-        <p className="text-[8px] opacity-50">INPUT / ARROW KEY / SCROLL</p>
-        <input
-          className="inline-block w-44 bg-transparent text-5xl text-center font-bold outline-none"
-          type="number"
-          onChange={(e) => setCount(ajustScoreValue(parseInt(e.target.value)))}
-          value={count}
-        />
-        <div>
-          <div className="grid grid-cols-2 gap-0 text-base">
-            {scoreAdjustments.map((adjustment, index) => (
-              <div key={index}>
-                <button
-                  className={`px-2 duration-200 hover:opacity-70 ${
-                    adjustment.className || ""
-                  }`}
-                  onMouseDown={() => handleMouseDown(adjustment.value)}
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                >
-                  {adjustment.label}
-                </button>
-              </div>
-            ))}
+    <div className="p-6">
+      <p className="text-[8px] opacity-50">INPUT / ARROW KEY / SCROLL</p>
+      <input
+        className="inline-block w-44 bg-transparent text-5xl text-center font-bold outline-none"
+        type="number"
+        value={count}
+        onChange={(e) =>
+          setCount(
+            clamp(Number.parseInt(e.target.value, 10) || 0, SCORE_MIN, SCORE_MAX)
+          )
+        }
+      />
+      <div className="grid grid-cols-2 gap-0 text-base">
+        {SCORE_ADJUSTMENTS.map((adjustment) => (
+          <div key={adjustment.label}>
+            <button
+              type="button"
+              className={`px-2 duration-200 hover:opacity-70 ${
+                "className" in adjustment ? adjustment.className : ""
+              }`}
+              onMouseDown={() => onHoldStart(() => adjust(adjustment.value))}
+              onMouseUp={onHoldEnd}
+              onMouseLeave={onHoldEnd}
+            >
+              {adjustment.label}
+            </button>
           </div>
-        </div>
-        <div
-          className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-          onClick={() => setCount(0)}
-        >
-          ↺
-        </div>
+        ))}
       </div>
-    </>
+      <ResetButton label="Reset score" onClick={() => setCount(0)} />
+    </div>
   );
 }

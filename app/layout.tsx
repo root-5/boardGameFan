@@ -1,9 +1,25 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+/**
+ * ルートレイアウト（サーバーコンポーネント）
+ *
+ * メタデータ・背景・全体の土台のみを担当し、
+ * カード UI 本体は page.tsx 側のクライアントコンポーネントで描画します。
+ */
 
 export const metadata: Metadata = {
   title: "Game Tools!",
   description: "For board games, card games, and more! Streamer friendly!",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -13,20 +29,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="manifest" href="./manifest.json" />
-      </head>
-      <body
-        className={`relative antialiased h-screen select-none overflow-x-hidden overflow-y-hidden`}
-      >
+      <body className="relative antialiased h-screen select-none overflow-hidden">
         {/* SP はカードが全面を覆うため背景画像を読み込まない（~800KB 削減） */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/okumono_moku14.png"
           alt=""
-          className="absolute h-full w-full z-[-10] object-cover hidden min-[500px]:block"
+          className="absolute inset-0 z-[-10] h-full w-full object-cover hidden min-[500px]:block"
           decoding="async"
         />
         {children}

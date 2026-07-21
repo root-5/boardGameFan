@@ -1,15 +1,21 @@
 "use client";
 
+/**
+ * 3D コインカード
+ *
+ * タップでフリップ開始・停止。停止時に表裏どちらかへスナップします。
+ */
+
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useMemo, useRef, useCallback } from "react";
 import { Group } from "three";
 import type { ThreeEvent } from "@react-three/fiber";
 
-const modelPath = "Coin.glb";
+const MODEL_PATH = "Coin.glb";
 
 function CoinModel() {
-  const { scene } = useGLTF(modelPath);
+  const { scene } = useGLTF(MODEL_PATH);
   const clonedScene = useMemo(() => scene.clone(), [scene]);
 
   return (
@@ -21,7 +27,7 @@ function CoinModel() {
   );
 }
 
-function GroupComponent() {
+function CoinGroup() {
   const groupRef = useRef<Group>(null);
   const isFlippingRef = useRef(false);
   const isFlippingLastRef = useRef(false);
@@ -35,6 +41,7 @@ function GroupComponent() {
         group.rotation.x += (Math.PI * 15) / 100;
       }
     } else {
+      // 表裏のどちらか（π の奇数倍 / 偶数倍）へスナップ
       group.rotation.x = (Math.floor(Math.random() * 2) + 1) * Math.PI;
       isFlippingLastRef.current = isFlippingRef.current;
     }
@@ -48,7 +55,7 @@ function GroupComponent() {
   return (
     <group
       ref={groupRef}
-      rotation={[(2 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2]}
+      rotation={[Math.PI, Math.PI, Math.PI]}
       onPointerDown={handlePointerDown}
     >
       <CoinModel />
@@ -56,32 +63,31 @@ function GroupComponent() {
   );
 }
 
-export default function Coin(props: { zoomRatio: number; isActive?: boolean }) {
-  const { zoomRatio, isActive = true } = props;
-
+export default function Coin({
+  zoomRatio = 1,
+  isActive = true,
+}: {
+  zoomRatio?: number;
+  isActive?: boolean;
+}) {
   return (
     <>
       {isActive ? (
         <Canvas
           className="h-full w-full"
-          camera={{
-            fov: 70,
-            position: [0, 0, 50],
-          }}
-          style={{
-            zoom: 1 / zoomRatio,
-          }}
+          camera={{ fov: 70, position: [0, 0, 50] }}
+          style={{ zoom: 1 / zoomRatio }}
           dpr={[1, 1.5]}
           gl={{ antialias: false, powerPreference: "low-power" }}
         >
-          <GroupComponent />
+          <CoinGroup />
           <OrbitControls
             minDistance={120}
             maxDistance={153}
-            minPolarAngle={(Math.PI * -0) / 100}
-            maxPolarAngle={(Math.PI * 0) / 100}
-            minAzimuthAngle={(Math.PI * -0) / 100}
-            maxAzimuthAngle={(Math.PI * 0) / 100}
+            minPolarAngle={0}
+            maxPolarAngle={0}
+            minAzimuthAngle={0}
+            maxAzimuthAngle={0}
             enableRotate={false}
             enableZoom={false}
             enablePan={false}

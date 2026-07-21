@@ -1,121 +1,143 @@
 /**
- * カード系で使用する関数をまとめる
+ * カード配置・ドラッグ＆ドロップ・グリッド計算まわりの関数群
  */
 
-import { Dispatch, SetStateAction } from "react";
+import { useCallback, type Dispatch, type SetStateAction } from "react";
+import type { CardSetting } from "./types";
+
+/** カード 1 枚の基準サイズ（Tailwind の w-56 / h-56 = 224px） */
+export const CARD_SIZE_PX = 224;
 
 /**
- * setInitialCardsList 関数
- * 初期カードリストを設定する関数
- * 
- * @param {{ component: string, x: number, y: number }[]} initialCardsList - 初期カードリスト
- * @param {number} maxRows - 最大行数
- * @param {number} maxCols - 最大列数
- * @returns {{ component: string, x: number, y: number }[]} 初期カードリスト
+ * 初期カードリストの空きマスを "setter" で埋める
+ *
+ * PC グリッドでは空き枠に＋ボタン（Setter）を置くため、
+ * 表示範囲内の全マスを埋めた配列を返します。
+ * 元配列は破壊しません（SP / PC で同じ initialCardsList を共有するため）。
+ *
+ * @param initialCardsList - 初期カード配置
+ * @param maxRows - 最大行数
+ * @param maxCols - 最大列数
+ * @returns setter で埋めたカードリスト
  */
-export const setInitialCardsList = (
-  initialCardsList: { component: string, x: number, y: number }[],
+export const fillEmptySlotsWithSetter = (
+  initialCardsList: CardSetting[],
   maxRows: number,
   maxCols: number
-): { component: string, x: number, y: number }[] => {
-  // 元配列を破壊しない（SP/PC で同じ initialCardsList を共有するため）
+): CardSetting[] => {
   const result = initialCardsList.map((card) => ({ ...card }));
+
   for (let y = 0; y < maxRows; y++) {
     for (let x = 0; x < maxCols; x++) {
-      const existingComponent = result.find(
-        (comp) => comp.x === x && comp.y === y
-      );
-      if (!existingComponent) {
+      const occupied = result.some((card) => card.x === x && card.y === y);
+      if (!occupied) {
         result.push({ component: "setter", x, y });
       }
     }
   }
+
   return result;
 };
 
+/** @deprecated fillEmptySlotsWithSetter を使用してください */
+export const setInitialCardsList = fillEmptySlotsWithSetter;
+
 /**
- * useDragDrop カスタムフック
- * ドラッグ＆ドロップの処理を管理するためのフック
- * 
- * @param {Dispatch<SetStateAction<number | null>>} setDragIndex - ドラッグ中のカードのインデックスを設定する関数
- * @param {Dispatch<SetStateAction<{ x: number; y: number } | null>>} setDragOffset - ドラッグ中のカードのオフセットを設定する関数
- * @param {number | null} dragIndex - ドラッグ中のカードのインデックス
- * @param {{ x: number; y: number } | null} dragOffset - ドラッグ中のカードのオフセット
- * @param {any[]} cardList - カードのリスト
- * @param {Dispatch<SetStateAction<any[]>>} setCardList - カードのリストを更新する関数
- * @returns {{ handleDragStart: (index: number, e: React.DragEvent<HTMLDivElement>) => void, handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void, handleDrop: (e: React.DragEvent<HTMLDivElement>) => void }} ドラッグ＆ドロップのイベントハンドラを含むオブジェクト
+ * ドラッグ＆ドロップでカード位置を入れ替えるカスタムフック
+ *
+ * @param setDragIndex - ドラッグ中カードのインデックス
+ * @param setDragOffset - ドラッグ開始時のポインタ相対位置
+ * @param dragIndex - 現在ドラッグ中のインデックス
+ * @param dragOffset - 現在のオフセット
+ * @param cardList - カードリスト
+ * @param setCardList - カードリスト更新関数
  */
 export const useDragDrop = (
   setDragIndex: Dispatch<SetStateAction<number | null>>,
   setDragOffset: Dispatch<SetStateAction<{ x: number; y: number } | null>>,
   dragIndex: number | null,
   dragOffset: { x: number; y: number } | null,
-  cardList: any[],
-  setCardList: Dispatch<SetStateAction<any[]>>
+  cardList: CardSetting[],
+  setCardList: Dispatch<SetStateAction<CardSetting[]>>
 ) => {
-  const handleDragStart = (
-    index: number,
-    e: React.DragEvent<HTMLDivElement>
-  ) => {
-    setDragIndex(index);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
+  const handleDragStart = useCallback(
+    (index: number, e: React.DragEvent<HTMLDivElement>) => {
+      setDragIndex(index);
+      const rect = e.currentTarget.getBoundingClientRect();
+      setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    },
+    [setDragIndex, setDragOffset]
+  );
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    if (dragIndex === null || dragOffset === null) return;
-    const cardSize = 224;
-    const newList = [...cardList];
-    const newX = Math.floor((e.clientX - dragOffset.x) / cardSize);
-    const newY = Math.floor((e.clientY - dragOffset.y) / cardSize);
-    if (newX >= 0 && newY >= 0) {
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      if (dragIndex === null || dragOffset === null) return;
+
+      const newList = [...cardList];
+      const newX = Math.floor((e.clientX - dragOffset.x) / CARD_SIZE_PX);
+      const newY = Math.floor((e.clientY - dragOffset.y) / CARD_SIZE_PX);
+
+      if (newX < 0 || newY < 0) {
+        setDragIndex(null);
+        setDragOffset(null);
+        return;
+      }
+
       const targetIndex = newList.findIndex(
         (item) => item.x === newX && item.y === newY
       );
+
       if (targetIndex !== -1) {
-        [newList[targetIndex], newList[dragIndex]] = [
-          { ...newList[dragIndex], x: newX, y: newY },
-          {
-            ...newList[targetIndex],
-            x: newList[dragIndex].x,
-            y: newList[dragIndex].y,
-          },
-        ];
+        // ドロップ先にカードがある場合は位置を入れ替える
+        const dragged = newList[dragIndex];
+        const target = newList[targetIndex];
+        newList[targetIndex] = { ...dragged, x: newX, y: newY };
+        newList[dragIndex] = { ...target, x: dragged.x, y: dragged.y };
       } else {
         newList[dragIndex] = { ...newList[dragIndex], x: newX, y: newY };
       }
+
       setCardList(newList);
-    }
-    setDragIndex(null);
-    setDragOffset(null);
-  };
+      setDragIndex(null);
+      setDragOffset(null);
+    },
+    [cardList, dragIndex, dragOffset, setCardList, setDragIndex, setDragOffset]
+  );
 
   return { handleDragStart, handleDragOver, handleDrop };
 };
 
 /**
- * calculateAndUpdateGrid 関数
- * ウィンドウの幅を基にカードの列数とズーム倍率を計算し、行数を返す関数
- * 
- * @param {number} outerWidth - ウィンドウの外幅
- * @param {number} innerWidth - ウィンドウの内幅
- * @returns {{ zoomRatio: number, cols: number, rows: number }} ズーム倍率、列数、行数を含むオブジェクト
+ * ウィンドウ幅からズーム倍率・列数・行数を計算する
+ *
+ * - 幅 500px 以下（SP）: 1 列、カード幅を画面幅に合わせる
+ * - それ以外（PC）: 横に収まる列数を計算し、余白に合わせてズーム
+ *
+ * @param outerWidth - window.outerWidth
+ * @param innerWidth - window.innerWidth
  */
-export const calculateAndUpdateGrid = (outerWidth: number, innerWidth: number) => {
-  const cardSize = 224; // 基本のカードの幅（w-56 h-56 の px 値）
+export const calculateAndUpdateGrid = (
+  outerWidth: number,
+  innerWidth: number
+): { zoomRatio: number; cols: number; rows: number } => {
   let zoomRatio = 1;
   let cols = 1;
-  // 幅が 500px 以下は列数を１にしてカード幅を画面幅に合わせる
+
   if (outerWidth <= 500) {
-    zoomRatio = outerWidth / cardSize;
+    zoomRatio = outerWidth / CARD_SIZE_PX;
   } else {
-    cols = Math.floor(innerWidth / cardSize);
-    zoomRatio = Math.min(innerWidth / (cols * cardSize));
+    cols = Math.floor(innerWidth / CARD_SIZE_PX);
+    zoomRatio = innerWidth / (cols * CARD_SIZE_PX);
   }
-  const rows = Math.floor(innerHeight / 224);
+
+  const rows = Math.floor(
+    (typeof window !== "undefined" ? window.innerHeight : CARD_SIZE_PX) /
+      CARD_SIZE_PX
+  );
+
   return { zoomRatio, cols, rows };
 };

@@ -1,39 +1,36 @@
 "use client";
 
+/**
+ * 3D ダイスカード（6 面 / 20 面）
+ *
+ * タップで回転開始・停止。停止時にランダムな出目向きへスナップします。
+ * SP では isActive が false のとき Canvas を破棄し、WebGL 負荷を抑えます。
+ */
+
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { Euler, Group } from "three";
 import type { ThreeEvent } from "@react-three/fiber";
 
-// ==============================
-// 型定義
-// ==============================
 type DiceDimensions = "d6" | "d20";
 
 type DiceConfig = {
   modelPath: string;
-  scale: number[];
+  scale: [number, number, number];
   minDistance: number;
   maxDistance: number;
   minPolarAngle: number;
   maxPolarAngle: number;
   minAzimuthAngle: number;
   maxAzimuthAngle: number;
-  position: number[];
+  position: [number, number, number];
   maxValue: number;
   eulers: Euler[];
 };
 
-interface DiceTypes {
-  d6: DiceConfig;
-  d20: DiceConfig;
-}
-
-// ==============================
-// 設定
-// ==============================
-const diceTypes: DiceTypes = {
+/** ダイス種別ごとのモデル・カメラ制限・出目オイラー角 */
+const diceTypes: Record<DiceDimensions, DiceConfig> = {
   d6: {
     modelPath: "Dice_6.glb",
     scale: [100, 100, 100],
@@ -90,10 +87,14 @@ const diceTypes: DiceTypes = {
   },
 };
 
-// ==============================
-// カスタムフック - ダイスロジック（ref 更新で React 再レンダーを回避）
-// ==============================
-function useDiceLogic(diceType: DiceDimensions, groupRef: React.RefObject<Group | null>) {
+/**
+ * ダイス回転ロジック（ref 更新で React 再レンダーを回避）
+ * 回転中は毎フレーム姿勢を進め、停止時に出目オイラーへコピーします。
+ */
+function useDiceLogic(
+  diceType: DiceDimensions,
+  groupRef: React.RefObject<Group | null>
+) {
   const isRollingRef = useRef(false);
   const isRollingLastRef = useRef(false);
 
@@ -113,7 +114,9 @@ function useDiceLogic(diceType: DiceDimensions, groupRef: React.RefObject<Group 
         group.rotation.z += (Math.PI * 15) / 100;
       }
     } else {
-      const randomIndex = Math.floor(Math.random() * diceTypes[diceType].maxValue);
+      const randomIndex = Math.floor(
+        Math.random() * diceTypes[diceType].maxValue
+      );
       group.rotation.copy(diceTypes[diceType].eulers[randomIndex]);
       isRollingLastRef.current = isRollingRef.current;
     }
@@ -122,13 +125,11 @@ function useDiceLogic(diceType: DiceDimensions, groupRef: React.RefObject<Group 
   return { rollDice };
 }
 
-// ==============================
-// ダイスモデルコンポーネント
-// ==============================
 function DiceModel({ diceType }: { diceType: DiceDimensions }) {
   const { scene } = useGLTF(diceTypes[diceType].modelPath);
   const clonedScene = useMemo(() => scene?.clone(), [scene]);
   const config = diceTypes[diceType];
+
   return (
     <primitive
       object={clonedScene}
@@ -138,9 +139,6 @@ function DiceModel({ diceType }: { diceType: DiceDimensions }) {
   );
 }
 
-// ==============================
-// グループコンポーネント
-// ==============================
 function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
   const groupRef = useRef<Group>(null);
   const { rollDice } = useDiceLogic(diceType, groupRef);
@@ -158,12 +156,15 @@ function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
   );
 }
 
-// ==============================
-// メインコンポーネント
-// ==============================
-export default function Dice(props: { zoomRatio: number; isActive?: boolean }) {
-  const { zoomRatio, isActive = true } = props;
-  const [selectedDiceType, setSelectedDiceType] = useState<DiceDimensions>("d6");
+export default function Dice({
+  zoomRatio = 1,
+  isActive = true,
+}: {
+  zoomRatio?: number;
+  isActive?: boolean;
+}) {
+  const [selectedDiceType, setSelectedDiceType] =
+    useState<DiceDimensions>("d6");
   const config = diceTypes[selectedDiceType];
 
   // アクティブ時のみ現在のモデルをプリロード（両方一括ロードしない）
@@ -186,7 +187,7 @@ export default function Dice(props: { zoomRatio: number; isActive?: boolean }) {
         <Canvas
           className="h-full w-full"
           style={{ zoom: 1 / zoomRatio }}
-          // 表示中 Canvas は常時描画（demand + KickFrame だとタップ後の反映漏れが起きる）
+          // demand + KickFrame だとタップ後の反映漏れが起きるため常時描画
           dpr={[1, 1.5]}
           gl={{ antialias: false, powerPreference: "low-power" }}
         >
@@ -211,9 +212,8 @@ export default function Dice(props: { zoomRatio: number; isActive?: boolean }) {
       )}
 
       <button
-        className={
-          "absolute z-10 block bottom-2 left-1/2 -translate-x-1/2 w-16 text-xl text-center duration-200 hover:opacity-80"
-        }
+        type="button"
+        className="absolute z-10 block bottom-2 left-1/2 -translate-x-1/2 w-16 text-xl text-center duration-200 hover:opacity-80"
         onClick={toggleDiceType}
       >
         {selectedDiceType}

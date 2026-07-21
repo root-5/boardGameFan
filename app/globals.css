@@ -19,20 +19,42 @@ body {
   background: var(--background);
 }
 
+/* number input のスピンボタンを非表示（見た目を揃える） */
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
 
-/* アラームの振動アニメーション */
+/* タイマー時間切れ時の振動アニメーション */
 @keyframes shake {
-  3%, 9%, 15%, 21%, 27% { transform: rotate(-8deg); }
-  6%, 12%, 18%, 24%, 30% { transform: rotate(8deg); }
-  31%, 100% { transform: translateX(0); }
+  3%,
+  9%,
+  15%,
+  21%,
+  27% {
+    transform: rotate(-8deg);
+  }
+  6%,
+  12%,
+  18%,
+  24%,
+  30% {
+    transform: rotate(8deg);
+  }
+  31%,
+  100% {
+    transform: translateX(0);
+  }
 }
+
 .shake-animation {
   animation: shake 1s ease-in-out infinite;
 }

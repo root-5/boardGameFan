@@ -1,29 +1,34 @@
 "use client";
 
+/**
+ * ターンカウンター
+ *
+ * 表示をタップすると「総ターン数」と「現在のプレイヤー」を切り替えます。
+ */
+
 import { useState } from "react";
-import { Player } from "../../utils/types";
+import type { Player } from "@/utils/types";
+import ResetButton from "@/components/card/module/ResetButton";
 
-export default function TurnCounter(props: { players: Player[] }) {
-  const { players } = props;
-
+export default function Turn({ players = [] }: { players?: Player[] }) {
   const [turnCount, setTurnCount] = useState(0);
   const [turnPlayerIndex, setTurnPlayerIndex] = useState(0);
   const [isTurnCountMode, setIsTurnCountMode] = useState(true);
 
   const handleNext = () => {
     if (isTurnCountMode) {
-      setTurnCount(turnCount + 1);
-    } else {
-      setTurnPlayerIndex((turnPlayerIndex + 1) % players.length);
+      setTurnCount((prev) => prev + 1);
+    } else if (players.length > 0) {
+      setTurnPlayerIndex((prev) => (prev + 1) % players.length);
     }
   };
 
   const handlePrevious = () => {
     if (isTurnCountMode) {
-      setTurnCount((prevCount) => Math.max(prevCount - 1, 0));
-    } else {
+      setTurnCount((prev) => Math.max(prev - 1, 0));
+    } else if (players.length > 0) {
       setTurnPlayerIndex(
-        (turnPlayerIndex - 1 + players.length) % players.length
+        (prev) => (prev - 1 + players.length) % players.length
       );
     }
   };
@@ -39,38 +44,36 @@ export default function TurnCounter(props: { players: Player[] }) {
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
       <p className="text-2xl">Turn</p>
-      <p
+      <button
+        type="button"
         className={
           isTurnCountMode
             ? "text-6xl mt-4 leading-none cursor-pointer"
             : "text-4xl mt-4 leading-none cursor-pointer"
         }
-        onClick={() => setIsTurnCountMode(
-          (prevMode) => !prevMode
-        )}
+        onClick={() => setIsTurnCountMode((prev) => !prev)}
       >
-        {isTurnCountMode ? turnCount : players[turnPlayerIndex].name}
-      </p>
+        {isTurnCountMode
+          ? turnCount
+          : (players[turnPlayerIndex]?.name ?? "-")}
+      </button>
       <div className="mt-4 flex justify-center items-center">
         <button
+          type="button"
           className="px-8 text-4xl leading-none cursor-pointer duration-200 hover:opacity-70"
           onClick={handlePrevious}
         >
           {"<"}
         </button>
         <button
+          type="button"
           className="px-8 text-4xl leading-none cursor-pointer duration-200 hover:opacity-70"
           onClick={handleNext}
         >
           {">"}
         </button>
       </div>
-      <div
-        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-        onClick={handleReset}
-      >
-        ↺
-      </div>
+      <ResetButton label="Reset turn" onClick={handleReset} />
     </div>
   );
 }

@@ -1,85 +1,79 @@
 "use client";
 
-import { useState } from "react";
-import { Player } from "../../utils/types";
+/**
+ * 勝利数カウンター
+ *
+ * プレイヤー名タップで＋1、トロフィー側タップで −1。
+ * 表示は 4 個まではトロフィー連打、それ以上は「🏆 × N」形式です。
+ */
 
-// 勝利数の最大値と最小値
-const maxWins = 99;
-const minWins = 0;
+import { useState, useEffect, useRef } from "react";
+import type { Player } from "@/utils/types";
+import { clamp } from "@/utils/clamp";
+import ResetButton from "@/components/card/module/ResetButton";
 
-// トロフィーを並べて表示できる最大
-const maxDisplayWins = 4;
+const MAX_WINS = 99;
+const MIN_WINS = 0;
+/** トロフィーを並べて表示できる上限 */
+const MAX_DISPLAY_WINS = 4;
 
-function adjustWinCount(value: number): number {
-  if (value > maxWins) {
-    return maxWins;
-  } else if (value < minWins) {
-    return minWins;
-  }
-  return value;
+function formatWins(count: number): string {
+  if (count === 0) return "🏆 × 0";
+  if (count <= MAX_DISPLAY_WINS) return "🏆".repeat(count);
+  return `🏆 × ${count}`;
 }
 
-export default function WinnerCounter({ players }: { players: Player[] }) {
-  const [playerWins, setPlayerWins] = useState(players.map(() => 0));
-  const [playerDisplayTexts, setPlayerDisplayTexts] = useState(
-    players.map(() => "🏆 × 0")
-  );
+export default function Winner({ players = [] }: { players?: Player[] }) {
+  const [playerWins, setPlayerWins] = useState(() => players.map(() => 0));
+  const prevLengthRef = useRef(players.length);
 
-  // 勝利数と勝利数表示更新する関数
-  const handleWinChange = (index: number, increment: number) => {
-    const newWins = [...playerWins];
-    const newCount = adjustWinCount(newWins[index] + increment);
-    newWins[index] = newCount;
-
-    const newDisplayTexts = [...playerDisplayTexts];
-    if (newCount == 0) {
-      newDisplayTexts[index] = "🏆 × 0";
-    } else if (newCount <= maxDisplayWins) {
-      newDisplayTexts[index] = "🏆".repeat(newCount);
-    } else {
-      newDisplayTexts[index] = "🏆 × " + newCount;
+  // プレイヤー人数が変わったときだけ勝利数をリセット（名前変更などでは維持）
+  useEffect(() => {
+    if (prevLengthRef.current !== players.length) {
+      prevLengthRef.current = players.length;
+      setPlayerWins(players.map(() => 0));
     }
+  }, [players]);
 
-    setPlayerWins(newWins);
-    setPlayerDisplayTexts(newDisplayTexts);
+  const handleWinChange = (index: number, delta: number) => {
+    setPlayerWins((prev) => {
+      const next = [...prev];
+      next[index] = clamp(prev[index] + delta, MIN_WINS, MAX_WINS);
+      return next;
+    });
   };
 
-  // プレイヤー数に変更があった際はステートを更新
-  if (players.length !== playerWins.length) {
-    setPlayerWins(players.map(() => 0));
-    setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
-  }
-
   return (
-    <div className="p-6 h-full flex flex-col items-center gap-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
+    <div className="relative p-6 h-full flex flex-col justify-center items-center gap-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
       {players.map((player, index) => (
         <div
-          key={index}
+          key={`${player.name}-${index}`}
           className="w-full grid grid-cols-2 place-content-between"
         >
-          <div
-            className="cursor-pointer"
+          {/*
+            button のデフォルトスタイル（shrink / padding）だと
+            グリッドセルを満たせず左上に寄るため、幅と見た目を div 相当に揃える
+          */}
+          <button
+            type="button"
+            className="w-full cursor-pointer bg-transparent border-0 p-0 m-0 text-inherit font-inherit"
             onClick={() => handleWinChange(index, 1)}
           >
             {player.name}
-          </div>
-          <div
-            className="cursor-pointer"
+          </button>
+          <button
+            type="button"
+            className="w-full cursor-pointer bg-transparent border-0 p-0 m-0 text-inherit font-inherit"
             onClick={() => handleWinChange(index, -1)}
           >
-            {playerDisplayTexts[index]}
-          </div>
+            {formatWins(playerWins[index] ?? 0)}
+          </button>
         </div>
       ))}
-      <div
-        className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-        onClick={() => {
-          setPlayerWins(players.map(() => 0));
-          setPlayerDisplayTexts(players.map(() => "🏆 × 0"));
-        }}
-      >
-        ↺
-      </div>
+      <ResetButton
+        label="Reset wins"
+        onClick={() => setPlayerWins(players.map(() => 0))}
+      />
     </div>
   );
 }

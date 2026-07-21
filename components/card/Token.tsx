@@ -1,103 +1,89 @@
 "use client";
 
-import { useState, useRef } from "react";
+/**
+ * トークン（リソース）カウンター
+ *
+ * 4 種類のアイコンごとに個数を加減算できます。
+ * 入力欄・長押しボタンに対応します。
+ */
 
-const tokenMax = 99;
-const tokenMin = -99;
+import { useState } from "react";
+import { clamp } from "@/utils/clamp";
+import { useHoldRepeat } from "@/hooks/useHoldRepeat";
+import ResetButton from "@/components/card/module/ResetButton";
 
-function ajustTokenValue(value: number): number {
-  if (value > tokenMax) {
-    return tokenMax;
-  } else if (value < tokenMin) {
-    return tokenMin;
-  }
-  return value;
-}
+const TOKEN_MAX = 99;
+const TOKEN_MIN = -99;
+const TOKEN_ICONS = ["🩷", "🪙", "☘️", "🧊️"] as const;
+const INITIAL_COUNTS = [0, 0, 0, 0];
 
 export default function Token() {
-  const [tokenCounts, setTokenCounts] = useState([0, 0, 0, 0]);
-  const tokenIcons = ["🩷", "🪙", "☘️", "🧊️"];
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [tokenCounts, setTokenCounts] = useState([...INITIAL_COUNTS]);
+  const { onHoldStart, onHoldEnd } = useHoldRepeat();
 
-  const handleTokenChange = (index: number, adjustment: number) => {
-    setTokenCounts((prevCounts) => {
-      const newCounts = [...prevCounts];
-      newCounts[index] = ajustTokenValue(newCounts[index] + adjustment);
-      return newCounts;
+  /** 指定インデックスの値を絶対値で更新 */
+  const setAt = (index: number, value: number) => {
+    setTokenCounts((prev) => {
+      const next = [...prev];
+      next[index] = clamp(value, TOKEN_MIN, TOKEN_MAX);
+      return next;
     });
   };
 
-  const handleInputChange = (index: number, value: number) => {
-    setTokenCounts((prevCounts) => {
-      const newCounts = [...prevCounts];
-      newCounts[index] = ajustTokenValue(value);
-      return newCounts;
+  /** 指定インデックスの値を相対値で更新（長押し用・最新 state を参照） */
+  const adjustAt = (index: number, delta: number) => {
+    setTokenCounts((prev) => {
+      const next = [...prev];
+      next[index] = clamp(prev[index] + delta, TOKEN_MIN, TOKEN_MAX);
+      return next;
     });
-  };
-
-  const handleMouseDown = (index: number, adjustment: number) => {
-    handleTokenChange(index, adjustment);
-    intervalRef.current = setInterval(() => {
-      handleTokenChange(index, adjustment);
-    }, 100);
-  };
-
-  const handleMouseUp = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
   };
 
   return (
-    <>
-      <div className="h-full flex flex-col justify-center items-center gap-2 p-4 text-2xl">
-        <p className="my-[-10px] text-[9px] opacity-50">
-          INPUT / ARROW KEY / SCROLL
-        </p>
-        {tokenCounts.map((count, index) => (
-          <div key={index} className="flex justify-center items-center">
-            <button
-              className="px-4 text-center transition hover:opacity-70 hover:-translate-x-2"
-              onMouseDown={() => handleMouseDown(index, -1)}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-            >
-              {"<"}
-            </button>
-            <div
-              className={"text-3xl h-8 leading-8"}
-              style={{
-                transform: "scale(" + (100 + count) / 100 + ")",
-              }}
-            >
-              {tokenIcons[index]}
-            </div>
-            <input
-              className="inline-block ml-3 w-12 bg-transparent outline-none text-center"
-              type="number"
-              onChange={(e) =>
-                handleInputChange(index, parseInt(e.target.value))
-              }
-              value={count}
-            />
-            <button
-              className="px-4 text-center transition hover:opacity-70 hover:translate-x-2"
-              onMouseDown={() => handleMouseDown(index, 1)}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-            >
-              {">"}
-            </button>
+    <div className="h-full flex flex-col justify-center items-center gap-2 p-4 text-2xl">
+      <p className="my-[-10px] text-[9px] opacity-50">
+        INPUT / ARROW KEY / SCROLL
+      </p>
+      {tokenCounts.map((count, index) => (
+        <div key={TOKEN_ICONS[index]} className="flex justify-center items-center">
+          <button
+            type="button"
+            className="px-4 text-center transition hover:opacity-70 hover:-translate-x-2"
+            onMouseDown={() => onHoldStart(() => adjustAt(index, -1))}
+            onMouseUp={onHoldEnd}
+            onMouseLeave={onHoldEnd}
+          >
+            {"<"}
+          </button>
+          <div
+            className="text-3xl h-8 leading-8"
+            style={{ transform: `scale(${(100 + count) / 100})` }}
+          >
+            {TOKEN_ICONS[index]}
           </div>
-        ))}
-        <div
-          className="absolute bottom-1 left-2 text-xl cursor-pointer duration-200 opacity-30 hover:opacity-100"
-          onClick={() => setTokenCounts([0, 0, 0, 0])}
-        >
-          ↺
+          <input
+            className="inline-block ml-3 w-12 bg-transparent outline-none text-center"
+            type="number"
+            value={count}
+            onChange={(e) =>
+              setAt(index, Number.parseInt(e.target.value, 10) || 0)
+            }
+          />
+          <button
+            type="button"
+            className="px-4 text-center transition hover:opacity-70 hover:translate-x-2"
+            onMouseDown={() => onHoldStart(() => adjustAt(index, 1))}
+            onMouseUp={onHoldEnd}
+            onMouseLeave={onHoldEnd}
+          >
+            {">"}
+          </button>
         </div>
-      </div>
-    </>
+      ))}
+      <ResetButton
+        label="Reset tokens"
+        onClick={() => setTokenCounts([...INITIAL_COUNTS])}
+      />
+    </div>
   );
 }
