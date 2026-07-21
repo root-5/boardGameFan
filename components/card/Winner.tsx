@@ -44,22 +44,26 @@ export default function Winner({ players = [] }: { players?: Player[] }) {
   };
 
   return (
-    <div className="p-6 h-full flex flex-col items-center gap-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
+    <div className="relative p-6 h-full flex flex-col justify-center items-center gap-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
       {players.map((player, index) => (
         <div
           key={`${player.name}-${index}`}
           className="w-full grid grid-cols-2 place-content-between"
         >
+          {/*
+            button のデフォルトスタイル（shrink / padding）だと
+            グリッドセルを満たせず左上に寄るため、幅と見た目を div 相当に揃える
+          */}
           <button
             type="button"
-            className="cursor-pointer text-left"
+            className="w-full cursor-pointer bg-transparent border-0 p-0 m-0 text-inherit font-inherit"
             onClick={() => handleWinChange(index, 1)}
           >
             {player.name}
           </button>
           <button
             type="button"
-            className="cursor-pointer text-left"
+            className="w-full cursor-pointer bg-transparent border-0 p-0 m-0 text-inherit font-inherit"
             onClick={() => handleWinChange(index, -1)}
           >
             {formatWins(playerWins[index] ?? 0)}
