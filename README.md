@@ -18,6 +18,7 @@
 | Coin | 3D コイントス |
 | Roulette | プレイヤー色で分割するルーレット |
 | Timer | カウントダウンタイマー |
+| Stopwatch | ストップウォッチ（ラップ記録対応） |
 | Token / Score / OneOnOne | 各種カウンター |
 | Turn / Winner | ターン・勝利数管理 |
 | Player / Style | プレイヤー・見た目の設定 |

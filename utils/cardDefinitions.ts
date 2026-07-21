@@ -22,6 +22,7 @@ import Coin from "@/components/card/Coin";
 import Roulette from "@/components/card/Roulette";
 import OneOnOne from "@/components/card/OneOnOne";
 import Timer from "@/components/card/Timer";
+import Stopwatch from "@/components/card/Stopwatch";
 import Token from "@/components/card/Token";
 import Score from "@/components/card/Score";
 import Turn from "@/components/card/Turn";
@@ -41,6 +42,7 @@ export const cardMap: Record<string, CardComponent> = {
   roulette: Roulette,
   oneOnOne: OneOnOne,
   timer: Timer,
+  stopwatch: Stopwatch,
   token: Token,
   score: Score,
   turn: Turn,
@@ -64,6 +66,7 @@ export const initialCardsList: CardSetting[] = [
   { component: "roulette", x: 2, y: 1 },
   { component: "oneOnOne", x: 2, y: 2 },
   { component: "timer", x: 0, y: 2 },
+  { component: "stopwatch", x: 3, y: 2 },
   { component: "token", x: 1, y: 1 },
   { component: "score", x: 1, y: 2 },
   { component: "turn", x: 1, y: 0 },
