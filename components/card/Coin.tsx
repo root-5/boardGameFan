@@ -1,114 +1,120 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useState, useMemo } from "react";
-import { Euler } from "three";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { Group } from "three";
 
-// ==============================
-// 設定
-const modelPath = "Coin.glb"; // コインモデルのパス
+function KickFrame({ active }: { active: boolean }) {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    invalidate();
+    if (!active) return;
+    let id = 0;
+    const loop = () => {
+      invalidate();
+      id = requestAnimationFrame(loop);
+    };
+    id = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(id);
+  }, [active, invalidate]);
+  return null;
+}
 
-// コインモデル単体
+const modelPath = "Coin.glb";
+
 function CoinModel() {
   const { scene } = useGLTF(modelPath);
-
-  // モデルのクローン（コインカードを複数作成するため）
   const clonedScene = useMemo(() => scene.clone(), [scene]);
 
   return (
     <primitive
       object={clonedScene}
-      // 今回はコインの中心が原点になるように調整
-      position={[0, 0, 0]} // モデルの位置
-      scale={[10, 10, 10]} // モデルの大きさ
+      position={[0, 0, 0]}
+      scale={[10, 10, 10]}
     />
   );
 }
 
-// グループ（複数のモデルの集合）
-function Group() {
-  const [rotation, setRotation] = useState(
-    new Euler((2 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2)
-  );
+function GroupComponent() {
+  const groupRef = useRef<Group>(null);
   const [isFlipping, setIsFlipping] = useState(false);
-  const [isFlippingLast, setIsFlippingLast] = useState(false);
+  const isFlippingRef = useRef(false);
+  const isFlippingLastRef = useRef(false);
+  const { invalidate } = useThree();
 
   useFrame(() => {
-    if (isFlipping === isFlippingLast) {
-      // モデルの回転
-      if (isFlipping) {
-        setRotation(
-          (prevRotation) =>
-            new Euler(
-              prevRotation.x + (Math.PI * 15) / 100,
-              prevRotation.y,
-              prevRotation.z
-            )
-        );
+    const group = groupRef.current;
+    if (!group) return;
+
+    if (isFlippingRef.current === isFlippingLastRef.current) {
+      if (isFlippingRef.current) {
+        group.rotation.x += (Math.PI * 15) / 100;
+        invalidate();
       }
     } else {
-      // コインフリップの切り替え時にランダムな回転角にする
-      setRotation(
-        (prevRotation) =>
-          new Euler(
-            ((Math.floor(Math.random() * 2) + 1) * Math.PI),
-            prevRotation.y,
-            prevRotation.z,
-          )
-      );
-      setIsFlippingLast(isFlipping);
+      group.rotation.x = (Math.floor(Math.random() * 2) + 1) * Math.PI;
+      isFlippingLastRef.current = isFlippingRef.current;
+      invalidate();
     }
   });
 
+  const handleClick = useCallback(() => {
+    setIsFlipping((prev) => {
+      const next = !prev;
+      isFlippingRef.current = next;
+      return next;
+    });
+  }, []);
+
   return (
-    <group
-      rotation={rotation} // モデルの回転
-      onClick={() => {
-        // クリック時の処理
-        setIsFlipping(!isFlipping);
-      }}
-    >
-      {/* モデル */}
-      <CoinModel />
-    </group>
+    <>
+      <KickFrame active={isFlipping} />
+      <group
+        ref={groupRef}
+        rotation={[(2 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2]}
+        onClick={handleClick}
+      >
+        <CoinModel />
+      </group>
+    </>
   );
 }
 
-export default function Coin(props: { zoomRatio: number }) {
-  const { zoomRatio } = props;
+export default function Coin(props: { zoomRatio: number; isActive?: boolean }) {
+  const { zoomRatio, isActive = true } = props;
+
   return (
     <>
-      <Canvas
-        className="h-full w-full"
-        camera={{
-          fov: 70, // 視野角
-          position: [0, 0, 50], // カメラの位置
-        }}
-        style={{
-          zoom: 1 / zoomRatio, // キャンバスの拡大
-        }}
-      >
-        {/* グループ */}
-        <Group />
-
-        {/* カメラ操作 https://threejs.org/docs/#examples/en/controls/OrbitControls */}
-        <OrbitControls
-          minDistance={120} // ズームの最小距離
-          maxDistance={153} // ズームの最大距離
-          minPolarAngle={(Math.PI * -0) / 100} // カメラの上下回転角度の最小値
-          maxPolarAngle={(Math.PI * 0) / 100} // カメラの上下回転角度の最大値
-          minAzimuthAngle={(Math.PI * -0) / 100} // カメラの左右回転角度の最小値
-          maxAzimuthAngle={(Math.PI * 0) / 100} // カメラの左右回転角度の最大値
-        />
-
-        {/* ライト */}
-        <directionalLight intensity={5} position={[10, 25, 80]} />
-        <ambientLight intensity={0.2} />
-
-        {/* パフォーマンスモニター */}
-        {/* <Stats /> */}
-      </Canvas>
+      {isActive ? (
+        <Canvas
+          className="h-full w-full"
+          camera={{
+            fov: 70,
+            position: [0, 0, 50],
+          }}
+          style={{
+            zoom: 1 / zoomRatio,
+          }}
+          frameloop="demand"
+          dpr={[1, 1.5]}
+          gl={{ antialias: false, powerPreference: "low-power" }}
+        >
+          <GroupComponent />
+          <OrbitControls
+            minDistance={120}
+            maxDistance={153}
+            minPolarAngle={(Math.PI * -0) / 100}
+            maxPolarAngle={(Math.PI * 0) / 100}
+            minAzimuthAngle={(Math.PI * -0) / 100}
+            maxAzimuthAngle={(Math.PI * 0) / 100}
+          />
+          <directionalLight intensity={5} position={[10, 25, 80]} />
+          <ambientLight intensity={0.2} />
+        </Canvas>
+      ) : (
+        <div className="h-full w-full" aria-hidden />
+      )}
     </>
   );
 }

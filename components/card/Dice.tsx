@@ -1,9 +1,9 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useState, useMemo, useEffect, useCallback } from "react";
-import { Euler } from "three";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { Euler, Group } from "three";
 
 // ==============================
 // 型定義
@@ -50,8 +50,8 @@ const diceTypes: DiceTypes = {
       new Euler(-Math.PI / 2, 0, 0),
       new Euler(0, 0, Math.PI / 2),
       new Euler(0, 0, -Math.PI / 2),
-      new Euler(Math.PI, 0, 0)
-    ]
+      new Euler(Math.PI, 0, 0),
+    ],
   },
   d20: {
     modelPath: "Dice_20.glb",
@@ -65,82 +65,68 @@ const diceTypes: DiceTypes = {
     position: [0, 0, 0],
     maxValue: 20,
     eulers: [
-      new Euler(2.281594635649414, 2.7364837123268737, 0.46752905169531833), // 1
-      new Euler(2.1329691446641348, 6.134649083647228, 3.305001660001041), // 2
-      new Euler(2.3193434262335735, 3.2847295930698245, 5.446634381780314), // 3
-      new Euler(6.278464803475794, 3.6758206415915864, 5.732631696386318), // 4
-      new Euler(1.9110104546349074, 1.3849923221166003, 1.409861144114713), // 5
-      new Euler(1.129774579899926, 3.096048908848052, 5.668938888734065), // 6
-      new Euler(6.078385611352912, 5.853985208610443, 0.6719989399062191), // 7
-      new Euler(5.735207411848094, 4.532278199506348, 2.4597113845158978), // 8
-      new Euler(1.381144516894394, 3.863382759749827, 6.251253607998515), // 9
-      new Euler(1.0066123767655852, 0.4834038972723187, 3.9782125074423965), // 10
-      new Euler(1.702892540125957, 5.725014387652284, 0.8611688443707862), // 11
-      new Euler(2.8623545613968244, 1.6426512776530358, 1.745647249052657), // 12
-      new Euler(1.585823099427606, 2.6217073675809703, 1.1126693899847808), // 13
-      new Euler(2.411671741221388, 6.244476079017044, 5.396571586383581), // 14
-      new Euler(0.9580497323326584, 0.478848416061389, 2.6996472829175273), // 15
-      new Euler(1.6810075306228713, 2.2890730247237423, 4.890603643619729), // 16
-      new Euler(5.543978808669293, 0.056539120429048524, 0.8341191002506894), // 17
-      new Euler(0.5183588895568026, 2.8676940228557144, 2.3590613468466524), // 18
-      new Euler(5.417709666430658, 0.43647968081176275, 2.754869759867071), // 19
-      new Euler(5.5853625767868635, 2.5303617386887964, 0.23988265126975464), // 20
-    ]
-  }
+      new Euler(2.281594635649414, 2.7364837123268737, 0.46752905169531833),
+      new Euler(2.1329691446641348, 6.134649083647228, 3.305001660001041),
+      new Euler(2.3193434262335735, 3.2847295930698245, 5.446634381780314),
+      new Euler(6.278464803475794, 3.6758206415915864, 5.732631696386318),
+      new Euler(1.9110104546349074, 1.3849923221166003, 1.409861144114713),
+      new Euler(1.129774579899926, 3.096048908848052, 5.668938888734065),
+      new Euler(6.078385611352912, 5.853985208610443, 0.6719989399062191),
+      new Euler(5.735207411848094, 4.532278199506348, 2.4597113845158978),
+      new Euler(1.381144516894394, 3.863382759749827, 6.251253607998515),
+      new Euler(1.0066123767655852, 0.4834038972723187, 3.9782125074423965),
+      new Euler(1.702892540125957, 5.725014387652284, 0.8611688443707862),
+      new Euler(2.8623545613968244, 1.6426512776530358, 1.745647249052657),
+      new Euler(1.585823099427606, 2.6217073675809703, 1.1126693899847808),
+      new Euler(2.411671741221388, 6.244476079017044, 5.396571586383581),
+      new Euler(0.9580497323326584, 0.478848416061389, 2.6996472829175273),
+      new Euler(1.6810075306228713, 2.2890730247237423, 4.890603643619729),
+      new Euler(5.543978808669293, 0.056539120429048524, 0.8341191002506894),
+      new Euler(0.5183588895568026, 2.8676940228557144, 2.3590613468466524),
+      new Euler(5.417709666430658, 0.43647968081176275, 2.754869759867071),
+      new Euler(5.5853625767868635, 2.5303617386887964, 0.23988265126975464),
+    ],
+  },
 };
 
 // ==============================
-// カスタムフック - ダイスロジック
+// カスタムフック - ダイスロジック（ref 更新で React 再レンダーを回避）
 // ==============================
-function useDiceLogic(diceType: DiceDimensions) {
-  const [rotation, setRotation] = useState(
-    diceTypes[diceType].eulers[2] // 6面ダイスの "6" の面
-  );
+function useDiceLogic(diceType: DiceDimensions, groupRef: React.RefObject<Group | null>) {
   const [isRolling, setIsRolling] = useState(false);
-  const [isRollingLast, setIsRollingLast] = useState(false);
+  const isRollingRef = useRef(false);
+  const isRollingLastRef = useRef(false);
+  const { invalidate } = useThree();
 
-  // ダイスを転がすハンドラー
   const rollDice = useCallback(() => {
-    setIsRolling(!isRolling);
-  }, [isRolling]);
+    setIsRolling((prev) => {
+      const next = !prev;
+      isRollingRef.current = next;
+      return next;
+    });
+  }, []);
 
   useFrame(() => {
-    if (isRolling === isRollingLast) {
-      // モデルの回転
-      if (isRolling) {
-        setRotation(
-          (prevRotation) =>
-            new Euler(
-              prevRotation.x + (Math.PI * 15) / 100,
-              prevRotation.y + (Math.PI * 15) / 100,
-              prevRotation.z + (Math.PI * 15) / 100
-            )
-        );
+    const group = groupRef.current;
+    if (!group) return;
+
+    if (isRollingRef.current === isRollingLastRef.current) {
+      if (isRollingRef.current) {
+        group.rotation.x += (Math.PI * 15) / 100;
+        group.rotation.y += (Math.PI * 15) / 100;
+        group.rotation.z += (Math.PI * 15) / 100;
+        invalidate();
       }
     } else {
-      // eulers の値を総当たりで取得する際に使ったコード
-      // const randomNums = {
-      //   x: Math.random() * Math.PI,
-      //   y: Math.random() * Math.PI,
-      //   z: Math.random() * Math.PI
-      // }
-      // console.log("new Euler(" + randomNums.x + "," + randomNums.y + "," + randomNums.z + "),");
-      // setRotation(
-      //   new Euler(randomNums.x, randomNums.y, randomNums.z)
-      // );
       const randomIndex = Math.floor(Math.random() * diceTypes[diceType].maxValue);
-      setRotation(
-        diceTypes[diceType].eulers[randomIndex]
-      );
-      setIsRollingLast(isRolling);
+      const euler = diceTypes[diceType].eulers[randomIndex];
+      group.rotation.copy(euler);
+      isRollingLastRef.current = isRollingRef.current;
+      invalidate();
     }
   });
 
-  return {
-    rotation,
-    isRolling,
-    rollDice
-  };
+  return { isRolling, rollDice };
 }
 
 // ==============================
@@ -162,70 +148,94 @@ function DiceModel({ diceType }: { diceType: DiceDimensions }) {
 // ==============================
 // グループコンポーネント
 // ==============================
+function KickFrame({ active }: { active: boolean }) {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    invalidate();
+    if (!active) return;
+    let id = 0;
+    const loop = () => {
+      invalidate();
+      id = requestAnimationFrame(loop);
+    };
+    id = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(id);
+  }, [active, invalidate]);
+  return null;
+}
+
 function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
-  const { rotation, rollDice } = useDiceLogic(diceType);
+  const groupRef = useRef<Group>(null);
+  const { isRolling, rollDice } = useDiceLogic(diceType, groupRef);
+  const initialEuler = diceTypes[diceType].eulers[2];
+
   return (
-    <group
-      rotation={rotation}
-      onClick={rollDice}
-    >
-      <DiceModel diceType={diceType} />
-    </group>
+    <>
+      <KickFrame active={isRolling} />
+      <group
+        ref={groupRef}
+        rotation={[initialEuler.x, initialEuler.y, initialEuler.z]}
+        onClick={rollDice}
+      >
+        <DiceModel diceType={diceType} />
+      </group>
+    </>
   );
 }
 
 // ==============================
 // メインコンポーネント
 // ==============================
-export default function Dice(props: { zoomRatio: number }) {
-  const { zoomRatio } = props;
-  const [selectedDiceType, setSelectedDiceType] = useState<DiceDimensions>('d6');
+export default function Dice(props: { zoomRatio: number; isActive?: boolean }) {
+  const { zoomRatio, isActive = true } = props;
+  const [selectedDiceType, setSelectedDiceType] = useState<DiceDimensions>("d6");
   const config = diceTypes[selectedDiceType];
 
-  // モデルの事前読み込み
+  // アクティブ時のみ現在のモデルをプリロード（両方一括ロードしない）
   useEffect(() => {
+    if (!isActive) return;
     try {
-      Object.values(diceTypes).forEach(type => {
-        useGLTF.preload(type.modelPath);
-      });
+      useGLTF.preload(diceTypes[selectedDiceType].modelPath);
     } catch (error) {
       console.error("モデルのプリロードに失敗しました:", error);
     }
-  }, []);
+  }, [isActive, selectedDiceType]);
 
-  // ダイスタイプ切り替えハンドラー
   const toggleDiceType = useCallback(() => {
-    setSelectedDiceType(prev => prev === 'd6' ? 'd20' : 'd6');
+    setSelectedDiceType((prev) => (prev === "d6" ? "d20" : "d6"));
   }, []);
 
   return (
     <div className="h-full w-full relative">
-      <Canvas
-        className="h-full w-full"
-        style={{ zoom: 1 / zoomRatio, }}
-      >
-        {/* グループ */}
-        <DiceGroup diceType={selectedDiceType} />
+      {isActive ? (
+        <Canvas
+          className="h-full w-full"
+          style={{ zoom: 1 / zoomRatio }}
+          frameloop="demand"
+          dpr={[1, 1.5]}
+          gl={{ antialias: false, powerPreference: "low-power" }}
+        >
+          <DiceGroup diceType={selectedDiceType} />
+          <OrbitControls
+            minDistance={config.minDistance}
+            maxDistance={config.maxDistance}
+            minPolarAngle={config.minPolarAngle}
+            maxPolarAngle={config.maxPolarAngle}
+            minAzimuthAngle={config.minAzimuthAngle}
+            maxAzimuthAngle={config.maxAzimuthAngle}
+            enablePan={false}
+          />
+          <directionalLight intensity={5} position={[10, 20, 50]} />
+          <ambientLight intensity={0.5} />
+        </Canvas>
+      ) : (
+        <div className="h-full w-full" aria-hidden />
+      )}
 
-        {/* カメラ操作 */}
-        <OrbitControls
-          minDistance={config.minDistance}
-          maxDistance={config.maxDistance}
-          minPolarAngle={config.minPolarAngle}
-          maxPolarAngle={config.maxPolarAngle}
-          minAzimuthAngle={config.minAzimuthAngle}
-          maxAzimuthAngle={config.maxAzimuthAngle}
-          enablePan={false}
-        />
-
-        {/* ライト */}
-        <directionalLight intensity={5} position={[10, 20, 50]} castShadow />
-        <ambientLight intensity={0.5} />
-      </Canvas>
-
-      {/* ダイス選択UI */}
       <button
-        className={"absolute z-10 block bottom-2 left-1/2 -translate-x-1/2 w-16 text-xl text-center duration-200 hover:opacity-80"}
+        className={
+          "absolute z-10 block bottom-2 left-1/2 -translate-x-1/2 w-16 text-xl text-center duration-200 hover:opacity-80"
+        }
         onClick={toggleDiceType}
       >
         {selectedDiceType}
