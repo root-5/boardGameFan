@@ -10,7 +10,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const STOPWATCH_MAX_MS = 359999000; // 99:59:59.000
-const MAX_LAPS = 4;
+const MAX_LAPS = 3;
 
 function formatTime(ms: number): string {
   const clamped = Math.min(Math.max(ms, 0), STOPWATCH_MAX_MS);
@@ -65,22 +65,22 @@ export default function Stopwatch() {
   const canReset = !isRunning && (elapsedMs > 0 || laps.length > 0);
 
   return (
-    <div className="p-4 text-center">
-      <div className="inline-block w-48 bg-transparent text-3xl font-bold text-center outline-none tabular-nums">
+    <div className="box-border h-full p-6 text-center">
+      <div className="inline-block w-40 bg-transparent text-3xl font-bold text-center outline-none tabular-nums">
         {formatTime(elapsedMs)}
       </div>
 
       <div className="flex justify-center items-center text-base">
         <button
           type="button"
-          className="px-3 py-2 text-lg cursor-pointer duration-200 hover:opacity-70"
+          className="px-2 py-1.5 text-lg cursor-pointer duration-200 hover:opacity-70"
           onClick={() => setIsRunning((prev) => !prev)}
         >
           {isRunning ? "STOP" : "START"}
         </button>
         <button
           type="button"
-          className={`px-3 py-2 text-lg duration-200${
+          className={`px-2 py-1.5 text-lg duration-200${
             canLap ? " cursor-pointer hover:opacity-70" : " opacity-70"
           }`}
           disabled={!canLap}
@@ -93,7 +93,7 @@ export default function Stopwatch() {
         </button>
         <button
           type="button"
-          className={`px-3 py-2 text-lg duration-200${
+          className={`px-2 py-1.5 text-lg duration-200${
             canReset ? " cursor-pointer hover:opacity-70" : " opacity-70"
           }`}
           disabled={!canReset}
@@ -108,7 +108,7 @@ export default function Stopwatch() {
         </button>
       </div>
 
-      <div className="mt-1 h-20 overflow-hidden text-xs tabular-nums opacity-80">
+      <div className="mt-1 h-16 overflow-hidden text-xs tabular-nums opacity-80">
         {laps.length === 0 ? (
           <p className="opacity-50">LAP TIMES</p>
         ) : (
