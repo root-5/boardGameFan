@@ -154,11 +154,19 @@ export default function GridSP() {
     const touchEnd = touchEndRef.current;
     if (!touchStart || !touchEnd || isAnimatingRef.current) return;
 
-    setIsAnimating(true);
-    isAnimatingRef.current = true;
-
     const deltaX = touchEnd.x - touchStart.x;
     const width = window.innerWidth;
+
+    // タップ（閾値未満）はスワイプ処理しない → 3D の pointer イベントを邪魔しない
+    if (Math.abs(deltaX) < cardTransitionThreshold) {
+      setSwipeOffset(0);
+      touchStartRef.current = null;
+      touchEndRef.current = null;
+      return;
+    }
+
+    setIsAnimating(true);
+    isAnimatingRef.current = true;
 
     if (deltaX > cardTransitionThreshold) {
       setSwipeOffset(width * 0.3);
@@ -170,17 +178,11 @@ export default function GridSP() {
         setIsAnimating(false);
         isAnimatingRef.current = false;
       }, 100);
-    } else if (deltaX < -cardTransitionThreshold) {
+    } else {
       setSwipeOffset(-width * 0.3);
       setTimeout(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % cardListRef.current.length);
         setSwipeOffset(0);
-        setIsAnimating(false);
-        isAnimatingRef.current = false;
-      }, 100);
-    } else {
-      setSwipeOffset(0);
-      setTimeout(() => {
         setIsAnimating(false);
         isAnimatingRef.current = false;
       }, 100);

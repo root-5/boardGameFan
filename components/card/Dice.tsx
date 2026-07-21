@@ -1,9 +1,10 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { Euler, Group } from "three";
+import type { ThreeEvent } from "@react-three/fiber";
 
 // ==============================
 // 型定義
@@ -93,17 +94,12 @@ const diceTypes: DiceTypes = {
 // カスタムフック - ダイスロジック（ref 更新で React 再レンダーを回避）
 // ==============================
 function useDiceLogic(diceType: DiceDimensions, groupRef: React.RefObject<Group | null>) {
-  const [isRolling, setIsRolling] = useState(false);
   const isRollingRef = useRef(false);
   const isRollingLastRef = useRef(false);
-  const { invalidate } = useThree();
 
-  const rollDice = useCallback(() => {
-    setIsRolling((prev) => {
-      const next = !prev;
-      isRollingRef.current = next;
-      return next;
-    });
+  const rollDice = useCallback((e?: ThreeEvent<PointerEvent>) => {
+    e?.stopPropagation();
+    isRollingRef.current = !isRollingRef.current;
   }, []);
 
   useFrame(() => {
@@ -115,18 +111,15 @@ function useDiceLogic(diceType: DiceDimensions, groupRef: React.RefObject<Group 
         group.rotation.x += (Math.PI * 15) / 100;
         group.rotation.y += (Math.PI * 15) / 100;
         group.rotation.z += (Math.PI * 15) / 100;
-        invalidate();
       }
     } else {
       const randomIndex = Math.floor(Math.random() * diceTypes[diceType].maxValue);
-      const euler = diceTypes[diceType].eulers[randomIndex];
-      group.rotation.copy(euler);
+      group.rotation.copy(diceTypes[diceType].eulers[randomIndex]);
       isRollingLastRef.current = isRollingRef.current;
-      invalidate();
     }
   });
 
-  return { isRolling, rollDice };
+  return { rollDice };
 }
 
 // ==============================
@@ -148,38 +141,20 @@ function DiceModel({ diceType }: { diceType: DiceDimensions }) {
 // ==============================
 // グループコンポーネント
 // ==============================
-function KickFrame({ active }: { active: boolean }) {
-  const { invalidate } = useThree();
-  useEffect(() => {
-    invalidate();
-    if (!active) return;
-    let id = 0;
-    const loop = () => {
-      invalidate();
-      id = requestAnimationFrame(loop);
-    };
-    id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
-  }, [active, invalidate]);
-  return null;
-}
-
 function DiceGroup({ diceType }: { diceType: DiceDimensions }) {
   const groupRef = useRef<Group>(null);
-  const { isRolling, rollDice } = useDiceLogic(diceType, groupRef);
+  const { rollDice } = useDiceLogic(diceType, groupRef);
   const initialEuler = diceTypes[diceType].eulers[2];
 
   return (
-    <>
-      <KickFrame active={isRolling} />
-      <group
-        ref={groupRef}
-        rotation={[initialEuler.x, initialEuler.y, initialEuler.z]}
-        onClick={rollDice}
-      >
-        <DiceModel diceType={diceType} />
-      </group>
-    </>
+    <group
+      ref={groupRef}
+      rotation={[initialEuler.x, initialEuler.y, initialEuler.z]}
+      // モバイルでは onClick より onPointerDown の方が確実
+      onPointerDown={rollDice}
+    >
+      <DiceModel diceType={diceType} />
+    </group>
   );
 }
 
@@ -211,7 +186,7 @@ export default function Dice(props: { zoomRatio: number; isActive?: boolean }) {
         <Canvas
           className="h-full w-full"
           style={{ zoom: 1 / zoomRatio }}
-          frameloop="demand"
+          // 表示中 Canvas は常時描画（demand + KickFrame だとタップ後の反映漏れが起きる）
           dpr={[1, 1.5]}
           gl={{ antialias: false, powerPreference: "low-power" }}
         >
@@ -224,6 +199,9 @@ export default function Dice(props: { zoomRatio: number; isActive?: boolean }) {
             minAzimuthAngle={config.minAzimuthAngle}
             maxAzimuthAngle={config.maxAzimuthAngle}
             enablePan={false}
+            // タップを回転として飲み込まないよう、タッチ回転は無効化
+            enableRotate={false}
+            enableZoom={false}
           />
           <directionalLight intensity={5} position={[10, 20, 50]} />
           <ambientLight intensity={0.5} />

@@ -1,25 +1,10 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { Group } from "three";
-
-function KickFrame({ active }: { active: boolean }) {
-  const { invalidate } = useThree();
-  useEffect(() => {
-    invalidate();
-    if (!active) return;
-    let id = 0;
-    const loop = () => {
-      invalidate();
-      id = requestAnimationFrame(loop);
-    };
-    id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
-  }, [active, invalidate]);
-  return null;
-}
+import type { ThreeEvent } from "@react-three/fiber";
 
 const modelPath = "Coin.glb";
 
@@ -38,10 +23,8 @@ function CoinModel() {
 
 function GroupComponent() {
   const groupRef = useRef<Group>(null);
-  const [isFlipping, setIsFlipping] = useState(false);
   const isFlippingRef = useRef(false);
   const isFlippingLastRef = useRef(false);
-  const { invalidate } = useThree();
 
   useFrame(() => {
     const group = groupRef.current;
@@ -50,34 +33,26 @@ function GroupComponent() {
     if (isFlippingRef.current === isFlippingLastRef.current) {
       if (isFlippingRef.current) {
         group.rotation.x += (Math.PI * 15) / 100;
-        invalidate();
       }
     } else {
       group.rotation.x = (Math.floor(Math.random() * 2) + 1) * Math.PI;
       isFlippingLastRef.current = isFlippingRef.current;
-      invalidate();
     }
   });
 
-  const handleClick = useCallback(() => {
-    setIsFlipping((prev) => {
-      const next = !prev;
-      isFlippingRef.current = next;
-      return next;
-    });
+  const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    isFlippingRef.current = !isFlippingRef.current;
   }, []);
 
   return (
-    <>
-      <KickFrame active={isFlipping} />
-      <group
-        ref={groupRef}
-        rotation={[(2 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2]}
-        onClick={handleClick}
-      >
-        <CoinModel />
-      </group>
-    </>
+    <group
+      ref={groupRef}
+      rotation={[(2 * Math.PI) / 2, (2 * Math.PI) / 2, (2 * Math.PI) / 2]}
+      onPointerDown={handlePointerDown}
+    >
+      <CoinModel />
+    </group>
   );
 }
 
@@ -96,7 +71,6 @@ export default function Coin(props: { zoomRatio: number; isActive?: boolean }) {
           style={{
             zoom: 1 / zoomRatio,
           }}
-          frameloop="demand"
           dpr={[1, 1.5]}
           gl={{ antialias: false, powerPreference: "low-power" }}
         >
@@ -108,6 +82,9 @@ export default function Coin(props: { zoomRatio: number; isActive?: boolean }) {
             maxPolarAngle={(Math.PI * 0) / 100}
             minAzimuthAngle={(Math.PI * -0) / 100}
             maxAzimuthAngle={(Math.PI * 0) / 100}
+            enableRotate={false}
+            enableZoom={false}
+            enablePan={false}
           />
           <directionalLight intensity={5} position={[10, 25, 80]} />
           <ambientLight intensity={0.2} />

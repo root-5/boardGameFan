@@ -1,25 +1,10 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Group } from "three";
-
-function KickFrame({ active }: { active: boolean }) {
-  const { invalidate } = useThree();
-  useEffect(() => {
-    invalidate();
-    if (!active) return;
-    let id = 0;
-    const loop = () => {
-      invalidate();
-      id = requestAnimationFrame(loop);
-    };
-    id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
-  }, [active, invalidate]);
-  return null;
-}
+import type { ThreeEvent } from "@react-three/fiber";
 
 type user = {
   name: string;
@@ -43,7 +28,7 @@ function RouletteModel(props: { users: Array<user> }) {
                 10,
                 10,
                 2,
-                24, // 頂点数を削減してモバイル負荷を下げる
+                24,
                 1,
                 false,
                 -rad,
@@ -74,7 +59,6 @@ function GroupComponent(props: {
   const isSpinningLastRef = useRef(true);
   const angularVelocityRef = useRef(initialAngularVelocity);
   const rotationYRef = useRef(1 * Math.PI);
-  const { invalidate } = useThree();
 
   useFrame(() => {
     const group = groupRef.current;
@@ -91,7 +75,6 @@ function GroupComponent(props: {
         }
         rotationYRef.current += angularVelocityRef.current;
         group.rotation.y = rotationYRef.current;
-        invalidate();
       } else {
         setIsSpinning(false);
         isSpinningRef.current = false;
@@ -109,7 +92,8 @@ function GroupComponent(props: {
     }
   });
 
-  const handleClick = useCallback(() => {
+  const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
     if (!isSpinningRef.current && !isSpinningLastRef.current) {
       rotationYRef.current = Math.random() * Math.PI * 2;
       if (groupRef.current) {
@@ -118,31 +102,31 @@ function GroupComponent(props: {
       setIsSpinning(true);
       isSpinningRef.current = true;
       isSpinningLastRef.current = false;
-      invalidate();
     }
-  }, [invalidate]);
+  }, []);
 
   return (
-    <>
-      <KickFrame active={isSpinning} />
-      <group ref={groupRef} rotation={[0, rotationYRef.current, 0]} onClick={handleClick}>
-        <mesh position={[0, 1.25, 0]}>
-          <cylinderGeometry args={[5, 5, 0.5, 24]} />
-          <meshStandardMaterial
-            color={isSpinning ? 0xffffff : users[rouletteNum].color}
-            roughness={0.4}
-            metalness={0.1}
-          />
-        </mesh>
+    <group
+      ref={groupRef}
+      rotation={[0, rotationYRef.current, 0]}
+      onPointerDown={handlePointerDown}
+    >
+      <mesh position={[0, 1.25, 0]}>
+        <cylinderGeometry args={[5, 5, 0.5, 24]} />
+        <meshStandardMaterial
+          color={isSpinning ? 0xffffff : users[rouletteNum].color}
+          roughness={0.4}
+          metalness={0.1}
+        />
+      </mesh>
 
-        <mesh position={[0, 3.25, 0]}>
-          <cylinderGeometry args={[2.5, 4.5, 3.5, 8]} />
-          <meshStandardMaterial color={0xffffff} roughness={0.4} metalness={0.1} />
-        </mesh>
+      <mesh position={[0, 3.25, 0]}>
+        <cylinderGeometry args={[2.5, 4.5, 3.5, 8]} />
+        <meshStandardMaterial color={0xffffff} roughness={0.4} metalness={0.1} />
+      </mesh>
 
-        <RouletteModel users={users} />
-      </group>
-    </>
+      <RouletteModel users={users} />
+    </group>
   );
 }
 
@@ -164,7 +148,6 @@ export default function Roulette(props: {
           className="h-full w-full"
           camera={{ fov: 80, position: [10, 3, 0] }}
           style={{ background: "transparent", zoom: 1 / zoomRatio }}
-          frameloop="demand"
           dpr={[1, 1.5]}
           gl={{ antialias: false, powerPreference: "low-power" }}
         >
@@ -180,6 +163,9 @@ export default function Roulette(props: {
             maxPolarAngle={(0.6 * Math.PI) / 2}
             minAzimuthAngle={0}
             maxAzimuthAngle={0}
+            enableRotate={false}
+            enableZoom={false}
+            enablePan={false}
           />
           <ambientLight intensity={0.8} />
           <directionalLight intensity={2.5} position={[20, 50, -25]} />
