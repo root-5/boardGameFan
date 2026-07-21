@@ -18,17 +18,19 @@ export const setInitialCardsList = (
   maxRows: number,
   maxCols: number
 ): { component: string, x: number, y: number }[] => {
+  // 元配列を破壊しない（SP/PC で同じ initialCardsList を共有するため）
+  const result = initialCardsList.map((card) => ({ ...card }));
   for (let y = 0; y < maxRows; y++) {
     for (let x = 0; x < maxCols; x++) {
-      const existingComponent = initialCardsList.find(
+      const existingComponent = result.find(
         (comp) => comp.x === x && comp.y === y
       );
       if (!existingComponent) {
-        initialCardsList.push({ component: "setter", x, y });
+        result.push({ component: "setter", x, y });
       }
     }
   }
-  return initialCardsList;
+  return result;
 };
 
 /**
