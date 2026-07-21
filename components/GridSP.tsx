@@ -11,7 +11,6 @@ const swipeEffectThreshold = 50; // スワイプの遊び閾値
 
 type CardContentProps = {
   card: CardSetting;
-  index: number;
   isActive: boolean;
   zoomRatio: number;
   players: Player[];
@@ -266,7 +265,6 @@ export default function GridSP() {
         >
           <CardContent
             card={card}
-            index={index}
             isActive={isActive}
             zoomRatio={zoomRatio}
             players={players}
