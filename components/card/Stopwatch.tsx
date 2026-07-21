@@ -65,22 +65,22 @@ export default function Stopwatch() {
   const canReset = !isRunning && (elapsedMs > 0 || laps.length > 0);
 
   return (
-    <div className="box-border h-full p-6 text-center">
-      <div className="inline-block w-40 bg-transparent text-3xl font-bold text-center outline-none tabular-nums">
+    <div className="box-border h-full py-6 text-center">
+      <div className="bg-transparent text-3xl font-bold tabular-nums">
         {formatTime(elapsedMs)}
       </div>
 
       <div className="flex justify-center items-center text-base">
         <button
           type="button"
-          className="px-2 py-1.5 text-lg cursor-pointer duration-200 hover:opacity-70"
+          className="px-3 py-1.5 text-lg cursor-pointer duration-200 hover:opacity-70"
           onClick={() => setIsRunning((prev) => !prev)}
         >
           {isRunning ? "STOP" : "START"}
         </button>
         <button
           type="button"
-          className={`px-2 py-1.5 text-lg duration-200${
+          className={`px-3 py-1.5 text-lg duration-200${
             canLap ? " cursor-pointer hover:opacity-70" : " opacity-70"
           }`}
           disabled={!canLap}
@@ -93,7 +93,7 @@ export default function Stopwatch() {
         </button>
         <button
           type="button"
-          className={`px-2 py-1.5 text-lg duration-200${
+          className={`px-3 py-1.5 text-lg duration-200${
             canReset ? " cursor-pointer hover:opacity-70" : " opacity-70"
           }`}
           disabled={!canReset}
