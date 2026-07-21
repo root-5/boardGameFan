@@ -22,11 +22,12 @@ export default function RootLayout({
       <body
         className={`relative antialiased h-screen select-none overflow-x-hidden overflow-y-hidden`}
       >
-        {/* Image を使用してしまうと読み込みが狂ったため img を使用 */}
+        {/* SP はカードが全面を覆うため背景画像を読み込まない（~800KB 削減） */}
         <img
           src="/okumono_moku14.png"
-          alt="background"
-          className="absolute h-full w-full z-[-10] object-cover"
+          alt=""
+          className="absolute h-full w-full z-[-10] object-cover hidden min-[500px]:block"
+          decoding="async"
         />
         {children}
       </body>

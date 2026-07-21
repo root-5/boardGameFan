@@ -26,9 +26,11 @@ export type CardStyle = {
 
 export type CardComponent = React.ComponentType<{
   zoomRatio: number;
-  players:  Player[];
+  players: Player[];
   setPlayers: (arg: Player[]) => void;
   cardStyle: CardStyle;
   setCardStyle: (arg: CardStyle) => void;
   setCardList: (arg: CardSetting[]) => void;
+  /** SP: 前後カードのみ true。非アクティブ時は重い Canvas を破棄する */
+  isActive?: boolean;
 }>;
