@@ -1,27 +1,41 @@
 /**
- * カード全体にかかわる定数をまとめる
- * カード個別の定数は、各カードのコンポーネント内に記述する
+ * カード全体で共有する定数・コンポーネント対応表・フォント定義
+ *
+ * カード個別の定数は、各コンポーネント内に記述してください。
  */
 
-import Dice from "../components/card/Dice";
-import Coin from "../components/card/Coin";
-import Roulette from "../components/card/Roulette";
-import OneOnOne from "../components/card/OneOnOne";
-import Timer from "../components/card/Timer";
-import Token from "../components/card/Token";
-import Score from "../components/card/Score";
-import Turn from "../components/card/Turn";
-import Winner from "../components/card/Winner";
-import PlayerSetting from "../components/card/PlayerSetting";
-import StyleSetting from "../components/card/StyleSetting";
-import Info from "../components/card/Info";
-import { CardComponent } from "./types";
-import { Shantell_Sans, Sansita_Swashed, Dancing_Script, Libre_Bodoni, Pixelify_Sans, Red_Hat_Text, Caveat, Stick_No_Bills, Tilt_Prism, Antonio } from 'next/font/google'
+import {
+  Shantell_Sans,
+  Sansita_Swashed,
+  Dancing_Script,
+  Libre_Bodoni,
+  Pixelify_Sans,
+  Red_Hat_Text,
+  Caveat,
+  Stick_No_Bills,
+  Tilt_Prism,
+  Antonio,
+} from "next/font/google";
 
-// カードコンポーネントとカード名の対応表
-export const cardMap: {
-  [key: string]: CardComponent;
-} = {
+import Dice from "@/components/card/Dice";
+import Coin from "@/components/card/Coin";
+import Roulette from "@/components/card/Roulette";
+import OneOnOne from "@/components/card/OneOnOne";
+import Timer from "@/components/card/Timer";
+import Token from "@/components/card/Token";
+import Score from "@/components/card/Score";
+import Turn from "@/components/card/Turn";
+import Winner from "@/components/card/Winner";
+import PlayerSetting from "@/components/card/PlayerSetting";
+import StyleSetting from "@/components/card/StyleSetting";
+import Info from "@/components/card/Info";
+import type { CardComponent, CardSetting, CardStyle, Player } from "./types";
+
+/**
+ * カード種別キーとコンポーネントの対応表
+ * Setter（空き枠の＋ボタン）は特殊コンポーネントのためここには含めません。
+ */
+export const cardMap: Record<string, CardComponent> = {
   dice: Dice,
   coin: Coin,
   roulette: Roulette,
@@ -34,17 +48,17 @@ export const cardMap: {
   playerSetting: PlayerSetting,
   styleSetting: StyleSetting,
   info: Info,
-
-  // setter は特殊なコンポーネントなので、ここでは設定しない
-  // setter: Setter,
 };
 
-// カードリストの最大サイズ
-export const maxRange = { rows: 20, cols: 20 };
+/** グリッドの最大サイズ（PC の仮想マス数） */
+export const maxRange = { rows: 20, cols: 20 } as const;
 
-// 初期カード
-// PC の場合は x,y で画面を構成、SP の場合は配列の順番で画面を構成
-export const initialCardsList = [
+/**
+ * 初期カード配置
+ * - PC: x / y でグリッド上の位置を決める
+ * - SP: 配列順がスワイプ順になる
+ */
+export const initialCardsList: CardSetting[] = [
   { component: "dice", x: 0, y: 1 },
   { component: "coin", x: 2, y: 0 },
   { component: "roulette", x: 2, y: 1 },
@@ -59,8 +73,8 @@ export const initialCardsList = [
   { component: "info", x: 2, y: 3 },
 ];
 
-// 初期スタイル
-export const initialStyle = {
+/** 初期スタイル（背景色・文字色・フォント番号） */
+export const initialStyle: CardStyle = {
   bgColor_1: "#432E54",
   bgColor_2: "#4B4376",
   fontColor_1: "#f0f6fc",
@@ -68,8 +82,8 @@ export const initialStyle = {
   fontStyle: 1,
 };
 
-// 初期プレイヤー
-export const initialPlayers = [
+/** 初期プレイヤー（ルーレット・ターン・勝利数などで共有） */
+export const initialPlayers: Player[] = [
   { name: "Player 1", color: "#aa11ff" },
   { name: "Player 2", color: "#5b97f9" },
   { name: "Player 3", color: "#11ff11" },
@@ -77,15 +91,29 @@ export const initialPlayers = [
   { name: "Player 5", color: "#a91111" },
 ];
 
-// フォントの設定
-const font_1 = Shantell_Sans({ subsets: ['latin'] });
-const font_2 = Sansita_Swashed({ subsets: ['latin'] });
-const font_3 = Dancing_Script({ subsets: ['latin'] });
-const font_4 = Libre_Bodoni({ subsets: ['latin'] });
-const font_5 = Pixelify_Sans({ subsets: ['latin'] });
-const font_6 = Red_Hat_Text({ subsets: ['latin'] });
-const font_7 = Caveat({ subsets: ['latin'] });
-const font_8 = Stick_No_Bills({ subsets: ['latin'] });
-const font_9 = Tilt_Prism({ subsets: ['latin'] });
-const font_10 = Antonio({ subsets: ['latin'] });
-export const fonts = [font_1, font_2, font_3, font_4, font_5, font_6, font_7, font_8, font_9, font_10];
+// ---------------------------------------------------------------------------
+// Google Fonts（StyleSetting で切り替え）
+// ---------------------------------------------------------------------------
+const font_1 = Shantell_Sans({ subsets: ["latin"] });
+const font_2 = Sansita_Swashed({ subsets: ["latin"] });
+const font_3 = Dancing_Script({ subsets: ["latin"] });
+const font_4 = Libre_Bodoni({ subsets: ["latin"] });
+const font_5 = Pixelify_Sans({ subsets: ["latin"] });
+const font_6 = Red_Hat_Text({ subsets: ["latin"] });
+const font_7 = Caveat({ subsets: ["latin"] });
+const font_8 = Stick_No_Bills({ subsets: ["latin"] });
+const font_9 = Tilt_Prism({ subsets: ["latin"] });
+const font_10 = Antonio({ subsets: ["latin"] });
+
+export const fonts = [
+  font_1,
+  font_2,
+  font_3,
+  font_4,
+  font_5,
+  font_6,
+  font_7,
+  font_8,
+  font_9,
+  font_10,
+];

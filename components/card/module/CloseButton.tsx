@@ -1,40 +1,40 @@
-import React from "react";
-import { CardSetting } from "../../../utils/types";
+/**
+ * カードを閉じる（setter に戻す）ボタン
+ */
 
-interface CloseButtonProps {
+import type { CardSetting } from "@/utils/types";
+
+type CloseButtonProps = {
   index: number;
   cardList: CardSetting[];
   setCardList: (list: CardSetting[]) => void;
   isHidden?: boolean;
-}
+};
 
-const CloseButton: React.FC<CloseButtonProps> = ({
+export default function CloseButton({
   index,
   cardList,
   setCardList,
-  isHidden,
-}) => {
+  isHidden = false,
+}: CloseButtonProps) {
+  if (isHidden) return null;
+
   return (
-    <div
-      className={
-        "absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
-      }
-      style={{
-        display: isHidden ? "none" : "block",
-      }}
+    <button
+      type="button"
+      aria-label="Close card"
+      className="absolute z-10 top-1 right-1 px-1 cursor-pointer text-2xl leading-none duration-200 opacity-30 hover:opacity-100"
       onClick={() => {
-        const newList = [...cardList];
-        newList[index] = {
+        const next = [...cardList];
+        next[index] = {
           component: "setter",
-          x: newList[index].x,
-          y: newList[index].y,
+          x: next[index].x,
+          y: next[index].y,
         };
-        setCardList(newList);
+        setCardList(next);
       }}
     >
       ×
-    </div>
+    </button>
   );
-};
-
-export default CloseButton;
+}

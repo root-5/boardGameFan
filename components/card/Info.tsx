@@ -1,14 +1,20 @@
 "use client";
 
-import { CardSetting } from "../../utils/types";
-import { initialCardsList } from "../../utils/cardDefinitions";
-import { setLocalStorage } from "../../utils/localFuncs";
+/**
+ * アプリ情報・カード配置リセット
+ *
+ * リンクと著作権表示、カード配置の初期化ボタンを提供します。
+ */
 
-export default function TurnCounter(props: {
-  setCardList: (arg: CardSetting[]) => void;
-}) {
-  const { setCardList } = props;
+import type { CardSetting } from "@/utils/types";
+import { initialCardsList } from "@/utils/cardDefinitions";
+import { setLocalStorage } from "@/utils/localFuncs";
 
+type InfoProps = {
+  setCardList?: (list: CardSetting[]) => void;
+};
+
+export default function Info({ setCardList }: InfoProps) {
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
       <div className="mt-4 flex items-center justify-center gap-x-2">
@@ -22,7 +28,7 @@ export default function TurnCounter(props: {
         </a>
         <div> / </div>
         <a
-          href="https://github.com/root-5/boardGameFan"
+          href="https://github.com/root-5/boardgamefan"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xl duration-200 hover:opacity-70"
@@ -31,19 +37,20 @@ export default function TurnCounter(props: {
         </a>
       </div>
       <div className="flex flex-col items-center gap-1 mt-4 text-xs">
-        <p>Free for Everyone !</p>
-        <p>Use for anything !</p>
+        <p>Free for Everyone!</p>
+        <p>Use for anything!</p>
       </div>
       <button
+        type="button"
         onClick={() => {
-          setCardList(initialCardsList);
+          setCardList?.(initialCardsList);
           setLocalStorage("cardList", JSON.stringify(initialCardsList));
         }}
         className="mt-2 p-2 rounded-md duration-200 hover:bg-red-500"
       >
         Reset Cards
       </button>
-      <p className="mt-2 text-xs">© 2025 root-5</p>
+      <p className="mt-2 text-xs">© 2026 root-5</p>
     </div>
   );
 }

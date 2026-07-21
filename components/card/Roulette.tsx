@@ -1,28 +1,31 @@
 "use client";
 
+/**
+ * 3D ルーレットカード
+ *
+ * プレイヤー設定の色・名前で扇形を分割し、タップで回転します。
+ * 停止後に中央ハブの色と上部ラベルで当選プレイヤーを表示します。
+ */
+
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useState, useRef, useCallback } from "react";
 import { Group } from "three";
 import type { ThreeEvent } from "@react-three/fiber";
+import type { Player } from "@/utils/types";
 
-type user = {
-  name: string;
-  color: string;
-};
+/** スピン開始時の角速度 */
+const INITIAL_ANGULAR_VELOCITY = (Math.PI * 2 * 50) / 100;
 
-const initialAngularVelocity = (Math.PI * 2 * 50) / 100;
-
-function RouletteModel(props: { users: Array<user> }) {
-  const { users } = props;
-
+function RouletteModel({ players }: { players: Player[] }) {
   return (
     <group>
-      {users.map((user, i) => {
+      {players.map((player, i) => {
         const rad =
-          (Math.PI * 2 * i) / users.length + Math.PI * (1 + 2 / users.length);
+          (Math.PI * 2 * i) / players.length +
+          Math.PI * (1 + 2 / players.length);
         return (
-          <mesh key={i} position={[0, 0, 0]}>
+          <mesh key={`${player.name}-${i}`} position={[0, 0, 0]}>
             <cylinderGeometry
               args={[
                 10,
@@ -32,11 +35,11 @@ function RouletteModel(props: { users: Array<user> }) {
                 1,
                 false,
                 -rad,
-                (Math.PI * 2) / users.length,
+                (Math.PI * 2) / players.length,
               ]}
             />
             <meshStandardMaterial
-              color={user.color}
+              color={player.color}
               roughness={0.1}
               metalness={0.2}
             />
@@ -47,18 +50,21 @@ function RouletteModel(props: { users: Array<user> }) {
   );
 }
 
-function GroupComponent(props: {
-  users: Array<user>;
+function RouletteGroup({
+  players,
+  rouletteNum,
+  setRouletteNum,
+}: {
+  players: Player[];
   rouletteNum: number;
   setRouletteNum: (num: number) => void;
 }) {
-  const { users, rouletteNum, setRouletteNum } = props;
   const groupRef = useRef<Group>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const isSpinningRef = useRef(false);
   const isSpinningLastRef = useRef(true);
-  const angularVelocityRef = useRef(initialAngularVelocity);
-  const rotationYRef = useRef(1 * Math.PI);
+  const angularVelocityRef = useRef(INITIAL_ANGULAR_VELOCITY);
+  const rotationYRef = useRef(Math.PI);
 
   useFrame(() => {
     const group = groupRef.current;
@@ -68,6 +74,7 @@ function GroupComponent(props: {
       if (angularVelocityRef.current !== 0) {
         const prev = angularVelocityRef.current;
         if (prev > 0) {
+          // 徐々に減速して自然に止まる
           angularVelocityRef.current =
             prev - prev * 0.015 - (Math.PI * 2 * 0.001) / 100;
         } else {
@@ -81,11 +88,11 @@ function GroupComponent(props: {
         isSpinningLastRef.current = true;
       }
     } else if (!isSpinningRef.current && isSpinningLastRef.current) {
-      angularVelocityRef.current = initialAngularVelocity;
+      angularVelocityRef.current = INITIAL_ANGULAR_VELOCITY;
       setRouletteNum(
         Math.round(
           (((rotationYRef.current + Math.PI) % (Math.PI * 2)) / (Math.PI * 2)) *
-            (users.length - 1)
+            (players.length - 1)
         )
       );
       isSpinningLastRef.current = false;
@@ -105,6 +112,8 @@ function GroupComponent(props: {
     }
   }, []);
 
+  const hubColor = isSpinning ? 0xffffff : players[rouletteNum]?.color;
+
   return (
     <group
       ref={groupRef}
@@ -114,7 +123,7 @@ function GroupComponent(props: {
       <mesh position={[0, 1.25, 0]}>
         <cylinderGeometry args={[5, 5, 0.5, 24]} />
         <meshStandardMaterial
-          color={isSpinning ? 0xffffff : users[rouletteNum].color}
+          color={hubColor}
           roughness={0.4}
           metalness={0.1}
         />
@@ -125,25 +134,29 @@ function GroupComponent(props: {
         <meshStandardMaterial color={0xffffff} roughness={0.4} metalness={0.1} />
       </mesh>
 
-      <RouletteModel users={users} />
+      <RouletteModel players={players} />
     </group>
   );
 }
 
-export default function Roulette(props: {
-  zoomRatio: number;
-  players: Array<user>;
+export default function Roulette({
+  zoomRatio = 1,
+  players = [],
+  isActive = true,
+}: {
+  zoomRatio?: number;
+  players?: Player[];
   isActive?: boolean;
 }) {
-  const { zoomRatio, players, isActive = true } = props;
   const [rouletteNum, setRouletteNum] = useState(0);
+  const safeIndex = Math.min(rouletteNum, Math.max(players.length - 1, 0));
 
   return (
     <>
       <div className="absolute z-10 block top-3 right-1/2 translate-x-1/2 px-2 w-2/3 text-center text-2xl bg-opacity-80">
-        {players[rouletteNum].name}
+        {players[safeIndex]?.name ?? ""}
       </div>
-      {isActive ? (
+      {isActive && players.length > 0 ? (
         <Canvas
           className="h-full w-full"
           camera={{ fov: 80, position: [10, 3, 0] }}
@@ -151,9 +164,9 @@ export default function Roulette(props: {
           dpr={[1, 1.5]}
           gl={{ antialias: false, powerPreference: "low-power" }}
         >
-          <GroupComponent
-            users={players}
-            rouletteNum={rouletteNum}
+          <RouletteGroup
+            players={players}
+            rouletteNum={safeIndex}
             setRouletteNum={setRouletteNum}
           />
           <OrbitControls
